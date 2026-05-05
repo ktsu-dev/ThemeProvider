@@ -11,6 +11,7 @@
     <PackageReference Include="Microsoft.SourceLink.GitHub" />
     <PackageReference Include="Microsoft.SourceLink.AzureRepos.Git" />
     <PackageReference Include="Polyfill" PrivateAssets="all" />
+  <PackageReference Include="System.Numerics.Vectors" />
   </ItemGroup>
 
 </Project>
