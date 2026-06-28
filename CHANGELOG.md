@@ -1,6 +1,8 @@
-## v1.0.22
+## v1.0.23 (patch)
 
-No significant changes detected since v1.0.22.
+Changes since v1.0.22:
+
+- chore: remove SourceLink package references from csproj files ([@matt-edmondson](https://github.com/matt-edmondson))
 
 ## v1.0.22 (patch)
 
