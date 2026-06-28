@@ -16,8 +16,6 @@
   <ItemGroup>
     <PackageReference Include="Hexa.NET.ImGui" />
     <PackageReference Include="ktsu.ImGui.App" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" />
-    <PackageReference Include="Microsoft.SourceLink.AzureRepos.Git" />
     <PackageReference Include="Polyfill" PrivateAssets="all" />
   </ItemGroup>
 
