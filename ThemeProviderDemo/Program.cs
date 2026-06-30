@@ -4,11 +4,12 @@
 
 namespace ktsu.ThemeProviderDemo;
 
-using System.Collections.ObjectModel;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Numerics;
 using Hexa.NET.ImGui;
 using ktsu.ImGui.App;
+using ktsu.Semantics.Color;
 using ktsu.ThemeProvider;
 using ktsu.ThemeProvider.ImGui;
 using static ktsu.ThemeProvider.ThemeRegistry;
@@ -56,10 +57,10 @@ internal static class Program
 
 		// Initialize with theme's primary color
 		SemanticColorRequest primaryRequest = new(SemanticMeaning.Primary, Priority.MediumHigh);
-		PerceptualColor primaryColor = GetColorFromTheme(primaryRequest);
-		if (primaryColor != default)
+		if (GetColorFromTheme(primaryRequest) is { } primaryColor)
 		{
-			selectedColorVec = new Vector3(primaryColor.RgbValue.R, primaryColor.RgbValue.G, primaryColor.RgbValue.B);
+			Srgb pcSrgb = primaryColor.ToSrgb();
+			selectedColorVec = new Vector3((float)pcSrgb.R, (float)pcSrgb.G, (float)pcSrgb.B);
 		}
 	}
 
@@ -220,7 +221,7 @@ internal static class Program
 		ImGui.Separator();
 
 		// Show complete palette info
-		IReadOnlyDictionary<SemanticColorRequest, PerceptualColor> completePalette = SemanticColorMapper.MakeCompletePalette(theme);
+		IReadOnlyDictionary<SemanticColorRequest, Color> completePalette = SemanticColorMapper.MakeCompletePalette(theme);
 		ImGui.TextUnformatted($"Complete Palette: {completePalette.Count} colors generated");
 		ImGui.TextUnformatted($"Available Semantic Meanings: {theme.SemanticMapping.Count}");
 
@@ -256,11 +257,11 @@ internal static class Program
 					ImGui.TableSetColumnIndex(i + 1);
 					Priority priority = sortedPriorities[i];
 					SemanticColorRequest request = new(meaning, priority);
-					PerceptualColor color = GetColorFromTheme(request);
 
-					if (color != default)
+					if (GetColorFromTheme(request) is { } color)
 					{
-						Vector4 colorVec = new(color.RgbValue.R, color.RgbValue.G, color.RgbValue.B, 1.0f);
+						Srgb colorSrgb = color.ToSrgb();
+						Vector4 colorVec = new((float)colorSrgb.R, (float)colorSrgb.G, (float)colorSrgb.B, 1.0f);
 						Vector2 swatchSize = new(90, 30);
 
 						if (ImGui.ColorButton($"##{meaning}_{priority}", colorVec, ImGuiColorEditFlags.NoTooltip, swatchSize))
@@ -270,7 +271,7 @@ internal static class Program
 
 						if (ImGui.IsItemHovered())
 						{
-							ImGui.SetTooltip($"{meaning} - {priority}\nLightness: {color.Lightness:F2}\nRGB: {color.RgbValue.R:F3}, {color.RgbValue.G:F3}, {color.RgbValue.B:F3}\nHex: {color.RgbValue.ToHex()}");
+							ImGui.SetTooltip($"{meaning} - {priority}\nLightness: {color.ToOklab().L:F2}\nRGB: {colorSrgb.R:F3}, {colorSrgb.G:F3}, {colorSrgb.B:F3}\nHex: {color.ToHex()}");
 						}
 					}
 				}
@@ -308,15 +309,15 @@ internal static class Program
 		ImGui.TextUnformatted($"Current Request: {currentRequest}");
 
 		// Get the color using the semantic color mapper
-		PerceptualColor mappedColor = GetColorFromTheme(currentRequest);
-
-		if (mappedColor != default)
+		if (GetColorFromTheme(currentRequest) is { } mappedColor)
 		{
 			// Color preview
 			float previewSize = 150f;
 			ImDrawListPtr drawList = ImGui.GetWindowDrawList();
 			Vector2 pos = ImGui.GetCursorScreenPos();
-			Vector4 rgbColor = ToImVec4(mappedColor.RgbValue);
+			Srgb mappedSrgb = mappedColor.ToSrgb();
+			Oklch mappedOklch = mappedColor.ToOklch();
+			Vector4 rgbColor = ToImVec4(mappedColor);
 			drawList.AddRectFilled(pos, new Vector2(pos.X + previewSize, pos.Y + previewSize),
 								   ImGui.ColorConvertFloat4ToU32(rgbColor));
 			drawList.AddRect(pos, new Vector2(pos.X + previewSize, pos.Y + previewSize),
@@ -327,11 +328,11 @@ internal static class Program
 			ImGui.BeginGroup();
 
 			ImGui.TextUnformatted("Mapped Color Properties:");
-			ImGui.TextUnformatted($"Hex: {mappedColor.RgbValue.ToHex()}");
-			ImGui.TextUnformatted($"RGB: ({mappedColor.RgbValue.R:F3}, {mappedColor.RgbValue.G:F3}, {mappedColor.RgbValue.B:F3})");
-			ImGui.TextUnformatted($"Lightness: {mappedColor.Lightness:F2}");
-			ImGui.TextUnformatted($"Chroma: {mappedColor.Chroma:F2}");
-			ImGui.TextUnformatted($"Hue: {mappedColor.Hue:F2}");
+			ImGui.TextUnformatted($"Hex: {mappedColor.ToHex()}");
+			ImGui.TextUnformatted($"RGB: ({mappedSrgb.R:F3}, {mappedSrgb.G:F3}, {mappedSrgb.B:F3})");
+			ImGui.TextUnformatted($"Lightness: {mappedColor.ToOklab().L:F2}");
+			ImGui.TextUnformatted($"Chroma: {mappedOklch.C:F2}");
+			ImGui.TextUnformatted($"Hue: {mappedOklch.H:F2}");
 
 			ImGui.EndGroup();
 		}
@@ -351,15 +352,15 @@ internal static class Program
 			SemanticMeaning currentMeaning = (SemanticMeaning)selectedSemanticMeaning;
 
 			// Get original colors available for this semantic
-			if (theme.SemanticMapping.TryGetValue(currentMeaning, out Collection<PerceptualColor>? availableColors))
+			if (theme.SemanticMapping.TryGetValue(currentMeaning, out Collection<Color>? availableColors))
 			{
 				ImGui.TextUnformatted($"Original colors for {currentMeaning}: {availableColors.Count}");
 
 				// Show original color lightness values
 				ImGui.Indent();
-				foreach (PerceptualColor originalColor in availableColors)
+				foreach (Color originalColor in availableColors)
 				{
-					ImGui.TextColored(ToImVec4(originalColor.RgbValue), $"• {originalColor.RgbValue.ToHex()} (L: {originalColor.Lightness:F2})");
+					ImGui.TextColored(ToImVec4(originalColor), $"• {originalColor.ToHex()} (L: {originalColor.ToOklab().L:F2})");
 				}
 				ImGui.Unindent();
 
@@ -369,7 +370,7 @@ internal static class Program
 				ImGui.TextUnformatted("Priority → Mapped Lightness (Interpolation/Extrapolation):");
 
 				// Get complete mapping for this semantic meaning (more efficient than individual requests)
-				IReadOnlyDictionary<SemanticColorRequest, PerceptualColor> completeMapping = GetCompleteMappingForSemantic();
+				IReadOnlyDictionary<SemanticColorRequest, Color> completeMapping = GetCompleteMappingForSemantic();
 
 				if (ImGui.BeginTable("PriorityMappingTable", 5, ImGuiTableFlags.Borders | ImGuiTableFlags.RowBg))
 				{
@@ -383,7 +384,7 @@ internal static class Program
 					foreach (Priority priority in allPriorities)
 					{
 						SemanticColorRequest request = new(currentMeaning, priority);
-						if (completeMapping.TryGetValue(request, out PerceptualColor color))
+						if (completeMapping.TryGetValue(request, out Color color))
 						{
 							ImGui.TableNextRow();
 
@@ -396,7 +397,7 @@ internal static class Program
 							ImGui.TextUnformatted($"{targetLightness:F2}");
 
 							ImGui.TableSetColumnIndex(2);
-							ImGui.TextUnformatted($"{color.Lightness:F2}");
+							ImGui.TextUnformatted($"{color.ToOklab().L:F2}");
 
 							ImGui.TableSetColumnIndex(3);
 							// Small color swatch
@@ -404,7 +405,7 @@ internal static class Program
 							Vector2 tablePos = ImGui.GetCursorScreenPos();
 							float swatchSize = 15f;
 							tableDrawList.AddRectFilled(tablePos, new Vector2(tablePos.X + swatchSize, tablePos.Y + swatchSize),
-														ImGui.ColorConvertFloat4ToU32(ToImVec4(color.RgbValue)));
+														ImGui.ColorConvertFloat4ToU32(ToImVec4(color)));
 							ImGui.Dummy(new Vector2(swatchSize, swatchSize));
 
 							ImGui.TableSetColumnIndex(4);
@@ -423,20 +424,21 @@ internal static class Program
 	private static float CalculateTargetLightnessForPriority(Priority priority)
 	{
 		// Calculate the global lightness range
-		float minLightness = float.MaxValue;
-		float maxLightness = float.MinValue;
+		double minLightness = double.MaxValue;
+		double maxLightness = double.MinValue;
 
-		foreach (Collection<PerceptualColor> colors in theme.SemanticMapping.Values)
+		foreach (Collection<Color> colors in theme.SemanticMapping.Values)
 		{
-			foreach (PerceptualColor color in colors)
+			foreach (Color color in colors)
 			{
-				if (color.Lightness < minLightness)
+				double l = color.ToOklab().L;
+				if (l < minLightness)
 				{
-					minLightness = color.Lightness;
+					minLightness = l;
 				}
-				if (color.Lightness > maxLightness)
+				if (l > maxLightness)
 				{
-					maxLightness = color.Lightness;
+					maxLightness = l;
 				}
 			}
 		}
@@ -447,38 +449,38 @@ internal static class Program
 
 		if (allPriorities.Length == 1)
 		{
-			return (minLightness + maxLightness) / 2.0f;
+			return (float)((minLightness + maxLightness) / 2.0);
 		}
 
-		float position = priorityIndex / (float)(allPriorities.Length - 1);
-		float lightnessRange = maxLightness - minLightness;
+		double position = priorityIndex / (double)(allPriorities.Length - 1);
+		double lightnessRange = maxLightness - minLightness;
 
 		if (theme.IsDarkTheme)
 		{
-			return minLightness + (position * lightnessRange);
+			return (float)(minLightness + (position * lightnessRange));
 		}
 		else
 		{
-			return maxLightness - (position * lightnessRange);
+			return (float)(maxLightness - (position * lightnessRange));
 		}
 	}
 
-	private static string DetermineMethod(Collection<PerceptualColor> availableColors, PerceptualColor resultColor)
+	private static string DetermineMethod(Collection<Color> availableColors, Color resultColor)
 	{
 		if (availableColors.Count == 1)
 		{
-			return availableColors.First().Lightness == resultColor.Lightness ? "Original" : "Extrapolated";
+			return availableColors.First().ToOklab().L == resultColor.ToOklab().L ? "Original" : "Extrapolated";
 		}
 
-		List<PerceptualColor> sortedColors = [.. availableColors.OrderBy(c => c.Lightness)];
-		float minL = sortedColors.First().Lightness;
-		float maxL = sortedColors.Last().Lightness;
+		List<Color> sortedColors = [.. availableColors.OrderBy(c => c.ToOklab().L)];
+		double minL = sortedColors.First().ToOklab().L;
+		double maxL = sortedColors.Last().ToOklab().L;
 
-		if (resultColor.Lightness < minL - 0.01f || resultColor.Lightness > maxL + 0.01f)
+		if (resultColor.ToOklab().L < minL - 0.01 || resultColor.ToOklab().L > maxL + 0.01)
 		{
 			return "Extrapolated";
 		}
-		else if (availableColors.Any(c => Math.Abs(c.Lightness - resultColor.Lightness) < 0.01f))
+		else if (availableColors.Any(c => Math.Abs(c.ToOklab().L - resultColor.ToOklab().L) < 0.01))
 		{
 			return "Original";
 		}
@@ -564,13 +566,13 @@ internal static class Program
 
 		ImGui.Checkbox("Large Text (18pt+ or 14pt+ bold)", ref isLargeText);
 
-		// Convert to RgbColor
-		RgbColor foregroundColor = new(selectedColorVec.X, selectedColorVec.Y, selectedColorVec.Z);
-		RgbColor backgroundColor = new(backgroundColorVec.X, backgroundColorVec.Y, backgroundColorVec.Z);
+		// Convert to Color (from sRGB picker values)
+		Color foregroundColor = Color.FromSrgb(selectedColorVec.X, selectedColorVec.Y, selectedColorVec.Z, 1.0);
+		Color backgroundColor = Color.FromSrgb(backgroundColorVec.X, backgroundColorVec.Y, backgroundColorVec.Z, 1.0);
 
 		// Calculate accessibility metrics
-		float contrastRatio = ColorMath.GetContrastRatio(foregroundColor, backgroundColor);
-		AccessibilityLevel accessibilityLevel = ColorMath.GetAccessibilityLevel(foregroundColor, backgroundColor, isLargeText);
+		double contrastRatio = foregroundColor.ContrastRatio(backgroundColor);
+		AccessibilityLevel accessibilityLevel = foregroundColor.AccessibilityLevelAgainst(backgroundColor, isLargeText);
 
 		ImGui.Separator();
 
@@ -627,12 +629,10 @@ internal static class Program
 		}
 		ImGui.SameLine();
 
-		PerceptualColor alternateColor = GetColorFromTheme(new(SemanticMeaning.Alternate, Priority.MediumHigh));
-		if (alternateColor != default)
+		if (GetColorFromTheme(new(SemanticMeaning.Alternate, Priority.MediumHigh)) is { } alternateColor)
 		{
-			RgbColor buttonTextColor = GetContrastingTextColor(alternateColor.RgbValue);
-			ImGui.PushStyleColor(ImGuiCol.Button, ToImVec4(alternateColor.RgbValue));
-			ImGui.PushStyleColor(ImGuiCol.ButtonHovered, ToImVec4(AdjustBrightness(alternateColor.RgbValue, 1.1f)));
+			ImGui.PushStyleColor(ImGuiCol.Button, ToImVec4(alternateColor));
+			ImGui.PushStyleColor(ImGuiCol.ButtonHovered, ToImVec4(AdjustBrightness(alternateColor, 1.1f)));
 			if (ImGui.Button("Alternate"))
 			{
 				// Action
@@ -641,12 +641,10 @@ internal static class Program
 			ImGui.SameLine();
 		}
 
-		PerceptualColor ctaColor = GetColorFromTheme(new(SemanticMeaning.CallToAction, Priority.MediumHigh));
-		if (ctaColor != default)
+		if (GetColorFromTheme(new(SemanticMeaning.CallToAction, Priority.MediumHigh)) is { } ctaColor)
 		{
-			RgbColor buttonTextColor = GetContrastingTextColor(ctaColor.RgbValue);
-			ImGui.PushStyleColor(ImGuiCol.Button, ToImVec4(ctaColor.RgbValue));
-			ImGui.PushStyleColor(ImGuiCol.ButtonHovered, ToImVec4(AdjustBrightness(ctaColor.RgbValue, 1.1f)));
+			ImGui.PushStyleColor(ImGuiCol.Button, ToImVec4(ctaColor));
+			ImGui.PushStyleColor(ImGuiCol.ButtonHovered, ToImVec4(AdjustBrightness(ctaColor, 1.1f)));
 			if (ImGui.Button("Call-to-Action"))
 			{
 				// Action
@@ -655,12 +653,10 @@ internal static class Program
 			ImGui.SameLine();
 		}
 
-		PerceptualColor cautionColor = GetColorFromTheme(new(SemanticMeaning.Caution, Priority.MediumHigh));
-		if (cautionColor != default)
+		if (GetColorFromTheme(new(SemanticMeaning.Caution, Priority.MediumHigh)) is { } cautionColor)
 		{
-			RgbColor buttonTextColor = GetContrastingTextColor(cautionColor.RgbValue);
-			ImGui.PushStyleColor(ImGuiCol.Button, ToImVec4(cautionColor.RgbValue));
-			ImGui.PushStyleColor(ImGuiCol.ButtonHovered, ToImVec4(AdjustBrightness(cautionColor.RgbValue, 1.1f)));
+			ImGui.PushStyleColor(ImGuiCol.Button, ToImVec4(cautionColor));
+			ImGui.PushStyleColor(ImGuiCol.ButtonHovered, ToImVec4(AdjustBrightness(cautionColor, 1.1f)));
 			if (ImGui.Button("Caution"))
 			{
 				// Action
@@ -681,26 +677,23 @@ internal static class Program
 		// Progress bars with semantic colors
 		ImGui.TextUnformatted("Progress Indicators:");
 
-		PerceptualColor successWidget = GetColorFromTheme(new(SemanticMeaning.Success, Priority.High));
-		if (successWidget != default)
+		if (GetColorFromTheme(new(SemanticMeaning.Success, Priority.High)) is { } successWidget)
 		{
-			ImGui.PushStyleColor(ImGuiCol.PlotHistogram, ToImVec4(successWidget.RgbValue));
+			ImGui.PushStyleColor(ImGuiCol.PlotHistogram, ToImVec4(successWidget));
 			ImGui.ProgressBar(0.7f, new Vector2(0, 0), "70% Complete");
 			ImGui.PopStyleColor();
 		}
 
-		PerceptualColor warningWidget = GetColorFromTheme(new(SemanticMeaning.Warning, Priority.High));
-		if (warningWidget != default)
+		if (GetColorFromTheme(new(SemanticMeaning.Warning, Priority.High)) is { } warningWidget)
 		{
-			ImGui.PushStyleColor(ImGuiCol.PlotHistogram, ToImVec4(warningWidget.RgbValue));
+			ImGui.PushStyleColor(ImGuiCol.PlotHistogram, ToImVec4(warningWidget));
 			ImGui.ProgressBar(0.4f, new Vector2(0, 0), "40% Warning");
 			ImGui.PopStyleColor();
 		}
 
-		PerceptualColor errorWidget = GetColorFromTheme(new(SemanticMeaning.Error, Priority.High));
-		if (errorWidget != default)
+		if (GetColorFromTheme(new(SemanticMeaning.Error, Priority.High)) is { } errorWidget)
 		{
-			ImGui.PushStyleColor(ImGuiCol.PlotHistogram, ToImVec4(errorWidget.RgbValue));
+			ImGui.PushStyleColor(ImGuiCol.PlotHistogram, ToImVec4(errorWidget));
 			ImGui.ProgressBar(0.2f, new Vector2(0, 0), "20% Critical");
 			ImGui.PopStyleColor();
 		}
@@ -710,36 +703,32 @@ internal static class Program
 		// Semantic text
 		ImGui.TextUnformatted("Semantic Text:");
 
-		PerceptualColor successText = GetColorFromTheme(new(SemanticMeaning.Success, Priority.VeryHigh));
-		if (successText != default)
+		if (GetColorFromTheme(new(SemanticMeaning.Success, Priority.VeryHigh)) is { } successText)
 		{
-			ImGui.TextColored(ToImVec4(successText.RgbValue), "Success: Operation completed successfully");
+			ImGui.TextColored(ToImVec4(successText), "Success: Operation completed successfully");
 		}
 
-		PerceptualColor warningText = GetColorFromTheme(new(SemanticMeaning.Warning, Priority.VeryHigh));
-		if (warningText != default)
+		if (GetColorFromTheme(new(SemanticMeaning.Warning, Priority.VeryHigh)) is { } warningText)
 		{
-			ImGui.TextColored(ToImVec4(warningText.RgbValue), "Warning: Please review your input");
+			ImGui.TextColored(ToImVec4(warningText), "Warning: Please review your input");
 		}
 
-		PerceptualColor errorText = GetColorFromTheme(new(SemanticMeaning.Error, Priority.VeryHigh));
-		if (errorText != default)
+		if (GetColorFromTheme(new(SemanticMeaning.Error, Priority.VeryHigh)) is { } errorText)
 		{
-			ImGui.TextColored(ToImVec4(errorText.RgbValue), "Error: Operation failed");
+			ImGui.TextColored(ToImVec4(errorText), "Error: Operation failed");
 		}
 
-		PerceptualColor infoText = GetColorFromTheme(new(SemanticMeaning.Information, Priority.VeryHigh));
-		if (infoText != default)
+		if (GetColorFromTheme(new(SemanticMeaning.Information, Priority.VeryHigh)) is { } infoText)
 		{
-			ImGui.TextColored(ToImVec4(infoText.RgbValue), "Information: Additional details available");
+			ImGui.TextColored(ToImVec4(infoText), "Information: Additional details available");
 		}
 	}
 
 	// Cache for complete theme palette
 	private static ISemanticTheme? cachedTheme;
-	private static IReadOnlyDictionary<SemanticColorRequest, PerceptualColor>? cachedCompletePalette;
+	private static IReadOnlyDictionary<SemanticColorRequest, Color>? cachedCompletePalette;
 
-	private static PerceptualColor GetColorFromTheme(SemanticColorRequest request)
+	private static Color? GetColorFromTheme(SemanticColorRequest request)
 	{
 		// Check if we have cached complete palette for this theme
 		if (cachedTheme != theme || cachedCompletePalette == null)
@@ -749,10 +738,10 @@ internal static class Program
 			cachedTheme = theme;
 		}
 
-		return cachedCompletePalette.TryGetValue(request, out PerceptualColor color) ? color : default;
+		return cachedCompletePalette.TryGetValue(request, out Color color) ? color : null;
 	}
 
-	private static IReadOnlyDictionary<SemanticColorRequest, PerceptualColor> GetCompleteMappingForSemantic()
+	private static IReadOnlyDictionary<SemanticColorRequest, Color> GetCompleteMappingForSemantic()
 	{
 		// Check if we have cached complete palette for this theme
 		if (cachedTheme != theme || cachedCompletePalette == null)
@@ -765,25 +754,20 @@ internal static class Program
 		return cachedCompletePalette;
 	}
 
-	private static Vector4 ToImVec4(RgbColor color, float alpha = 1.0f) => new(color.R, color.G, color.B, alpha);
-
-	private static RgbColor AdjustBrightness(RgbColor color, float factor)
+	private static Vector4 ToImVec4(Color color, float alpha = 1.0f)
 	{
-		return new RgbColor(
-			Math.Clamp(color.R * factor, 0f, 1f),
-			Math.Clamp(color.G * factor, 0f, 1f),
-			Math.Clamp(color.B * factor, 0f, 1f)
-		);
+		Srgb srgb = color.ToSrgb();
+		return new Vector4((float)srgb.R, (float)srgb.G, (float)srgb.B, alpha);
 	}
 
-	private static RgbColor GetContrastingTextColor(RgbColor backgroundColor)
+	private static Color AdjustBrightness(Color color, float factor)
 	{
-		RgbColor white = new(1f, 1f, 1f);
-		RgbColor black = new(0f, 0f, 0f);
-
-		float whiteContrast = ColorMath.GetContrastRatio(white, backgroundColor);
-		float blackContrast = ColorMath.GetContrastRatio(black, backgroundColor);
-
-		return whiteContrast > blackContrast ? white : black;
+		Srgb srgb = color.ToSrgb();
+		return Color.FromSrgb(
+			Math.Clamp(srgb.R * factor, 0.0, 1.0),
+			Math.Clamp(srgb.G * factor, 0.0, 1.0),
+			Math.Clamp(srgb.B * factor, 0.0, 1.0),
+			color.A
+		);
 	}
 }
