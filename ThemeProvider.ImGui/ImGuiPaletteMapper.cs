@@ -7,6 +7,7 @@ namespace ktsu.ThemeProvider.ImGui;
 using System.Collections.Generic;
 using System.Numerics;
 using Hexa.NET.ImGui;
+using ktsu.Semantics.Color;
 using ktsu.ThemeProvider;
 
 /// <summary>
@@ -28,7 +29,7 @@ public sealed class ImGuiPaletteMapper : IPaletteMapper<ImGuiCol, Vector4>
 		Ensure.NotNull(theme);
 
 		// Get the complete palette for the theme (more efficient than individual requests)
-		IReadOnlyDictionary<SemanticColorRequest, PerceptualColor> completePalette = SemanticColorMapper.MakeCompletePalette(theme);
+		IReadOnlyDictionary<SemanticColorRequest, Color> completePalette = SemanticColorMapper.MakeCompletePalette(theme);
 
 		// Define the mapping from ImGui colors to semantic color requests
 		Dictionary<ImGuiCol, SemanticColorRequest> colorMapping = new()
@@ -105,10 +106,9 @@ public sealed class ImGuiPaletteMapper : IPaletteMapper<ImGuiCol, Vector4>
 		{
 			ImGuiCol imguiCol = kv.Key;
 			SemanticColorRequest request = kv.Value;
-			if (completePalette.TryGetValue(request, out PerceptualColor color))
+			if (completePalette.TryGetValue(request, out Color color))
 			{
-				RgbColor rgb = color.RgbValue;
-				result[imguiCol] = new Vector4(rgb.R, rgb.G, rgb.B, 1.0f);
+				result[imguiCol] = color.ToSrgbVector4();
 			}
 		}
 
