@@ -31,23 +31,19 @@ This is a .NET library (`ktsu.ThemeProvider`) providing a semantic color theming
 - `ThemeProvider/ISemanticTheme.cs` - Core theme interface (SemanticMapping + IsDarkTheme)
 - `ThemeProvider/SemanticColorMapper.cs` - Maps semantic color requests to actual colors using Oklab color space
 - `ThemeProvider/ThemeRegistry.cs` - Central registration of all 44 themes with metadata and factory functions
-- `ThemeProvider/ColorMath.cs` - Color space conversions (RGB/Oklab), WCAG accessibility, and gradient generation
-- `ThemeProvider/PerceptualColor.cs` - Color representation with Oklab perceptual properties
-- `ThemeProvider/RgbColor.cs` - Linear RGB color with hex/byte conversions
-- `ThemeProvider/SRgbColor.cs` - sRGB gamma-corrected color with linear conversion
-- `ThemeProvider/OklabColor.cs` - Oklab perceptual color space with polar (LCh) support
+- Color types (`Color`, `Srgb`, `Oklab`/`Oklch`, `AccessibilityLevel`, color-space conversions, WCAG, gradients) come from the **`ktsu.Semantics.Color`** package — there are no in-house color types (they were removed in v2.0)
 - `ThemeProvider/IPaletteMapper.cs` - Generic interface for framework-specific color mapping
 - `ThemeProvider/SemanticColorRequest.cs` - Readonly record struct combining SemanticMeaning + Priority
 - `ThemeProvider/SemanticMeaning.cs` - Enum of semantic color purposes (Neutral, Primary, Error, etc.)
 - `ThemeProvider/Priority.cs` - Enum of 7 priority levels (VeryLow to VeryHigh)
-- `ThemeProvider/ColorRange.cs` - Color range interpolation helper
-- `ThemeProvider/AccessibilityLevel.cs` - WCAG accessibility levels (Fail, AA, AAA)
+- `ThemeProvider/ColorRange.cs` - Color range interpolation helper (built on `ktsu.Semantics.Color`)
 - `ThemeProvider/Themes/` - 44 theme implementations organized by family
 - `ThemeProvider.ImGui/ImGuiPaletteMapper.cs` - Dear ImGui integration mapping ImGuiCol to Vector4
 - `ThemeProviderDemo/Program.cs` - Interactive demo application using ktsu.ImGuiApp
 
 ### Dependencies
 
+- **ktsu.Semantics.Color** - Color value types and color science (`Color`, Oklab/Oklch/HSL/HSV, WCAG, gradients)
 - **Polyfill** - Backfill support for newer .NET APIs on older targets
 - **System.Numerics.Vectors** - Vector types for netstandard2.0 target
 - **Hexa.NET.ImGui** - Dear ImGui bindings (ThemeProvider.ImGui project)
@@ -59,7 +55,7 @@ This is a .NET library (`ktsu.ThemeProvider`) providing a semantic color theming
 
 The library uses meaning-based color specifications instead of hardcoded colors:
 
-1. **ISemanticTheme** provides a `Dictionary<SemanticMeaning, Collection<PerceptualColor>>` mapping
+1. **ISemanticTheme** provides a `Dictionary<SemanticMeaning, Collection<Color>>` mapping (`Color` from `ktsu.Semantics.Color`)
 2. **SemanticColorMapper** maps `SemanticColorRequest` (meaning + priority) to actual colors
 3. The mapper calculates a global lightness range across all theme colors, then interpolates/extrapolates in Oklab space to achieve target lightness for each priority level
 4. Dark themes: higher priority = higher lightness; Light themes: higher priority = lower lightness
@@ -68,7 +64,7 @@ The library uses meaning-based color specifications instead of hardcoded colors:
 ### Adding New Themes
 
 1. Create a new class in `ThemeProvider/Themes/{Family}/{ThemeName}.cs`
-2. Implement `ISemanticTheme` with static `PerceptualColor` fields from hex values using `PerceptualColor.FromRgb("#hex")`
+2. Implement `ISemanticTheme` with static `Color` fields from hex values using `Color.FromHex("#hex")` (`Color` from `ktsu.Semantics.Color`)
 3. Map semantic meanings to color collections (Neutral typically gets multiple colors; other meanings get single accent colors)
 4. Register in `ThemeRegistry.AllThemes` with a `ThemeInfo` record
 
