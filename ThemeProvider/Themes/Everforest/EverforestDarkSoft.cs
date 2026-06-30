@@ -5,6 +5,7 @@
 namespace ktsu.ThemeProvider.Themes.Everforest;
 
 using System.Collections.ObjectModel;
+using ktsu.Semantics.Color;
 
 /// <summary>
 /// Provides the Everforest Dark Soft color palette with official hex values.
@@ -14,36 +15,36 @@ using System.Collections.ObjectModel;
 public class EverforestDarkSoft : ISemanticTheme
 {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-	public static readonly PerceptualColor Background = PerceptualColor.FromRgb("#333c43");
-	public static readonly PerceptualColor BgDim = PerceptualColor.FromRgb("#293136");
-	public static readonly PerceptualColor Bg0 = PerceptualColor.FromRgb("#333c43");
-	public static readonly PerceptualColor Bg1 = PerceptualColor.FromRgb("#3a464c");
-	public static readonly PerceptualColor Bg2 = PerceptualColor.FromRgb("#434f55");
-	public static readonly PerceptualColor Bg3 = PerceptualColor.FromRgb("#4d5a60");
-	public static readonly PerceptualColor Bg4 = PerceptualColor.FromRgb("#555f66");
-	public static readonly PerceptualColor Bg5 = PerceptualColor.FromRgb("#5d6b66");
-	public static readonly PerceptualColor Grey0 = PerceptualColor.FromRgb("#7a8478");
-	public static readonly PerceptualColor Grey1 = PerceptualColor.FromRgb("#859289");
-	public static readonly PerceptualColor Grey2 = PerceptualColor.FromRgb("#9da9a0");
-	public static readonly PerceptualColor Fg = PerceptualColor.FromRgb("#d3c6aa");
-	public static readonly PerceptualColor Red = PerceptualColor.FromRgb("#e67e80");
-	public static readonly PerceptualColor Orange = PerceptualColor.FromRgb("#e69875");
-	public static readonly PerceptualColor Yellow = PerceptualColor.FromRgb("#dbbc7f");
-	public static readonly PerceptualColor Green = PerceptualColor.FromRgb("#a7c080");
-	public static readonly PerceptualColor Aqua = PerceptualColor.FromRgb("#83c092");
-	public static readonly PerceptualColor Blue = PerceptualColor.FromRgb("#7fbbb3");
-	public static readonly PerceptualColor Purple = PerceptualColor.FromRgb("#d699b6");
-	public static readonly PerceptualColor StatuslineA = PerceptualColor.FromRgb("#a7c080");
-	public static readonly PerceptualColor StatuslineB = PerceptualColor.FromRgb("#d3c6aa");
-	public static readonly PerceptualColor StatuslineC = PerceptualColor.FromRgb("#333c43");
+	public static readonly Color Background = Color.FromHex("#333c43");
+	public static readonly Color BgDim = Color.FromHex("#293136");
+	public static readonly Color Bg0 = Color.FromHex("#333c43");
+	public static readonly Color Bg1 = Color.FromHex("#3a464c");
+	public static readonly Color Bg2 = Color.FromHex("#434f55");
+	public static readonly Color Bg3 = Color.FromHex("#4d5a60");
+	public static readonly Color Bg4 = Color.FromHex("#555f66");
+	public static readonly Color Bg5 = Color.FromHex("#5d6b66");
+	public static readonly Color Grey0 = Color.FromHex("#7a8478");
+	public static readonly Color Grey1 = Color.FromHex("#859289");
+	public static readonly Color Grey2 = Color.FromHex("#9da9a0");
+	public static readonly Color Fg = Color.FromHex("#d3c6aa");
+	public static readonly Color Red = Color.FromHex("#e67e80");
+	public static readonly Color Orange = Color.FromHex("#e69875");
+	public static readonly Color Yellow = Color.FromHex("#dbbc7f");
+	public static readonly Color Green = Color.FromHex("#a7c080");
+	public static readonly Color Aqua = Color.FromHex("#83c092");
+	public static readonly Color Blue = Color.FromHex("#7fbbb3");
+	public static readonly Color Purple = Color.FromHex("#d699b6");
+	public static readonly Color StatuslineA = Color.FromHex("#a7c080");
+	public static readonly Color StatuslineB = Color.FromHex("#d3c6aa");
+	public static readonly Color StatuslineC = Color.FromHex("#333c43");
 
-	public static Collection<PerceptualColor> Neutrals =>
+	public static Collection<Color> Neutrals =>
 	[
 		Fg,          // Lightest
 		BgDim,       // Darkest
 	];
 
-	public Dictionary<SemanticMeaning, Collection<PerceptualColor>> SemanticMapping => new()
+	public Dictionary<SemanticMeaning, Collection<Color>> SemanticMapping => new()
 	{
 		[SemanticMeaning.Neutral] = Neutrals,
 		[SemanticMeaning.Primary] = [Green],

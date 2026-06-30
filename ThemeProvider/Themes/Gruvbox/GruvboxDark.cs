@@ -5,6 +5,7 @@
 namespace ktsu.ThemeProvider.Themes.Gruvbox;
 
 using System.Collections.ObjectModel;
+using ktsu.Semantics.Color;
 
 /// <summary>
 /// Provides the Gruvbox Dark color palette with official hex values.
@@ -14,42 +15,42 @@ public class GruvboxDark : ISemanticTheme
 {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 	// Dark colors
-	public static readonly PerceptualColor DarkHard = PerceptualColor.FromRgb("#1d2021");
-	public static readonly PerceptualColor Dark0 = PerceptualColor.FromRgb("#282828");
-	public static readonly PerceptualColor Dark0Soft = PerceptualColor.FromRgb("#32302f");
-	public static readonly PerceptualColor Dark1 = PerceptualColor.FromRgb("#3c3836");
-	public static readonly PerceptualColor Dark2 = PerceptualColor.FromRgb("#504945");
-	public static readonly PerceptualColor Dark3 = PerceptualColor.FromRgb("#665c54");
-	public static readonly PerceptualColor Dark4 = PerceptualColor.FromRgb("#7c6f64");
+	public static readonly Color DarkHard = Color.FromHex("#1d2021");
+	public static readonly Color Dark0 = Color.FromHex("#282828");
+	public static readonly Color Dark0Soft = Color.FromHex("#32302f");
+	public static readonly Color Dark1 = Color.FromHex("#3c3836");
+	public static readonly Color Dark2 = Color.FromHex("#504945");
+	public static readonly Color Dark3 = Color.FromHex("#665c54");
+	public static readonly Color Dark4 = Color.FromHex("#7c6f64");
 
 	// Light colors
-	public static readonly PerceptualColor Light0Hard = PerceptualColor.FromRgb("#f9f5d7");
-	public static readonly PerceptualColor Light0 = PerceptualColor.FromRgb("#fbf1c7");
-	public static readonly PerceptualColor Light0Soft = PerceptualColor.FromRgb("#f2e5bc");
-	public static readonly PerceptualColor Light1 = PerceptualColor.FromRgb("#ebdbb2");
-	public static readonly PerceptualColor Light2 = PerceptualColor.FromRgb("#d5c4a1");
-	public static readonly PerceptualColor Light3 = PerceptualColor.FromRgb("#bdae93");
-	public static readonly PerceptualColor Light4 = PerceptualColor.FromRgb("#a89984");
+	public static readonly Color Light0Hard = Color.FromHex("#f9f5d7");
+	public static readonly Color Light0 = Color.FromHex("#fbf1c7");
+	public static readonly Color Light0Soft = Color.FromHex("#f2e5bc");
+	public static readonly Color Light1 = Color.FromHex("#ebdbb2");
+	public static readonly Color Light2 = Color.FromHex("#d5c4a1");
+	public static readonly Color Light3 = Color.FromHex("#bdae93");
+	public static readonly Color Light4 = Color.FromHex("#a89984");
 
 	// Bright colors
-	public static readonly PerceptualColor BrightRed = PerceptualColor.FromRgb("#fb4934");
-	public static readonly PerceptualColor BrightGreen = PerceptualColor.FromRgb("#b8bb26");
-	public static readonly PerceptualColor BrightYellow = PerceptualColor.FromRgb("#fabd2f");
-	public static readonly PerceptualColor BrightBlue = PerceptualColor.FromRgb("#83a598");
-	public static readonly PerceptualColor BrightPurple = PerceptualColor.FromRgb("#d3869b");
-	public static readonly PerceptualColor BrightAqua = PerceptualColor.FromRgb("#8ec07c");
-	public static readonly PerceptualColor BrightOrange = PerceptualColor.FromRgb("#fe8019");
+	public static readonly Color BrightRed = Color.FromHex("#fb4934");
+	public static readonly Color BrightGreen = Color.FromHex("#b8bb26");
+	public static readonly Color BrightYellow = Color.FromHex("#fabd2f");
+	public static readonly Color BrightBlue = Color.FromHex("#83a598");
+	public static readonly Color BrightPurple = Color.FromHex("#d3869b");
+	public static readonly Color BrightAqua = Color.FromHex("#8ec07c");
+	public static readonly Color BrightOrange = Color.FromHex("#fe8019");
 
 	// Neutral colors
-	public static readonly PerceptualColor Gray = PerceptualColor.FromRgb("#928374");
+	public static readonly Color Gray = Color.FromHex("#928374");
 
-	public static Collection<PerceptualColor> Neutrals =>
+	public static Collection<Color> Neutrals =>
 	[
 		Light1,      // Lightest
 		DarkHard,    // Darkest
 	];
 
-	public Dictionary<SemanticMeaning, Collection<PerceptualColor>> SemanticMapping => new()
+	public Dictionary<SemanticMeaning, Collection<Color>> SemanticMapping => new()
 	{
 		[SemanticMeaning.Neutral] = Neutrals,
 		[SemanticMeaning.Primary] = [BrightOrange],
