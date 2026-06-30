@@ -74,7 +74,7 @@ var requests = new[]
     new SemanticColorRequest(SemanticMeaning.Error, Priority.High),
     new SemanticColorRequest(SemanticMeaning.Neutral, Priority.VeryLow),
 };
-IReadOnlyDictionary<SemanticColorRequest, PerceptualColor> colors =
+IReadOnlyDictionary<SemanticColorRequest, Color> colors =
     SemanticColorMapper.MapColors(requests, theme);
 ```
 
@@ -106,17 +106,17 @@ IReadOnlyList<ISemanticTheme> gruvboxInstances = CreateThemeInstancesInFamily("G
 
 ```csharp
 using ktsu.ThemeProvider;
+using ktsu.Semantics.Color;
 
 var theme = new Themes.Nord.Nord();
 
 // Generate the complete palette (all meaning + priority combinations)
-IReadOnlyDictionary<SemanticColorRequest, PerceptualColor> completePalette =
+IReadOnlyDictionary<SemanticColorRequest, Color> completePalette =
     SemanticColorMapper.MakeCompletePalette(theme);
 
 // Access any color from the palette
 var primaryMedium = completePalette[new SemanticColorRequest(SemanticMeaning.Primary, Priority.Medium)];
-RgbColor rgb = primaryMedium.RgbValue;
-string hex = rgb.ToHex();
+string hex = primaryMedium.ToHex();
 ```
 
 ### Dear ImGui Integration
@@ -145,21 +145,22 @@ foreach ((ImGuiCol colorKey, Vector4 colorValue) in imguiColors)
 
 ```csharp
 using ktsu.ThemeProvider;
+using ktsu.Semantics.Color;
 
-var foreground = RgbColor.FromHex("#FFFFFF");
-var background = RgbColor.FromHex("#1E1E2E");
+Color foreground = Color.FromHex("#FFFFFF");
+Color background = Color.FromHex("#1E1E2E");
 
-// Calculate contrast ratio
-float contrastRatio = ColorMath.GetContrastRatio(foreground, background);
+// Calculate contrast ratio (1.0 .. 21.0)
+double contrastRatio = foreground.ContrastRatio(background);
 
 // Check WCAG compliance
-AccessibilityLevel level = ColorMath.GetAccessibilityLevel(foreground, background, isLargeText: false);
+AccessibilityLevel level = foreground.AccessibilityLevelAgainst(background, largeText: false);
 
 // Adjust a color to meet accessibility requirements
-RgbColor adjusted = ColorMath.AdjustForAccessibility(foreground, background, AccessibilityLevel.AA);
+Color adjusted = foreground.AdjustForContrast(background, AccessibilityLevel.AA);
 
 // Create perceptually uniform gradients
-RgbColor[] gradient = ColorMath.CreateGradient(foreground, background, steps: 10);
+IReadOnlyList<Color> gradient = foreground.Gradient(background, steps: 10);
 ```
 
 ## Advanced Usage
@@ -205,19 +206,20 @@ Implement `ISemanticTheme` with colors from your palette:
 
 ```csharp
 using ktsu.ThemeProvider;
+using ktsu.Semantics.Color;
 using System.Collections.ObjectModel;
 
 public class MyCustomTheme : ISemanticTheme
 {
-    private static readonly PerceptualColor Background = PerceptualColor.FromRgb("#1A1B26");
-    private static readonly PerceptualColor Foreground = PerceptualColor.FromRgb("#C0CAF5");
-    private static readonly PerceptualColor Blue = PerceptualColor.FromRgb("#7AA2F7");
-    private static readonly PerceptualColor Green = PerceptualColor.FromRgb("#9ECE6A");
-    private static readonly PerceptualColor Red = PerceptualColor.FromRgb("#F7768E");
+    private static readonly Color Background = Color.FromHex("#1A1B26");
+    private static readonly Color Foreground = Color.FromHex("#C0CAF5");
+    private static readonly Color Blue = Color.FromHex("#7AA2F7");
+    private static readonly Color Green = Color.FromHex("#9ECE6A");
+    private static readonly Color Red = Color.FromHex("#F7768E");
 
     public bool IsDarkTheme => true;
 
-    public Dictionary<SemanticMeaning, Collection<PerceptualColor>> SemanticMapping { get; } = new()
+    public Dictionary<SemanticMeaning, Collection<Color>> SemanticMapping { get; } = new()
     {
         { SemanticMeaning.Neutral, new() { Background, Foreground } },
         { SemanticMeaning.Primary, new() { Blue } },
@@ -278,8 +280,8 @@ Static class that maps semantic color requests to actual colors.
 
 | Name | Return Type | Description |
 |------|-------------|-------------|
-| `MapColors(requests, theme)` | `IReadOnlyDictionary<SemanticColorRequest, PerceptualColor>` | Maps a collection of requests to colors using the theme |
-| `MakeCompletePalette(theme)` | `IReadOnlyDictionary<SemanticColorRequest, PerceptualColor>` | Generates all possible meaning+priority combinations for a theme |
+| `MapColors(requests, theme)` | `IReadOnlyDictionary<SemanticColorRequest, Color>` | Maps a collection of requests to colors using the theme |
+| `MakeCompletePalette(theme)` | `IReadOnlyDictionary<SemanticColorRequest, Color>` | Generates all possible meaning+priority combinations for a theme |
 
 ### `ThemeRegistry`
 
@@ -304,57 +306,25 @@ Static class providing centralized theme discovery and management.
 | `CreateAllThemeInstances()` | `IReadOnlyList<ISemanticTheme>` | Creates instances of all themes |
 | `CreateThemeInstancesInFamily(family)` | `IReadOnlyList<ISemanticTheme>` | Creates instances of themes in a family |
 
-### `ColorMath`
+### Color types (`ktsu.Semantics.Color`)
 
-Static class providing color space conversions and accessibility utilities.
+Colors are represented by the `Color` type from the [`ktsu.Semantics.Color`](https://www.nuget.org/packages/ktsu.Semantics.Color) package (linear RGB + alpha, gamma-correct). It is the currency type for themes (`ISemanticTheme.SemanticMapping`) and `SemanticColorMapper`.
 
-#### Methods
+Common members:
 
-| Name | Return Type | Description |
-|------|-------------|-------------|
-| `RgbToOklab(rgb)` | `OklabColor` | Converts linear RGB to Oklab color space |
-| `OklabToRgb(oklab)` | `RgbColor` | Converts Oklab to linear RGB color space |
-| `GetRelativeLuminance(rgb)` | `float` | Calculates WCAG relative luminance |
-| `GetContrastRatio(color1, color2)` | `float` | Calculates WCAG contrast ratio (1:1 to 21:1) |
-| `GetAccessibilityLevel(fg, bg, isLargeText)` | `AccessibilityLevel` | Checks WCAG AA/AAA compliance |
-| `AdjustForAccessibility(fg, bg, level, isLargeText)` | `RgbColor` | Adjusts color to meet WCAG requirements |
-| `CreateGradient(from, to, steps)` | `RgbColor[]` | Creates a perceptually uniform gradient |
+| Member | Description |
+|--------|-------------|
+| `Color.FromHex(hex)` | Creates a color from an sRGB hex string (proper sRGB→linear decode) |
+| `ToHex()` / `ToBytes()` | Converts back to an sRGB hex string / 8-bit channels |
+| `ToSrgbVector4()` | sRGB-encoded `Vector4` for UI frameworks (e.g. ImGui) |
+| `ToOklab()` / `ToOklch()` | Perceptual (Oklab / polar LCh) representations |
+| `ContrastRatio(other)` | WCAG contrast ratio (1:1 .. 21:1) |
+| `AccessibilityLevelAgainst(bg, largeText)` | WCAG AA/AAA compliance (returns `AccessibilityLevel`) |
+| `AdjustForContrast(bg, level, largeText)` | Adjusts lightness to meet a WCAG level |
+| `DistanceTo(other)` | Perceptual (Oklab) distance |
+| `MixOklab(other, t)` / `Gradient(to, steps)` | Perceptual blend / uniform gradient |
 
-### `PerceptualColor`
-
-Readonly record struct representing a color with perceptual properties in Oklab space.
-
-#### Properties
-
-| Name | Type | Description |
-|------|------|-------------|
-| `OklabValue` | `OklabColor` | The color in Oklab perceptual space |
-| `RgbValue` | `RgbColor` | The RGB representation |
-| `Hue` | `float` | Hue in Oklab polar coordinates |
-| `Chroma` | `float` | Chroma (colorfulness) in Oklab polar coordinates |
-| `Lightness` | `float` | Lightness in Oklab space |
-
-#### Methods
-
-| Name | Return Type | Description |
-|------|-------------|-------------|
-| `FromRgb(RgbColor)` | `PerceptualColor` | Creates from an RGB color |
-| `FromRgb(string hex)` | `PerceptualColor` | Creates from a hex color string |
-| `SemanticDistanceTo(other)` | `float` | Calculates perceptual distance to another color |
-
-### `RgbColor`
-
-Readonly record struct representing a linear RGB color with float precision.
-
-#### Methods
-
-| Name | Return Type | Description |
-|------|-------------|-------------|
-| `FromBytes(r, g, b)` | `RgbColor` | Creates from 8-bit values (0-255) |
-| `FromHex(hex)` | `RgbColor` | Creates from hex string (e.g., "#FF0000") |
-| `ToHex()` | `string` | Converts to hex string |
-| `ToBytes()` | `(byte R, byte G, byte B)` | Converts to 8-bit values |
-| `ToSRgb()` | `SRgbColor` | Converts to sRGB gamma-corrected values |
+> **Migration note (v2.0):** ThemeProvider's in-house `RgbColor`, `SRgbColor`, `OklabColor`, `PerceptualColor`, and `ColorMath` types were removed in favour of `ktsu.Semantics.Color`. This also fixed a long-standing sRGB-as-linear gamma bug — base theme colors render identically, but the semantic mapper's derived colors and accessibility numbers are now computed correctly.
 
 ### `IPaletteMapper<TColorKey, TColorValue>`
 

@@ -5,6 +5,7 @@
 namespace ktsu.ThemeProvider.Themes.PaperColor;
 
 using System.Collections.ObjectModel;
+using ktsu.Semantics.Color;
 
 /// <summary>
 /// Provides the PaperColor Dark color palette with official hex values.
@@ -15,38 +16,38 @@ public class PaperColorDark : ISemanticTheme
 {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 	// Dark background colors
-	public static readonly PerceptualColor Background = PerceptualColor.FromRgb("#1c1c1c");
-	public static readonly PerceptualColor BgAlt = PerceptualColor.FromRgb("#262626");
-	public static readonly PerceptualColor Bg0 = PerceptualColor.FromRgb("#1c1c1c");
-	public static readonly PerceptualColor Bg1 = PerceptualColor.FromRgb("#262626");
-	public static readonly PerceptualColor Bg2 = PerceptualColor.FromRgb("#303030");
-	public static readonly PerceptualColor Selection = PerceptualColor.FromRgb("#4e4e4e");
-	public static readonly PerceptualColor LineNumbers = PerceptualColor.FromRgb("#585858");
+	public static readonly Color Background = Color.FromHex("#1c1c1c");
+	public static readonly Color BgAlt = Color.FromHex("#262626");
+	public static readonly Color Bg0 = Color.FromHex("#1c1c1c");
+	public static readonly Color Bg1 = Color.FromHex("#262626");
+	public static readonly Color Bg2 = Color.FromHex("#303030");
+	public static readonly Color Selection = Color.FromHex("#4e4e4e");
+	public static readonly Color LineNumbers = Color.FromHex("#585858");
 
 	// Light foreground colors for dark theme
-	public static readonly PerceptualColor Fg0 = PerceptualColor.FromRgb("#d0d0d0");
-	public static readonly PerceptualColor Fg1 = PerceptualColor.FromRgb("#bcbcbc");
-	public static readonly PerceptualColor Comment = PerceptualColor.FromRgb("#808080");
+	public static readonly Color Fg0 = Color.FromHex("#d0d0d0");
+	public static readonly Color Fg1 = Color.FromHex("#bcbcbc");
+	public static readonly Color Comment = Color.FromHex("#808080");
 
 	// Material Design inspired dark colors
-	public static readonly PerceptualColor Red = PerceptualColor.FromRgb("#af005f");
-	public static readonly PerceptualColor Pink = PerceptualColor.FromRgb("#d70087");
-	public static readonly PerceptualColor Orange = PerceptualColor.FromRgb("#ff8700");
-	public static readonly PerceptualColor Yellow = PerceptualColor.FromRgb("#ffaf00");
-	public static readonly PerceptualColor Green = PerceptualColor.FromRgb("#5faf00");
-	public static readonly PerceptualColor Teal = PerceptualColor.FromRgb("#00afaf");
-	public static readonly PerceptualColor Blue = PerceptualColor.FromRgb("#0087d7");
-	public static readonly PerceptualColor Purple = PerceptualColor.FromRgb("#af87d7");
-	public static readonly PerceptualColor Brown = PerceptualColor.FromRgb("#8f8f00");
-	public static readonly PerceptualColor Gray = PerceptualColor.FromRgb("#8a8a8a");
+	public static readonly Color Red = Color.FromHex("#af005f");
+	public static readonly Color Pink = Color.FromHex("#d70087");
+	public static readonly Color Orange = Color.FromHex("#ff8700");
+	public static readonly Color Yellow = Color.FromHex("#ffaf00");
+	public static readonly Color Green = Color.FromHex("#5faf00");
+	public static readonly Color Teal = Color.FromHex("#00afaf");
+	public static readonly Color Blue = Color.FromHex("#0087d7");
+	public static readonly Color Purple = Color.FromHex("#af87d7");
+	public static readonly Color Brown = Color.FromHex("#8f8f00");
+	public static readonly Color Gray = Color.FromHex("#8a8a8a");
 
-	public static Collection<PerceptualColor> Neutrals =>
+	public static Collection<Color> Neutrals =>
 	[
 		Fg0,         // Lightest
 		Background,  // Darkest
 	];
 
-	public Dictionary<SemanticMeaning, Collection<PerceptualColor>> SemanticMapping => new()
+	public Dictionary<SemanticMeaning, Collection<Color>> SemanticMapping => new()
 	{
 		[SemanticMeaning.Neutral] = Neutrals,
 		[SemanticMeaning.Primary] = [Blue],

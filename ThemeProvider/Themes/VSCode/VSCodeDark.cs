@@ -5,6 +5,7 @@
 namespace ktsu.ThemeProvider.Themes.VSCode;
 
 using System.Collections.ObjectModel;
+using ktsu.Semantics.Color;
 
 /// <summary>
 /// Provides the VSCode Dark+ color palette with official hex values.
@@ -13,31 +14,31 @@ using System.Collections.ObjectModel;
 public class VSCodeDark : ISemanticTheme
 {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-	public static readonly PerceptualColor Background = PerceptualColor.FromRgb("#1e1e1e");
-	public static readonly PerceptualColor SidebarBackground = PerceptualColor.FromRgb("#252526");
-	public static readonly PerceptualColor Selection = PerceptualColor.FromRgb("#264f78");
-	public static readonly PerceptualColor LineHighlight = PerceptualColor.FromRgb("#2a2d2e");
-	public static readonly PerceptualColor Foreground = PerceptualColor.FromRgb("#d4d4d4");
-	public static readonly PerceptualColor Comment = PerceptualColor.FromRgb("#6a9955");
-	public static readonly PerceptualColor StringColor = PerceptualColor.FromRgb("#ce9178");
-	public static readonly PerceptualColor Number = PerceptualColor.FromRgb("#b5cea8");
-	public static readonly PerceptualColor Keyword = PerceptualColor.FromRgb("#569cd6");
-	public static readonly PerceptualColor Function = PerceptualColor.FromRgb("#dcdcaa");
-	public static readonly PerceptualColor Variable = PerceptualColor.FromRgb("#9cdcfe");
-	public static readonly PerceptualColor Type = PerceptualColor.FromRgb("#4ec9b0");
-	public static readonly PerceptualColor Error = PerceptualColor.FromRgb("#f44747");
-	public static readonly PerceptualColor Warning = PerceptualColor.FromRgb("#ffcc02");
-	public static readonly PerceptualColor Info = PerceptualColor.FromRgb("#75beff");
-	public static readonly PerceptualColor Purple = PerceptualColor.FromRgb("#c586c0");
-	public static readonly PerceptualColor Orange = PerceptualColor.FromRgb("#d7ba7d");
+	public static readonly Color Background = Color.FromHex("#1e1e1e");
+	public static readonly Color SidebarBackground = Color.FromHex("#252526");
+	public static readonly Color Selection = Color.FromHex("#264f78");
+	public static readonly Color LineHighlight = Color.FromHex("#2a2d2e");
+	public static readonly Color Foreground = Color.FromHex("#d4d4d4");
+	public static readonly Color Comment = Color.FromHex("#6a9955");
+	public static readonly Color StringColor = Color.FromHex("#ce9178");
+	public static readonly Color Number = Color.FromHex("#b5cea8");
+	public static readonly Color Keyword = Color.FromHex("#569cd6");
+	public static readonly Color Function = Color.FromHex("#dcdcaa");
+	public static readonly Color Variable = Color.FromHex("#9cdcfe");
+	public static readonly Color Type = Color.FromHex("#4ec9b0");
+	public static readonly Color Error = Color.FromHex("#f44747");
+	public static readonly Color Warning = Color.FromHex("#ffcc02");
+	public static readonly Color Info = Color.FromHex("#75beff");
+	public static readonly Color Purple = Color.FromHex("#c586c0");
+	public static readonly Color Orange = Color.FromHex("#d7ba7d");
 
-	public static Collection<PerceptualColor> Neutrals =>
+	public static Collection<Color> Neutrals =>
 	[
 		Foreground,      // Lightest
 		Background,      // Darkest
 	];
 
-	public Dictionary<SemanticMeaning, Collection<PerceptualColor>> SemanticMapping => new()
+	public Dictionary<SemanticMeaning, Collection<Color>> SemanticMapping => new()
 	{
 		[SemanticMeaning.Neutral] = Neutrals,
 		[SemanticMeaning.Primary] = [Keyword],

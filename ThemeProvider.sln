@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThemeProviderDemo", "ThemeP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThemeProvider.ImGui", "ThemeProvider.ImGui\ThemeProvider.ImGui.csproj", "{B7E91ECF-8C33-4F62-B092-EEDD315BC29A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThemeProvider.Test", "ThemeProvider.Test\ThemeProvider.Test.csproj", "{202F4B12-82DA-45D3-94CB-75B8C10A0659}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,18 @@ Global
 		{B7E91ECF-8C33-4F62-B092-EEDD315BC29A}.Release|x64.Build.0 = Release|Any CPU
 		{B7E91ECF-8C33-4F62-B092-EEDD315BC29A}.Release|x86.ActiveCfg = Release|Any CPU
 		{B7E91ECF-8C33-4F62-B092-EEDD315BC29A}.Release|x86.Build.0 = Release|Any CPU
+		{202F4B12-82DA-45D3-94CB-75B8C10A0659}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{202F4B12-82DA-45D3-94CB-75B8C10A0659}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{202F4B12-82DA-45D3-94CB-75B8C10A0659}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{202F4B12-82DA-45D3-94CB-75B8C10A0659}.Debug|x64.Build.0 = Debug|Any CPU
+		{202F4B12-82DA-45D3-94CB-75B8C10A0659}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{202F4B12-82DA-45D3-94CB-75B8C10A0659}.Debug|x86.Build.0 = Debug|Any CPU
+		{202F4B12-82DA-45D3-94CB-75B8C10A0659}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{202F4B12-82DA-45D3-94CB-75B8C10A0659}.Release|Any CPU.Build.0 = Release|Any CPU
+		{202F4B12-82DA-45D3-94CB-75B8C10A0659}.Release|x64.ActiveCfg = Release|Any CPU
+		{202F4B12-82DA-45D3-94CB-75B8C10A0659}.Release|x64.Build.0 = Release|Any CPU
+		{202F4B12-82DA-45D3-94CB-75B8C10A0659}.Release|x86.ActiveCfg = Release|Any CPU
+		{202F4B12-82DA-45D3-94CB-75B8C10A0659}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

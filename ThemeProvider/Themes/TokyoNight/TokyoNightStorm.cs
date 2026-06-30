@@ -5,6 +5,7 @@
 namespace ktsu.ThemeProvider.Themes.TokyoNight;
 
 using System.Collections.ObjectModel;
+using ktsu.Semantics.Color;
 
 /// <summary>
 /// Provides the Tokyo Night Storm color palette with official hex values.
@@ -15,38 +16,38 @@ public class TokyoNightStorm : ISemanticTheme
 {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 	// Background colors (Storm variant uses #24283b instead of #1a1b26)
-	public static readonly PerceptualColor Background = PerceptualColor.FromRgb("#24283b");
-	public static readonly PerceptualColor BgAlt = PerceptualColor.FromRgb("#1f2335");
-	public static readonly PerceptualColor Bg0 = PerceptualColor.FromRgb("#24283b");
-	public static readonly PerceptualColor Bg1 = PerceptualColor.FromRgb("#2d3348");
-	public static readonly PerceptualColor Bg2 = PerceptualColor.FromRgb("#414868");
-	public static readonly PerceptualColor Sel0 = PerceptualColor.FromRgb("#2d3f76");
-	public static readonly PerceptualColor Sel1 = PerceptualColor.FromRgb("#364a82");
+	public static readonly Color Background = Color.FromHex("#24283b");
+	public static readonly Color BgAlt = Color.FromHex("#1f2335");
+	public static readonly Color Bg0 = Color.FromHex("#24283b");
+	public static readonly Color Bg1 = Color.FromHex("#2d3348");
+	public static readonly Color Bg2 = Color.FromHex("#414868");
+	public static readonly Color Sel0 = Color.FromHex("#2d3f76");
+	public static readonly Color Sel1 = Color.FromHex("#364a82");
 
 	// Foreground colors
-	public static readonly PerceptualColor Fg0 = PerceptualColor.FromRgb("#c0caf5");
-	public static readonly PerceptualColor Fg1 = PerceptualColor.FromRgb("#a9b1d6");
-	public static readonly PerceptualColor Fg2 = PerceptualColor.FromRgb("#9aa5ce");
-	public static readonly PerceptualColor Comment = PerceptualColor.FromRgb("#565f89");
+	public static readonly Color Fg0 = Color.FromHex("#c0caf5");
+	public static readonly Color Fg1 = Color.FromHex("#a9b1d6");
+	public static readonly Color Fg2 = Color.FromHex("#9aa5ce");
+	public static readonly Color Comment = Color.FromHex("#565f89");
 
 	// Tokyo Night core colors
-	public static readonly PerceptualColor Blue = PerceptualColor.FromRgb("#7aa2f7");
-	public static readonly PerceptualColor Purple = PerceptualColor.FromRgb("#bb9af7");
-	public static readonly PerceptualColor Cyan = PerceptualColor.FromRgb("#7dcfff");
-	public static readonly PerceptualColor Green = PerceptualColor.FromRgb("#9ece6a");
-	public static readonly PerceptualColor Teal = PerceptualColor.FromRgb("#1abc9c");
-	public static readonly PerceptualColor Yellow = PerceptualColor.FromRgb("#e0af68");
-	public static readonly PerceptualColor Orange = PerceptualColor.FromRgb("#ff9e64");
-	public static readonly PerceptualColor Red = PerceptualColor.FromRgb("#f7768e");
-	public static readonly PerceptualColor Magenta = PerceptualColor.FromRgb("#bb9af7");
+	public static readonly Color Blue = Color.FromHex("#7aa2f7");
+	public static readonly Color Purple = Color.FromHex("#bb9af7");
+	public static readonly Color Cyan = Color.FromHex("#7dcfff");
+	public static readonly Color Green = Color.FromHex("#9ece6a");
+	public static readonly Color Teal = Color.FromHex("#1abc9c");
+	public static readonly Color Yellow = Color.FromHex("#e0af68");
+	public static readonly Color Orange = Color.FromHex("#ff9e64");
+	public static readonly Color Red = Color.FromHex("#f7768e");
+	public static readonly Color Magenta = Color.FromHex("#bb9af7");
 
-	public static Collection<PerceptualColor> Neutrals =>
+	public static Collection<Color> Neutrals =>
 	[
 		Fg0,         // Lightest
 		BgAlt,       // Darkest
 	];
 
-	public Dictionary<SemanticMeaning, Collection<PerceptualColor>> SemanticMapping => new()
+	public Dictionary<SemanticMeaning, Collection<Color>> SemanticMapping => new()
 	{
 		[SemanticMeaning.Neutral] = Neutrals,
 		[SemanticMeaning.Primary] = [Blue],

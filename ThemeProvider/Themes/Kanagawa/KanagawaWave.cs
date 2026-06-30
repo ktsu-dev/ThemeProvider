@@ -5,6 +5,7 @@
 namespace ktsu.ThemeProvider.Themes.Kanagawa;
 
 using System.Collections.ObjectModel;
+using ktsu.Semantics.Color;
 
 /// <summary>
 /// Provides the Kanagawa Wave color palette with official hex values.
@@ -15,40 +16,40 @@ public class KanagawaWave : ISemanticTheme
 {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 	// Background colors - traditional Japanese palette
-	public static readonly PerceptualColor Background = PerceptualColor.FromRgb("#1f1f28");
-	public static readonly PerceptualColor BgAlt = PerceptualColor.FromRgb("#16161d");
-	public static readonly PerceptualColor Bg0 = PerceptualColor.FromRgb("#1f1f28");
-	public static readonly PerceptualColor Bg1 = PerceptualColor.FromRgb("#2a2a37");
-	public static readonly PerceptualColor Bg2 = PerceptualColor.FromRgb("#363646");
-	public static readonly PerceptualColor Bg3 = PerceptualColor.FromRgb("#54546d");
-	public static readonly PerceptualColor WaveBlue1 = PerceptualColor.FromRgb("#223249");
-	public static readonly PerceptualColor WaveBlue2 = PerceptualColor.FromRgb("#2d4f67");
+	public static readonly Color Background = Color.FromHex("#1f1f28");
+	public static readonly Color BgAlt = Color.FromHex("#16161d");
+	public static readonly Color Bg0 = Color.FromHex("#1f1f28");
+	public static readonly Color Bg1 = Color.FromHex("#2a2a37");
+	public static readonly Color Bg2 = Color.FromHex("#363646");
+	public static readonly Color Bg3 = Color.FromHex("#54546d");
+	public static readonly Color WaveBlue1 = Color.FromHex("#223249");
+	public static readonly Color WaveBlue2 = Color.FromHex("#2d4f67");
 
 	// Foreground colors
-	public static readonly PerceptualColor Fg0 = PerceptualColor.FromRgb("#dcd7ba");
-	public static readonly PerceptualColor Fg1 = PerceptualColor.FromRgb("#c8c093");
-	public static readonly PerceptualColor Fg2 = PerceptualColor.FromRgb("#9caca8");
-	public static readonly PerceptualColor Comment = PerceptualColor.FromRgb("#727169");
+	public static readonly Color Fg0 = Color.FromHex("#dcd7ba");
+	public static readonly Color Fg1 = Color.FromHex("#c8c093");
+	public static readonly Color Fg2 = Color.FromHex("#9caca8");
+	public static readonly Color Comment = Color.FromHex("#727169");
 
 	// Traditional color palette
-	public static readonly PerceptualColor SakuraPink = PerceptualColor.FromRgb("#d27e99");
-	public static readonly PerceptualColor WaveRed = PerceptualColor.FromRgb("#e82424");
-	public static readonly PerceptualColor SummerGreen = PerceptualColor.FromRgb("#98bb6c");
-	public static readonly PerceptualColor AutumnYellow = PerceptualColor.FromRgb("#e6c384");
-	public static readonly PerceptualColor CrystalBlue = PerceptualColor.FromRgb("#7e9cd8");
-	public static readonly PerceptualColor SpringBlue = PerceptualColor.FromRgb("#7fb4ca");
-	public static readonly PerceptualColor KatanaGray = PerceptualColor.FromRgb("#717c7c");
-	public static readonly PerceptualColor IceBlue = PerceptualColor.FromRgb("#a3d4d5");
-	public static readonly PerceptualColor BoatYellow1 = PerceptualColor.FromRgb("#938056");
-	public static readonly PerceptualColor BoatYellow2 = PerceptualColor.FromRgb("#c0a36e");
+	public static readonly Color SakuraPink = Color.FromHex("#d27e99");
+	public static readonly Color WaveRed = Color.FromHex("#e82424");
+	public static readonly Color SummerGreen = Color.FromHex("#98bb6c");
+	public static readonly Color AutumnYellow = Color.FromHex("#e6c384");
+	public static readonly Color CrystalBlue = Color.FromHex("#7e9cd8");
+	public static readonly Color SpringBlue = Color.FromHex("#7fb4ca");
+	public static readonly Color KatanaGray = Color.FromHex("#717c7c");
+	public static readonly Color IceBlue = Color.FromHex("#a3d4d5");
+	public static readonly Color BoatYellow1 = Color.FromHex("#938056");
+	public static readonly Color BoatYellow2 = Color.FromHex("#c0a36e");
 
-	public static Collection<PerceptualColor> Neutrals =>
+	public static Collection<Color> Neutrals =>
 	[
 		Fg0,         // Lightest
 		BgAlt,       // Darkest
 	];
 
-	public Dictionary<SemanticMeaning, Collection<PerceptualColor>> SemanticMapping => new()
+	public Dictionary<SemanticMeaning, Collection<Color>> SemanticMapping => new()
 	{
 		[SemanticMeaning.Neutral] = Neutrals,
 		[SemanticMeaning.Primary] = [CrystalBlue],

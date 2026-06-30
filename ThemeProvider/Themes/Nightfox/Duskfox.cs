@@ -5,6 +5,7 @@
 namespace ktsu.ThemeProvider.Themes.Nightfox;
 
 using System.Collections.ObjectModel;
+using ktsu.Semantics.Color;
 
 /// <summary>
 /// Provides the Duskfox color palette with official hex values.
@@ -15,39 +16,39 @@ public class Duskfox : ISemanticTheme
 {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 	// Background colors
-	public static readonly PerceptualColor Background = PerceptualColor.FromRgb("#232136");
-	public static readonly PerceptualColor BgAlt = PerceptualColor.FromRgb("#1a1826");
-	public static readonly PerceptualColor Bg0 = PerceptualColor.FromRgb("#232136");
-	public static readonly PerceptualColor Bg1 = PerceptualColor.FromRgb("#2d2a45");
-	public static readonly PerceptualColor Bg2 = PerceptualColor.FromRgb("#373354");
-	public static readonly PerceptualColor Bg3 = PerceptualColor.FromRgb("#47407d");
-	public static readonly PerceptualColor Sel0 = PerceptualColor.FromRgb("#2a2d3a");
-	public static readonly PerceptualColor Sel1 = PerceptualColor.FromRgb("#3c3a52");
+	public static readonly Color Background = Color.FromHex("#232136");
+	public static readonly Color BgAlt = Color.FromHex("#1a1826");
+	public static readonly Color Bg0 = Color.FromHex("#232136");
+	public static readonly Color Bg1 = Color.FromHex("#2d2a45");
+	public static readonly Color Bg2 = Color.FromHex("#373354");
+	public static readonly Color Bg3 = Color.FromHex("#47407d");
+	public static readonly Color Sel0 = Color.FromHex("#2a2d3a");
+	public static readonly Color Sel1 = Color.FromHex("#3c3a52");
 
 	// Foreground colors
-	public static readonly PerceptualColor Fg0 = PerceptualColor.FromRgb("#e0def4");
-	public static readonly PerceptualColor Fg1 = PerceptualColor.FromRgb("#cdcbe0");
-	public static readonly PerceptualColor Fg2 = PerceptualColor.FromRgb("#aeafc7");
-	public static readonly PerceptualColor Fg3 = PerceptualColor.FromRgb("#6e6a86");
-	public static readonly PerceptualColor Comment = PerceptualColor.FromRgb("#6e6a86");
+	public static readonly Color Fg0 = Color.FromHex("#e0def4");
+	public static readonly Color Fg1 = Color.FromHex("#cdcbe0");
+	public static readonly Color Fg2 = Color.FromHex("#aeafc7");
+	public static readonly Color Fg3 = Color.FromHex("#6e6a86");
+	public static readonly Color Comment = Color.FromHex("#6e6a86");
 
 	// Muted accent colors
-	public static readonly PerceptualColor Red = PerceptualColor.FromRgb("#eb6f92");
-	public static readonly PerceptualColor Orange = PerceptualColor.FromRgb("#ea9a97");
-	public static readonly PerceptualColor Yellow = PerceptualColor.FromRgb("#f6c177");
-	public static readonly PerceptualColor Green = PerceptualColor.FromRgb("#a3be8c");
-	public static readonly PerceptualColor Blue = PerceptualColor.FromRgb("#9ccfd8");
-	public static readonly PerceptualColor Cyan = PerceptualColor.FromRgb("#9ccfd8");
-	public static readonly PerceptualColor Magenta = PerceptualColor.FromRgb("#c4a7e7");
-	public static readonly PerceptualColor Pink = PerceptualColor.FromRgb("#f5c2e7");
+	public static readonly Color Red = Color.FromHex("#eb6f92");
+	public static readonly Color Orange = Color.FromHex("#ea9a97");
+	public static readonly Color Yellow = Color.FromHex("#f6c177");
+	public static readonly Color Green = Color.FromHex("#a3be8c");
+	public static readonly Color Blue = Color.FromHex("#9ccfd8");
+	public static readonly Color Cyan = Color.FromHex("#9ccfd8");
+	public static readonly Color Magenta = Color.FromHex("#c4a7e7");
+	public static readonly Color Pink = Color.FromHex("#f5c2e7");
 
-	public static Collection<PerceptualColor> Neutrals =>
+	public static Collection<Color> Neutrals =>
 	[
 		Fg0,         // Lightest
 		BgAlt,       // Darkest
 	];
 
-	public Dictionary<SemanticMeaning, Collection<PerceptualColor>> SemanticMapping => new()
+	public Dictionary<SemanticMeaning, Collection<Color>> SemanticMapping => new()
 	{
 		[SemanticMeaning.Neutral] = Neutrals,
 		[SemanticMeaning.Primary] = [Blue],

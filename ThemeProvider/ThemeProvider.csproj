@@ -3,6 +3,7 @@
   <Sdk Name="ktsu.Sdk" />
 
   <ItemGroup>
+    <PackageReference Include="ktsu.Semantics.Color" />
     <PackageReference Include="Polyfill" PrivateAssets="all" />
   </ItemGroup>
 

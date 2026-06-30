@@ -5,6 +5,7 @@
 namespace ktsu.ThemeProvider.Themes.Nord;
 
 using System.Collections.ObjectModel;
+using ktsu.Semantics.Color;
 
 /// <summary>
 /// Provides the official Nord color palette with exact hex values and properties.
@@ -14,36 +15,36 @@ public class Nord : ISemanticTheme
 {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 	// Polar Night (Dark colors)
-	public static readonly PerceptualColor Nord0 = PerceptualColor.FromRgb("#2e3440");
-	public static readonly PerceptualColor Nord1 = PerceptualColor.FromRgb("#3b4252");
-	public static readonly PerceptualColor Nord2 = PerceptualColor.FromRgb("#434c5e");
-	public static readonly PerceptualColor Nord3 = PerceptualColor.FromRgb("#4c566a");
+	public static readonly Color Nord0 = Color.FromHex("#2e3440");
+	public static readonly Color Nord1 = Color.FromHex("#3b4252");
+	public static readonly Color Nord2 = Color.FromHex("#434c5e");
+	public static readonly Color Nord3 = Color.FromHex("#4c566a");
 
 	// Snow Storm (Light colors)
-	public static readonly PerceptualColor Nord4 = PerceptualColor.FromRgb("#d8dee9");
-	public static readonly PerceptualColor Nord5 = PerceptualColor.FromRgb("#e5e9f0");
-	public static readonly PerceptualColor Nord6 = PerceptualColor.FromRgb("#eceff4");
+	public static readonly Color Nord4 = Color.FromHex("#d8dee9");
+	public static readonly Color Nord5 = Color.FromHex("#e5e9f0");
+	public static readonly Color Nord6 = Color.FromHex("#eceff4");
 
 	// Frost (Blue colors)
-	public static readonly PerceptualColor Nord7 = PerceptualColor.FromRgb("#8fbcbb");
-	public static readonly PerceptualColor Nord8 = PerceptualColor.FromRgb("#88c0d0");
-	public static readonly PerceptualColor Nord9 = PerceptualColor.FromRgb("#81a1c1");
-	public static readonly PerceptualColor Nord10 = PerceptualColor.FromRgb("#5e81ac");
+	public static readonly Color Nord7 = Color.FromHex("#8fbcbb");
+	public static readonly Color Nord8 = Color.FromHex("#88c0d0");
+	public static readonly Color Nord9 = Color.FromHex("#81a1c1");
+	public static readonly Color Nord10 = Color.FromHex("#5e81ac");
 
 	// Aurora (Accent colors)
-	public static readonly PerceptualColor Nord11 = PerceptualColor.FromRgb("#bf616a"); // Red
-	public static readonly PerceptualColor Nord12 = PerceptualColor.FromRgb("#d08770"); // Orange
-	public static readonly PerceptualColor Nord13 = PerceptualColor.FromRgb("#ebcb8b"); // Yellow
-	public static readonly PerceptualColor Nord14 = PerceptualColor.FromRgb("#a3be8c"); // Green
-	public static readonly PerceptualColor Nord15 = PerceptualColor.FromRgb("#b48ead"); // Purple
+	public static readonly Color Nord11 = Color.FromHex("#bf616a"); // Red
+	public static readonly Color Nord12 = Color.FromHex("#d08770"); // Orange
+	public static readonly Color Nord13 = Color.FromHex("#ebcb8b"); // Yellow
+	public static readonly Color Nord14 = Color.FromHex("#a3be8c"); // Green
+	public static readonly Color Nord15 = Color.FromHex("#b48ead"); // Purple
 
-	public static Collection<PerceptualColor> Neutrals =>
+	public static Collection<Color> Neutrals =>
 	[
 		Nord6, // Lightest
 		Nord0, // Darkest
 	];
 
-	public Dictionary<SemanticMeaning, Collection<PerceptualColor>> SemanticMapping => new()
+	public Dictionary<SemanticMeaning, Collection<Color>> SemanticMapping => new()
 	{
 		[SemanticMeaning.Neutral] = Neutrals,
 		[SemanticMeaning.Primary] = [Nord8], // Signature cyan

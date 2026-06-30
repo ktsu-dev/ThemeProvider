@@ -5,6 +5,7 @@
 namespace ktsu.ThemeProvider.Themes.Kanagawa;
 
 using System.Collections.ObjectModel;
+using ktsu.Semantics.Color;
 
 /// <summary>
 /// Provides the Kanagawa Lotus color palette with official hex values.
@@ -15,40 +16,40 @@ public class KanagawaLotus : ISemanticTheme
 {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 	// Lotus-inspired light backgrounds
-	public static readonly PerceptualColor Background = PerceptualColor.FromRgb("#f2ecbc");
-	public static readonly PerceptualColor BgAlt = PerceptualColor.FromRgb("#f7f4dd");
-	public static readonly PerceptualColor Bg0 = PerceptualColor.FromRgb("#f2ecbc");
-	public static readonly PerceptualColor Bg1 = PerceptualColor.FromRgb("#e7dba0");
-	public static readonly PerceptualColor Bg2 = PerceptualColor.FromRgb("#e4d794");
-	public static readonly PerceptualColor Bg3 = PerceptualColor.FromRgb("#d8ce9b");
-	public static readonly PerceptualColor WaveBlue1 = PerceptualColor.FromRgb("#d7d3c0");
-	public static readonly PerceptualColor WaveBlue2 = PerceptualColor.FromRgb("#d5cea3");
+	public static readonly Color Background = Color.FromHex("#f2ecbc");
+	public static readonly Color BgAlt = Color.FromHex("#f7f4dd");
+	public static readonly Color Bg0 = Color.FromHex("#f2ecbc");
+	public static readonly Color Bg1 = Color.FromHex("#e7dba0");
+	public static readonly Color Bg2 = Color.FromHex("#e4d794");
+	public static readonly Color Bg3 = Color.FromHex("#d8ce9b");
+	public static readonly Color WaveBlue1 = Color.FromHex("#d7d3c0");
+	public static readonly Color WaveBlue2 = Color.FromHex("#d5cea3");
 
 	// Lotus foreground colors - soft and natural
-	public static readonly PerceptualColor Fg0 = PerceptualColor.FromRgb("#545464");
-	public static readonly PerceptualColor Fg1 = PerceptualColor.FromRgb("#43436c");
-	public static readonly PerceptualColor Fg2 = PerceptualColor.FromRgb("#6f6f9a");
-	public static readonly PerceptualColor Comment = PerceptualColor.FromRgb("#a6a69c");
+	public static readonly Color Fg0 = Color.FromHex("#545464");
+	public static readonly Color Fg1 = Color.FromHex("#43436c");
+	public static readonly Color Fg2 = Color.FromHex("#6f6f9a");
+	public static readonly Color Comment = Color.FromHex("#a6a69c");
 
 	// Soft lotus palette - muted and serene
-	public static readonly PerceptualColor SakuraPink = PerceptualColor.FromRgb("#b35b79");
-	public static readonly PerceptualColor WaveRed = PerceptualColor.FromRgb("#cc5d73");
-	public static readonly PerceptualColor SummerGreen = PerceptualColor.FromRgb("#6f894e");
-	public static readonly PerceptualColor AutumnYellow = PerceptualColor.FromRgb("#77713f");
-	public static readonly PerceptualColor CrystalBlue = PerceptualColor.FromRgb("#4d699b");
-	public static readonly PerceptualColor SpringBlue = PerceptualColor.FromRgb("#5e857a");
-	public static readonly PerceptualColor KatanaGray = PerceptualColor.FromRgb("#8a8a7a");
-	public static readonly PerceptualColor IceBlue = PerceptualColor.FromRgb("#7e9fb8");
-	public static readonly PerceptualColor BoatYellow1 = PerceptualColor.FromRgb("#836f4a");
-	public static readonly PerceptualColor BoatYellow2 = PerceptualColor.FromRgb("#b98f56");
+	public static readonly Color SakuraPink = Color.FromHex("#b35b79");
+	public static readonly Color WaveRed = Color.FromHex("#cc5d73");
+	public static readonly Color SummerGreen = Color.FromHex("#6f894e");
+	public static readonly Color AutumnYellow = Color.FromHex("#77713f");
+	public static readonly Color CrystalBlue = Color.FromHex("#4d699b");
+	public static readonly Color SpringBlue = Color.FromHex("#5e857a");
+	public static readonly Color KatanaGray = Color.FromHex("#8a8a7a");
+	public static readonly Color IceBlue = Color.FromHex("#7e9fb8");
+	public static readonly Color BoatYellow1 = Color.FromHex("#836f4a");
+	public static readonly Color BoatYellow2 = Color.FromHex("#b98f56");
 
-	public static Collection<PerceptualColor> Neutrals =>
+	public static Collection<Color> Neutrals =>
 	[
 		Fg0,         // Darkest (for text in light theme)
 		BgAlt,       // Lightest (for backgrounds)
 	];
 
-	public Dictionary<SemanticMeaning, Collection<PerceptualColor>> SemanticMapping => new()
+	public Dictionary<SemanticMeaning, Collection<Color>> SemanticMapping => new()
 	{
 		[SemanticMeaning.Neutral] = Neutrals,
 		[SemanticMeaning.Primary] = [CrystalBlue],

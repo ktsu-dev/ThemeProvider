@@ -6,6 +6,7 @@ namespace ktsu.ThemeProvider;
 
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using ktsu.Semantics.Color;
 
 /// <summary>
 /// Defines the contract for a semantic theme, which maps semantic meanings to perceptual color collections.
@@ -13,10 +14,10 @@ using System.Collections.ObjectModel;
 public interface ISemanticTheme
 {
 	/// <summary>
-	/// Gets the mapping of <see cref="SemanticMeaning"/> to collections of <see cref="PerceptualColor"/>.
+	/// Gets the mapping of <see cref="SemanticMeaning"/> to collections of <see cref="Color"/>.
 	/// This enables semantic color assignment for UI elements based on their intended meaning.
 	/// </summary>
-	public Dictionary<SemanticMeaning, Collection<PerceptualColor>> SemanticMapping { get; }
+	public Dictionary<SemanticMeaning, Collection<Color>> SemanticMapping { get; }
 
 	/// <summary>
 	/// Gets a value indicating whether this is a dark theme.
