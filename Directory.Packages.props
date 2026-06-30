@@ -5,8 +5,8 @@
   <ItemGroup>
     <PackageVersion Include="ktsu.Semantics.Color" Version="2.3.0" />
     <PackageVersion Include="Hexa.NET.ImGui" Version="2.2.9" />
-    <PackageVersion Include="ktsu.ImGui.App" Version="2.15.5" />
-    <PackageVersion Include="Polyfill" Version="10.11.0" />
+    <PackageVersion Include="ktsu.ImGui.App" Version="2.16.2" />
+    <PackageVersion Include="Polyfill" Version="10.11.1" />
     <PackageVersion Include="System.Numerics.Vectors" Version="4.6.1" />
   </ItemGroup>
 </Project>
