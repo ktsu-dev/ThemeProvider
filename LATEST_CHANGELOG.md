@@ -1,30 +1,6 @@
-## v2.0.0 (major)
+## v2.0.1 (patch)
 
-Changes since v1.0.0:
+Changes since v2.0.0:
 
-- [major] feat(color)!: complete ThemeProvider migration to ktsu.Semantics.Color ([@matt-edmondson](https://github.com/matt-edmondson))
-- test(color): add ThemeProvider characterization/invariant tests ([@matt-edmondson](https://github.com/matt-edmondson))
-- feat(color)!: migrate ThemeProviderDemo to Color ([@matt-edmondson](https://github.com/matt-edmondson))
-- feat(color)!: migrate ThemeProvider.ImGui palette mapper to Color ([@matt-edmondson](https://github.com/matt-edmondson))
-- feat(color)!: migrate ThemeProvider core to ktsu.Semantics.Color ([@matt-edmondson](https://github.com/matt-edmondson))
-- chore: remove unused SourceLink package versions ([@matt-edmondson](https://github.com/matt-edmondson))
-- chore: remove SourceLink package references from csproj files ([@matt-edmondson](https://github.com/matt-edmondson))
-- Update documentation in CLAUDE.md and README.md; add TAGS.md for semantic keywords ([@matt-edmondson](https://github.com/matt-edmondson))
-- Add SonarLint configuration for connected mode ([@matt-edmondson](https://github.com/matt-edmondson))
-- Remove legacy build scripts ([@matt-edmondson](https://github.com/matt-edmondson))
-- Refactor null check in MapTheme method to use Ensure.NotNull ([@matt-edmondson](https://github.com/matt-edmondson))
-- Migrate to dotnet 10 ([@matt-edmondson](https://github.com/matt-edmondson))
-- Refactor SonarQube scanner steps and update coverage report paths in CI workflow ([@matt-edmondson](https://github.com/matt-edmondson))
-- Update sdk ([@matt-edmondson](https://github.com/matt-edmondson))
-- Update package versions and refactor theme provider interfaces ([@matt-edmondson](https://github.com/matt-edmondson))
-- Update ktsu.ImGuiApp package version to 2.1.0 ([@matt-edmondson](https://github.com/matt-edmondson))
-- Refactor method name for palette generation in SemanticColorMapper ([@matt-edmondson](https://github.com/matt-edmondson))
-- Add complete palette generation and improve ImGui color mapping ([@matt-edmondson](https://github.com/matt-edmondson))
-- [patch] Force patch ([@matt-edmondson](https://github.com/matt-edmondson))
-- Update package versions and UI color mappings ([@matt-edmondson](https://github.com/matt-edmondson))
-- Upgrade ktsu.Sdk to version 1.49.0 ([@matt-edmondson](https://github.com/matt-edmondson))
-- Add ThemeRegistry and update documentation for ThemeProvider ([@matt-edmondson](https://github.com/matt-edmondson))
-- Add new themes: Everforest Dark Hard, Everforest Dark Soft, Everforest Light Hard, and Everforest Light Soft ([@matt-edmondson](https://github.com/matt-edmondson))
-- Refactor Catppuccin, Dracula, and other themes to streamline Neutrals collection ([@matt-edmondson](https://github.com/matt-edmondson))
-- Add new themes: Dracula, Everforest, Gruvbox, Monokai, Nightfly, One Dark, Tokyo Night, and VSCode ([@matt-edmondson](https://github.com/matt-edmondson))
+- Bump the ktsu group with 10 updates ([@dependabot[bot]](https://github.com/dependabot[bot]))
 
