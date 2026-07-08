@@ -3,9 +3,9 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="ktsu.Semantics.Color" Version="2.5.3" />
+    <PackageVersion Include="ktsu.Semantics.Color" Version="2.5.4" />
     <PackageVersion Include="Hexa.NET.ImGui" Version="2.2.9" />
-    <PackageVersion Include="ktsu.ImGui.App" Version="2.16.7" />
+    <PackageVersion Include="ktsu.ImGui.App" Version="2.16.8" />
     <PackageVersion Include="Polyfill" Version="10.11.2" />
     <PackageVersion Include="System.Numerics.Vectors" Version="4.6.1" />
   </ItemGroup>
