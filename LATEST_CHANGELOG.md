@@ -1,6 +1,6 @@
-## v2.0.10 (patch)
+## v2.0.11 (patch)
 
-Changes since v2.0.9:
+Changes since v2.0.10:
 
-- [patch] Fix sRGB/linear color-space slips in ThemeProvider ([@matt-edmondson](https://github.com/matt-edmondson))
+- Bump the ktsu group with 1 update ([@dependabot[bot]](https://github.com/dependabot[bot]))
 
