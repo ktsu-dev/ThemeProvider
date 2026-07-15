@@ -177,8 +177,7 @@ public sealed class SemanticColorMapper
 
 		if (allPriorities.Length == 1)
 		{
-			double globalCenter = (globalMinLightness + globalMaxLightness) / 2.0;
-			return meaning == SemanticMeaning.Neutral ? globalCenter : globalCenter;
+			return (globalMinLightness + globalMaxLightness) / 2.0;
 		}
 
 		// Calculate position in range (0.0 to 1.0)

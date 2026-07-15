@@ -754,19 +754,19 @@ internal static class Program
 		return cachedCompletePalette;
 	}
 
-	private static Vector4 ToImVec4(Color color, float alpha = 1.0f)
+	private static Vector4 ToImVec4(Color color, float? alpha = null)
 	{
 		Srgb srgb = color.ToSrgb();
-		return new Vector4((float)srgb.R, (float)srgb.G, (float)srgb.B, alpha);
+		return new Vector4((float)srgb.R, (float)srgb.G, (float)srgb.B, alpha ?? (float)color.A);
 	}
 
 	private static Color AdjustBrightness(Color color, float factor)
 	{
-		Srgb srgb = color.ToSrgb();
-		return Color.FromSrgb(
-			Math.Clamp(srgb.R * factor, 0.0, 1.0),
-			Math.Clamp(srgb.G * factor, 0.0, 1.0),
-			Math.Clamp(srgb.B * factor, 0.0, 1.0),
+		// Multiplicative brightness is a linear-light operation; scale the linear channels, not the gamma-encoded sRGB ones.
+		return Color.FromLinear(
+			Math.Clamp(color.R * factor, 0.0, 1.0),
+			Math.Clamp(color.G * factor, 0.0, 1.0),
+			Math.Clamp(color.B * factor, 0.0, 1.0),
 			color.A
 		);
 	}
