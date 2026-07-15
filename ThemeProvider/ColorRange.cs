@@ -20,9 +20,14 @@ public readonly record struct ColorRange(Color Start, Color End)
 	public double Distance => Start.DistanceTo(End);
 
 	/// <summary>
+	/// The perceptual (Oklab) distance below which the start and end colors are treated as a single color.
+	/// </summary>
+	private const double SingleColorDistanceThreshold = 1e-6;
+
+	/// <summary>
 	/// Indicates whether this range represents a single color (start equals end).
 	/// </summary>
-	public bool IsSingleColor => Distance < double.Epsilon;
+	public bool IsSingleColor => Distance < SingleColorDistanceThreshold;
 
 	/// <summary>
 	/// Creates a color range from two colors, automatically ordering them
