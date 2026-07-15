@@ -1,0 +1,22 @@
+<Project>
+  <Sdk Name="Microsoft.NET.Sdk" />
+  <Sdk Name="ktsu.Sdk" />
+  <Sdk Name="ktsu.Sdk.App" />
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <TargetFrameworks></TargetFrameworks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ThemeProvider\ThemeProvider.csproj" />
+    <ProjectReference Include="..\ThemeProvider.ImGui\ThemeProvider.ImGui.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Hexa.NET.ImGui" />
+    <PackageReference Include="ktsu.Semantics.Color" />
+    <PackageReference Include="Polyfill" PrivateAssets="all" />
+  </ItemGroup>
+
+</Project>
