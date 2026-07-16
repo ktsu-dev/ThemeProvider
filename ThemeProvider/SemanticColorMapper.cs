@@ -193,10 +193,15 @@ public sealed class SemanticColorMapper
 		}
 		else
 		{
-			// Non-neutral uses 50-90% of the global range
+			// Non-neutral uses 20-82% of the global range. The low floor lets accent surfaces sit far
+			// enough from the brightest neutral (which body text uses) to keep text readable, and lets the
+			// most-visible accent (glyphs) reach a dark enough value to contrast a light frame. Capping the
+			// top below the global maximum keeps saturated source hues in gamut instead of forcing them to a
+			// near-white lightness where their chroma collapses; the floor is held off pure black for the
+			// same reason at the dark end.
 			double globalRange = globalMaxLightness - globalMinLightness;
-			double rangeStart = globalMinLightness + (globalRange * 0.5); // 50%
-			double rangeEnd = globalMinLightness + (globalRange * 0.9);   // 90%
+			double rangeStart = globalMinLightness + (globalRange * 0.20); // 20%
+			double rangeEnd = globalMinLightness + (globalRange * 0.82);   // 82%
 
 			minLightness = rangeStart;
 			maxLightness = rangeEnd;

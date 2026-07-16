@@ -35,12 +35,13 @@ public sealed class ImGuiPaletteMapper : IPaletteMapper<ImGuiCol, Vector4>
 		Dictionary<ImGuiCol, SemanticColorRequest> colorMapping = new()
 		{
 			{ ImGuiCol.WindowBg, new(SemanticMeaning.Neutral, Priority.VeryLow)},
-			{ ImGuiCol.ChildBg, new(SemanticMeaning.Neutral, Priority.Low)},
-			{ ImGuiCol.PopupBg, new(SemanticMeaning.Neutral, Priority.Low)},
-			{ ImGuiCol.MenuBarBg, new(SemanticMeaning.Neutral, Priority.Low)},
-			{ ImGuiCol.FrameBg, new(SemanticMeaning.Neutral, Priority.MediumLow)},
-			{ ImGuiCol.FrameBgHovered, new(SemanticMeaning.Neutral, Priority.Medium)},
-			{ ImGuiCol.FrameBgActive, new(SemanticMeaning.Neutral, Priority.MediumHigh)},
+			// Base background surfaces share the window's lightness so body text keeps the same contrast on them.
+			{ ImGuiCol.ChildBg, new(SemanticMeaning.Neutral, Priority.VeryLow)},
+			{ ImGuiCol.PopupBg, new(SemanticMeaning.Neutral, Priority.VeryLow)},
+			{ ImGuiCol.MenuBarBg, new(SemanticMeaning.Neutral, Priority.VeryLow)},
+			{ ImGuiCol.FrameBg, new(SemanticMeaning.Neutral, Priority.Low)},
+			{ ImGuiCol.FrameBgHovered, new(SemanticMeaning.Neutral, Priority.MediumLow)},
+			{ ImGuiCol.FrameBgActive, new(SemanticMeaning.Neutral, Priority.Medium)},
 			{ ImGuiCol.TextDisabled, new(SemanticMeaning.Neutral, Priority.High)},
 			{ ImGuiCol.Text, new(SemanticMeaning.Neutral, Priority.VeryHigh)},
 
@@ -49,16 +50,18 @@ public sealed class ImGuiPaletteMapper : IPaletteMapper<ImGuiCol, Vector4>
 			{ ImGuiCol.ScrollbarGrabHovered, new(SemanticMeaning.Neutral, Priority.MediumHigh)},
 			{ ImGuiCol.ScrollbarGrabActive, new(SemanticMeaning.Neutral, Priority.High)},
 
-			// Primary elements now use more spread out priorities to maximize contrast within the 50-90% range
-			{ ImGuiCol.Button, new(SemanticMeaning.Primary, Priority.Medium)},
-			{ ImGuiCol.ButtonHovered, new(SemanticMeaning.Primary, Priority.High)},
-			{ ImGuiCol.ButtonActive, new(SemanticMeaning.Primary, Priority.VeryHigh)},
+			// Accent fills sit low (near the background end) so the brightest-neutral body text drawn on
+			// them keeps contrast; hover/active step up in small increments while staying off the text end.
+			{ ImGuiCol.Button, new(SemanticMeaning.Primary, Priority.VeryLow)},
+			{ ImGuiCol.ButtonHovered, new(SemanticMeaning.Primary, Priority.Low)},
+			{ ImGuiCol.ButtonActive, new(SemanticMeaning.Primary, Priority.MediumLow)},
 
-			{ ImGuiCol.Header, new(SemanticMeaning.Primary, Priority.Medium)},
-			{ ImGuiCol.HeaderHovered, new(SemanticMeaning.Primary, Priority.High)},
-			{ ImGuiCol.HeaderActive, new(SemanticMeaning.Primary, Priority.VeryHigh)},
+			{ ImGuiCol.Header, new(SemanticMeaning.Primary, Priority.VeryLow)},
+			{ ImGuiCol.HeaderHovered, new(SemanticMeaning.Primary, Priority.Low)},
+			{ ImGuiCol.HeaderActive, new(SemanticMeaning.Primary, Priority.MediumLow)},
 
-			{ ImGuiCol.CheckMark, new(SemanticMeaning.Primary, Priority.High)},
+			// The checkmark is a glyph, not a text surface: it takes the most visible accent so it contrasts the frame.
+			{ ImGuiCol.CheckMark, new(SemanticMeaning.Primary, Priority.VeryHigh)},
 
 			{ ImGuiCol.ResizeGrip, new(SemanticMeaning.Neutral, Priority.MediumHigh)},
 			{ ImGuiCol.ResizeGripHovered, new(SemanticMeaning.Neutral, Priority.High)},
@@ -73,9 +76,9 @@ public sealed class ImGuiPaletteMapper : IPaletteMapper<ImGuiCol, Vector4>
 			{ ImGuiCol.SeparatorHovered, new(SemanticMeaning.Neutral, Priority.High)},
 			{ ImGuiCol.SeparatorActive, new(SemanticMeaning.Neutral, Priority.VeryHigh)},
 
-			{ ImGuiCol.Tab, new(SemanticMeaning.Neutral, Priority.Medium)},
-			{ ImGuiCol.TabSelected, new(SemanticMeaning.Primary, Priority.Medium)},
-			{ ImGuiCol.TabHovered, new(SemanticMeaning.Primary, Priority.High)},
+			{ ImGuiCol.Tab, new(SemanticMeaning.Neutral, Priority.Low)},
+			{ ImGuiCol.TabSelected, new(SemanticMeaning.Primary, Priority.VeryLow)},
+			{ ImGuiCol.TabHovered, new(SemanticMeaning.Primary, Priority.Low)},
 
 			// Alternate elements spread across the full 50-90% range for better contrast
 			{ ImGuiCol.PlotLines, new(SemanticMeaning.Alternate, Priority.Medium)},
@@ -84,7 +87,7 @@ public sealed class ImGuiPaletteMapper : IPaletteMapper<ImGuiCol, Vector4>
 			{ ImGuiCol.PlotHistogram, new(SemanticMeaning.Alternate, Priority.Medium)},
 			{ ImGuiCol.PlotHistogramHovered, new(SemanticMeaning.Alternate, Priority.High)},
 
-			{ ImGuiCol.TableHeaderBg, new(SemanticMeaning.Neutral, Priority.Medium)},
+			{ ImGuiCol.TableHeaderBg, new(SemanticMeaning.Neutral, Priority.Low)},
 			{ ImGuiCol.TableBorderStrong, new(SemanticMeaning.Neutral, Priority.Medium)},
 			{ ImGuiCol.TableBorderLight, new(SemanticMeaning.Neutral, Priority.Medium)},
 			{ ImGuiCol.TableRowBg, new(SemanticMeaning.Neutral, Priority.VeryLow) },
@@ -92,9 +95,9 @@ public sealed class ImGuiPaletteMapper : IPaletteMapper<ImGuiCol, Vector4>
 
 			{ ImGuiCol.TextSelectedBg, new(SemanticMeaning.Alternate, Priority.High) },
 
-			{ ImGuiCol.TitleBg, new(SemanticMeaning.Neutral, Priority.Medium)},
-			{ ImGuiCol.TitleBgActive, new(SemanticMeaning.Primary, Priority.Medium)},
-			{ ImGuiCol.TitleBgCollapsed, new(SemanticMeaning.Neutral, Priority.MediumLow)},
+			{ ImGuiCol.TitleBg, new(SemanticMeaning.Neutral, Priority.Low)},
+			{ ImGuiCol.TitleBgActive, new(SemanticMeaning.Primary, Priority.VeryLow)},
+			{ ImGuiCol.TitleBgCollapsed, new(SemanticMeaning.Neutral, Priority.Low)},
 
 			{ ImGuiCol.Border, new(SemanticMeaning.Neutral, Priority.Medium) },
 			{ ImGuiCol.BorderShadow, new(SemanticMeaning.Neutral, Priority.Low) },
