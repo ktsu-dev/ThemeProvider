@@ -1,6 +1,6 @@
-## v2.0.30 (patch)
+## v2.0.31 (patch)
 
-Changes since v2.0.29:
+Changes since v2.0.30:
 
-- Bump the ktsu group with 1 update ([@dependabot[bot]](https://github.com/dependabot[bot]))
+- Sync global.json ([@KtsuTools](https://github.com/KtsuTools))
 
