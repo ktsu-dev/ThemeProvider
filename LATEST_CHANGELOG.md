@@ -1,6 +1,4 @@
-## v3.0.1 (patch)
+## v3.0.1
 
-Changes since v3.0.0:
-
-- [patch] Clean up remaining Sonar code smells ([@matt-edmondson](https://github.com/matt-edmondson))
+No significant changes detected since v3.0.1.
 
