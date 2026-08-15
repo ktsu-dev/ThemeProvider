@@ -79,7 +79,7 @@ public class ThemeRegistryTests
 	[TestMethod]
 	public void ThemesByFamily_CoversEveryThemeAndMatchesFamilies()
 	{
-		Assert.AreEqual(ThemeRegistry.Families.Count, ThemeRegistry.ThemesByFamily.Count);
+		Assert.HasCount(ThemeRegistry.Families.Count, ThemeRegistry.ThemesByFamily);
 		Assert.AreEqual(
 			ThemeRegistry.AllThemes.Count,
 			ThemeRegistry.ThemesByFamily.Values.Sum(v => v.Count),
@@ -97,12 +97,12 @@ public class ThemeRegistryTests
 	[TestMethod]
 	public void Families_AreSortedAndDistinct()
 	{
-		CollectionAssert.AreEqual(
-			ThemeRegistry.Families.Order(StringComparer.Ordinal).ToList(),
-			ThemeRegistry.Families.ToList(),
+		Assert.AreSequenceEqual(
+			ThemeRegistry.Families.Order(StringComparer.Ordinal),
+			ThemeRegistry.Families,
 			"Families must be sorted");
 
-		Assert.AreEqual(ThemeRegistry.Families.Distinct().Count(), ThemeRegistry.Families.Count);
+		Assert.HasCount(ThemeRegistry.Families.Distinct().Count(), ThemeRegistry.Families);
 	}
 
 	/// <summary>
@@ -154,7 +154,7 @@ public class ThemeRegistryTests
 	{
 		IReadOnlyList<ISemanticTheme> instances = ThemeRegistry.CreateAllThemeInstances();
 
-		Assert.AreEqual(ThemeRegistry.AllThemes.Count, instances.Count);
+		Assert.HasCount(ThemeRegistry.AllThemes.Count, instances);
 		Assert.IsTrue(instances.All(i => i is not null), "Every theme must instantiate");
 	}
 
@@ -166,9 +166,9 @@ public class ThemeRegistryTests
 	{
 		foreach (string family in ThemeRegistry.Families)
 		{
-			Assert.AreEqual(
+			Assert.HasCount(
 				ThemeRegistry.GetThemesInFamily(family).Count,
-				ThemeRegistry.CreateThemeInstancesInFamily(family).Count,
+				ThemeRegistry.CreateThemeInstancesInFamily(family),
 				$"{family}: instance count must match metadata count");
 		}
 	}

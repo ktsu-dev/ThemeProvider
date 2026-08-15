@@ -20,24 +20,31 @@ internal static class Program
 		string? themeFilter = null;
 		bool strict = false;
 
-		for (int i = 0; i < args.Length; i++)
+		// A while loop rather than a for loop: options that take a value advance the index by two,
+		// and mutating a for loop's counter from inside its body reads as a bug even when it isn't.
+		int i = 0;
+		while (i < args.Length)
 		{
-			switch (args[i])
+			string arg = args[i];
+			switch (arg)
 			{
 				case "--output" or "-o" when i + 1 < args.Length:
-					outputPath = args[++i];
+					outputPath = args[i + 1];
+					i += 2;
 					break;
 				case "--theme" or "-t" when i + 1 < args.Length:
-					themeFilter = args[++i];
+					themeFilter = args[i + 1];
+					i += 2;
 					break;
 				case "--strict":
 					strict = true;
+					i++;
 					break;
 				case "--help" or "-h":
 					PrintUsage();
 					return 0;
 				default:
-					Console.Error.WriteLine(Inv($"Unknown or incomplete argument: {args[i]}"));
+					Console.Error.WriteLine(Inv($"Unknown or incomplete argument: {arg}"));
 					PrintUsage();
 					return 2;
 			}

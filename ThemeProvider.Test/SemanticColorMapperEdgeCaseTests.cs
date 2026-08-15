@@ -215,6 +215,6 @@ public class SemanticColorMapperEdgeCaseTests
 
 		IReadOnlyDictionary<SemanticColorRequest, Color> palette = SemanticColorMapper.MakeCompletePalette(theme);
 
-		Assert.AreEqual(theme.SemanticMapping.Count * priorities, palette.Count);
+		Assert.HasCount(theme.SemanticMapping.Count * priorities, palette);
 	}
 }

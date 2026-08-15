@@ -206,60 +206,94 @@ internal static class PaletteAnalyzer
 
 				Oklch d = derived.ToOklch();
 
-				if (maxSourceChroma > AnalysisThresholds.MeaningfulChroma)
-				{
-					double retention = d.C / maxSourceChroma;
-					if (retention < minChromaRetention)
-					{
-						minChromaRetention = retention;
-					}
-
-					if (retention < AnalysisThresholds.MinAccentChromaRetention)
-					{
-						findings.Add(new Finding(
-							"Canonical fidelity",
-							CheckStatus.Warn,
-							$"{meaning} {priority} keeps only {Num(retention * 100.0, "0")}% of source chroma"));
-					}
-				}
-
-				if (d.C > AnalysisThresholds.MeaningfulChroma && sourceHued.Count > 0)
-				{
-					double drift = sourceHued.Min(s => HueDelta(d.H, s.H));
-					if (drift > maxHueDrift)
-					{
-						maxHueDrift = drift;
-					}
-
-					if (drift > AnalysisThresholds.MaxAccentHueDriftDegrees)
-					{
-						findings.Add(new Finding(
-							"Canonical fidelity",
-							CheckStatus.Warn,
-							$"{meaning} {priority} hue drifts {Num(drift, "0")}deg from source (max {Num(AnalysisThresholds.MaxAccentHueDriftDegrees, "0")}deg)"));
-					}
-				}
+				// Each check returns the value it observed and an identity when it does not apply, so
+				// the running extremes fold without re-stating the "does this apply" condition here.
+				minChromaRetention = Math.Min(
+					minChromaRetention,
+					CheckChromaRetention(meaning, priority, d, maxSourceChroma, findings));
+				maxHueDrift = Math.Max(
+					maxHueDrift,
+					CheckHueDrift(meaning, priority, d, sourceHued, findings));
 			}
 		}
 
 		return (maxHueDrift, double.IsPositiveInfinity(minChromaRetention) ? 1.0 : minChromaRetention);
 	}
 
+	/// <summary>
+	/// Records a warning when a derived accent keeps too little of its source chroma.
+	/// </summary>
+	/// <returns>
+	/// The retention ratio, or positive infinity when the source has no meaningful chroma to retain,
+	/// which leaves a running minimum untouched.
+	/// </returns>
+	private static double CheckChromaRetention(
+		SemanticMeaning meaning,
+		Priority priority,
+		Oklch derived,
+		double maxSourceChroma,
+		List<Finding> findings)
+	{
+		if (maxSourceChroma <= AnalysisThresholds.MeaningfulChroma)
+		{
+			return double.PositiveInfinity;
+		}
+
+		double retention = derived.C / maxSourceChroma;
+		if (retention < AnalysisThresholds.MinAccentChromaRetention)
+		{
+			findings.Add(new Finding(
+				"Canonical fidelity",
+				CheckStatus.Warn,
+				$"{meaning} {priority} keeps only {Num(retention * 100.0, "0")}% of source chroma"));
+		}
+
+		return retention;
+	}
+
+	/// <summary>
+	/// Records a warning when a derived accent's hue has drifted too far from every hued source color.
+	/// </summary>
+	/// <returns>
+	/// The smallest drift from any hued source, or zero when there is nothing to compare against,
+	/// which leaves a running maximum untouched.
+	/// </returns>
+	private static double CheckHueDrift(
+		SemanticMeaning meaning,
+		Priority priority,
+		Oklch derived,
+		List<Oklch> sourceHued,
+		List<Finding> findings)
+	{
+		if (derived.C <= AnalysisThresholds.MeaningfulChroma || sourceHued.Count == 0)
+		{
+			return 0.0;
+		}
+
+		double drift = sourceHued.Min(s => HueDelta(derived.H, s.H));
+		if (drift > AnalysisThresholds.MaxAccentHueDriftDegrees)
+		{
+			findings.Add(new Finding(
+				"Canonical fidelity",
+				CheckStatus.Warn,
+				$"{meaning} {priority} hue drifts {Num(drift, "0")}deg from source (max {Num(AnalysisThresholds.MaxAccentHueDriftDegrees, "0")}deg)"));
+		}
+
+		return drift;
+	}
+
 	private static IReadOnlyList<SemanticMeaning> CheckCoverage(ISemanticTheme theme, List<Finding> findings)
 	{
 		HashSet<SemanticMeaning> provided = [.. theme.SemanticMapping.Keys];
 
-		foreach (SemanticMeaning required in MapperUsedMeanings)
+		foreach (SemanticMeaning required in MapperUsedMeanings.Where(m => !provided.Contains(m)))
 		{
-			if (!provided.Contains(required))
-			{
-				// Neutral and Primary underpin backgrounds and accents; Alternate only tints plots/selection.
-				CheckStatus severity = required == SemanticMeaning.Alternate ? CheckStatus.Warn : CheckStatus.Fail;
-				findings.Add(new Finding(
-					"Semantic coverage",
-					severity,
-					$"theme does not define {required}, which the ImGui mapper needs; those slots fall back to defaults"));
-			}
+			// Neutral and Primary underpin backgrounds and accents; Alternate only tints plots/selection.
+			CheckStatus severity = required == SemanticMeaning.Alternate ? CheckStatus.Warn : CheckStatus.Fail;
+			findings.Add(new Finding(
+				"Semantic coverage",
+				severity,
+				$"theme does not define {required}, which the ImGui mapper needs; those slots fall back to defaults"));
 		}
 
 		return [.. provided.Where(m => !MapperUsedMeanings.Contains(m)).OrderBy(m => m.ToString(), StringComparer.Ordinal)];

@@ -60,8 +60,16 @@ internal sealed record ThemeAnalysis(
 	IReadOnlyList<Finding> Findings)
 {
 	/// <summary>The worst status across all findings.</summary>
-	public CheckStatus Status =>
-		Findings.Any(f => f.Status == CheckStatus.Fail) ? CheckStatus.Fail
-		: Findings.Any(f => f.Status == CheckStatus.Warn) ? CheckStatus.Warn
-		: CheckStatus.Pass;
+	public CheckStatus Status
+	{
+		get
+		{
+			if (Findings.Any(f => f.Status == CheckStatus.Fail))
+			{
+				return CheckStatus.Fail;
+			}
+
+			return Findings.Any(f => f.Status == CheckStatus.Warn) ? CheckStatus.Warn : CheckStatus.Pass;
+		}
+	}
 }

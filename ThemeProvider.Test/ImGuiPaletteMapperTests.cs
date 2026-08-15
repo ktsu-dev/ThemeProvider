@@ -68,9 +68,9 @@ public class ImGuiPaletteMapperTests
 
 		foreach (ThemeRegistry.ThemeInfo info in ThemeRegistry.AllThemes)
 		{
-			Assert.AreEqual(
+			Assert.HasCount(
 				expectedCount,
-				mapper.MapTheme(info.CreateInstance()).Count,
+				mapper.MapTheme(info.CreateInstance()),
 				$"{info.Name}: mapped a different number of ImGui colors");
 		}
 	}
@@ -110,7 +110,7 @@ public class ImGuiPaletteMapperTests
 		IReadOnlyDictionary<ImGuiCol, Vector4> first = mapper.MapTheme(theme);
 		IReadOnlyDictionary<ImGuiCol, Vector4> second = mapper.MapTheme(theme);
 
-		Assert.AreEqual(first.Count, second.Count);
+		Assert.HasCount(first.Count, second);
 		foreach (KeyValuePair<ImGuiCol, Vector4> entry in first)
 		{
 			Assert.AreEqual(entry.Value, second[entry.Key], $"{entry.Key} differed between calls");
