@@ -16,6 +16,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ThemeProvider\ThemeProvider.csproj" />
+    <ProjectReference Include="..\ThemeProvider.ImGui\ThemeProvider.ImGui.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="ThemeSnapshot.approved.txt" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

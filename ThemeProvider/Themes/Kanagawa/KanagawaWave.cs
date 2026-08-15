@@ -2,6 +2,7 @@
 
 namespace ktsu.ThemeProvider.Themes.Kanagawa;
 
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using ktsu.Semantics.Color;
 
@@ -12,59 +13,28 @@ using ktsu.Semantics.Color;
 /// </summary>
 public class KanagawaWave : ISemanticTheme
 {
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-	// Background colors - traditional Japanese palette
-	public static readonly Color Background = Color.FromHex("#1f1f28");
-	public static readonly Color BgAlt = Color.FromHex("#16161d");
-	public static readonly Color Bg0 = Color.FromHex("#1f1f28");
-	public static readonly Color Bg1 = Color.FromHex("#2a2a37");
-	public static readonly Color Bg2 = Color.FromHex("#363646");
-	public static readonly Color Bg3 = Color.FromHex("#54546d");
-	public static readonly Color WaveBlue1 = Color.FromHex("#223249");
-	public static readonly Color WaveBlue2 = Color.FromHex("#2d4f67");
-
-	// Foreground colors
-	public static readonly Color Fg0 = Color.FromHex("#dcd7ba");
-	public static readonly Color Fg1 = Color.FromHex("#c8c093");
-	public static readonly Color Fg2 = Color.FromHex("#9caca8");
-	public static readonly Color Comment = Color.FromHex("#727169");
-
-	// Traditional color palette
-	public static readonly Color SakuraPink = Color.FromHex("#d27e99");
-	public static readonly Color WaveRed = Color.FromHex("#e82424");
-	public static readonly Color SummerGreen = Color.FromHex("#98bb6c");
-	public static readonly Color AutumnYellow = Color.FromHex("#e6c384");
-	public static readonly Color CrystalBlue = Color.FromHex("#7e9cd8");
-	public static readonly Color SpringBlue = Color.FromHex("#7fb4ca");
-	public static readonly Color KatanaGray = Color.FromHex("#717c7c");
-	public static readonly Color IceBlue = Color.FromHex("#a3d4d5");
-	public static readonly Color BoatYellow1 = Color.FromHex("#938056");
-	public static readonly Color BoatYellow2 = Color.FromHex("#c0a36e");
-
-	public static Collection<Color> Neutrals =>
-	[
-		Fg0,         // Lightest
-		BgAlt,       // Darkest
-	];
-
-	public Dictionary<SemanticMeaning, Collection<Color>> SemanticMapping => new()
+	// Hex values are the palette this theme mirrors; the trailing comment on each line is
+	// that palette's own name for the color.
+	private static readonly SemanticPalette Palette = new()
 	{
-		[SemanticMeaning.Neutral] = Neutrals,
-		[SemanticMeaning.Primary] = [CrystalBlue],
-		[SemanticMeaning.Alternate] = [SakuraPink],
-		[SemanticMeaning.Success] = [SummerGreen],
-		[SemanticMeaning.CallToAction] = [SpringBlue],
-		[SemanticMeaning.Information] = [IceBlue],
-		[SemanticMeaning.Caution] = [AutumnYellow],
-		[SemanticMeaning.Warning] = [BoatYellow2],
-		[SemanticMeaning.Error] = [WaveRed],
-		[SemanticMeaning.Failure] = [WaveRed],
-		[SemanticMeaning.Debug] = [SakuraPink]
+		Neutrals = ["#dcd7ba", "#16161d"], // Fg0, BgAlt
+		Primary = "#7e9cd8", // CrystalBlue
+		Alternate = "#d27e99", // SakuraPink
+		Success = "#98bb6c", // SummerGreen
+		CallToAction = "#7fb4ca", // SpringBlue
+		Information = "#a3d4d5", // IceBlue
+		Caution = "#e6c384", // AutumnYellow
+		Warning = "#c0a36e", // BoatYellow2
+		Error = "#e82424", // WaveRed
+		Failure = "#e82424", // WaveRed
+		Debug = "#d27e99", // SakuraPink
 	};
+
+	/// <inheritdoc />
+	public Dictionary<SemanticMeaning, Collection<Color>> SemanticMapping => Palette.ToSemanticMapping();
 
 	/// <summary>
 	/// Kanagawa Wave is a dark theme
 	/// </summary>
 	public bool IsDarkTheme => true;
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 }

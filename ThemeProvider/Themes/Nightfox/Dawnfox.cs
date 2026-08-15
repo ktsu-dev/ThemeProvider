@@ -2,6 +2,7 @@
 
 namespace ktsu.ThemeProvider.Themes.Nightfox;
 
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using ktsu.Semantics.Color;
 
@@ -12,58 +13,28 @@ using ktsu.Semantics.Color;
 /// </summary>
 public class Dawnfox : ISemanticTheme
 {
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-	// Dawn-inspired light backgrounds
-	public static readonly Color Background = Color.FromHex("#faf4ed");
-	public static readonly Color BgAlt = Color.FromHex("#f4ede4");
-	public static readonly Color Bg0 = Color.FromHex("#faf4ed");
-	public static readonly Color Bg1 = Color.FromHex("#f2e9de");
-	public static readonly Color Bg2 = Color.FromHex("#eae0d5");
-	public static readonly Color Bg3 = Color.FromHex("#d7c9bd");
-	public static readonly Color Sel0 = Color.FromHex("#e9dfdb");
-	public static readonly Color Sel1 = Color.FromHex("#ddd1c7");
-
-	// Morning foreground colors
-	public static readonly Color Fg0 = Color.FromHex("#575279");
-	public static readonly Color Fg1 = Color.FromHex("#6e6a86");
-	public static readonly Color Fg2 = Color.FromHex("#797593");
-	public static readonly Color Fg3 = Color.FromHex("#9893a5");
-	public static readonly Color Comment = Color.FromHex("#a8a5b8");
-
-	// Dawn accent colors - soft pastels
-	public static readonly Color Red = Color.FromHex("#b4637a");
-	public static readonly Color Orange = Color.FromHex("#ea9d34");
-	public static readonly Color Yellow = Color.FromHex("#d7827e");
-	public static readonly Color Green = Color.FromHex("#286983");
-	public static readonly Color Blue = Color.FromHex("#56949f");
-	public static readonly Color Cyan = Color.FromHex("#d7827e");
-	public static readonly Color Magenta = Color.FromHex("#907aa9");
-	public static readonly Color Pink = Color.FromHex("#d685af");
-
-	public static Collection<Color> Neutrals =>
-	[
-		Fg0,         // Darkest (for text in light theme)
-		BgAlt,       // Lightest (for backgrounds)
-	];
-
-	public Dictionary<SemanticMeaning, Collection<Color>> SemanticMapping => new()
+	// Hex values are the palette this theme mirrors; the trailing comment on each line is
+	// that palette's own name for the color.
+	private static readonly SemanticPalette Palette = new()
 	{
-		[SemanticMeaning.Neutral] = Neutrals,
-		[SemanticMeaning.Primary] = [Blue],
-		[SemanticMeaning.Alternate] = [Pink],
-		[SemanticMeaning.Success] = [Green],
-		[SemanticMeaning.CallToAction] = [Blue],
-		[SemanticMeaning.Information] = [Blue],
-		[SemanticMeaning.Caution] = [Yellow],
-		[SemanticMeaning.Warning] = [Orange],
-		[SemanticMeaning.Error] = [Red],
-		[SemanticMeaning.Failure] = [Red],
-		[SemanticMeaning.Debug] = [Magenta]
+		Neutrals = ["#575279", "#f4ede4"], // Fg0, BgAlt
+		Primary = "#56949f", // Blue
+		Alternate = "#d685af", // Pink
+		Success = "#286983", // Green
+		CallToAction = "#56949f", // Blue
+		Information = "#56949f", // Blue
+		Caution = "#d7827e", // Yellow
+		Warning = "#ea9d34", // Orange
+		Error = "#b4637a", // Red
+		Failure = "#b4637a", // Red
+		Debug = "#907aa9", // Magenta
 	};
+
+	/// <inheritdoc />
+	public Dictionary<SemanticMeaning, Collection<Color>> SemanticMapping => Palette.ToSemanticMapping();
 
 	/// <summary>
 	/// Dawnfox is a light theme
 	/// </summary>
 	public bool IsDarkTheme => false;
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 }

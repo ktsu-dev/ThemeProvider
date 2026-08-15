@@ -2,6 +2,7 @@
 
 namespace ktsu.ThemeProvider.Themes.Nightfox;
 
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using ktsu.Semantics.Color;
 
@@ -12,58 +13,28 @@ using ktsu.Semantics.Color;
 /// </summary>
 public class Duskfox : ISemanticTheme
 {
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-	// Background colors
-	public static readonly Color Background = Color.FromHex("#232136");
-	public static readonly Color BgAlt = Color.FromHex("#1a1826");
-	public static readonly Color Bg0 = Color.FromHex("#232136");
-	public static readonly Color Bg1 = Color.FromHex("#2d2a45");
-	public static readonly Color Bg2 = Color.FromHex("#373354");
-	public static readonly Color Bg3 = Color.FromHex("#47407d");
-	public static readonly Color Sel0 = Color.FromHex("#2a2d3a");
-	public static readonly Color Sel1 = Color.FromHex("#3c3a52");
-
-	// Foreground colors
-	public static readonly Color Fg0 = Color.FromHex("#e0def4");
-	public static readonly Color Fg1 = Color.FromHex("#cdcbe0");
-	public static readonly Color Fg2 = Color.FromHex("#aeafc7");
-	public static readonly Color Fg3 = Color.FromHex("#6e6a86");
-	public static readonly Color Comment = Color.FromHex("#6e6a86");
-
-	// Muted accent colors
-	public static readonly Color Red = Color.FromHex("#eb6f92");
-	public static readonly Color Orange = Color.FromHex("#ea9a97");
-	public static readonly Color Yellow = Color.FromHex("#f6c177");
-	public static readonly Color Green = Color.FromHex("#a3be8c");
-	public static readonly Color Blue = Color.FromHex("#9ccfd8");
-	public static readonly Color Cyan = Color.FromHex("#9ccfd8");
-	public static readonly Color Magenta = Color.FromHex("#c4a7e7");
-	public static readonly Color Pink = Color.FromHex("#f5c2e7");
-
-	public static Collection<Color> Neutrals =>
-	[
-		Fg0,         // Lightest
-		BgAlt,       // Darkest
-	];
-
-	public Dictionary<SemanticMeaning, Collection<Color>> SemanticMapping => new()
+	// Hex values are the palette this theme mirrors; the trailing comment on each line is
+	// that palette's own name for the color.
+	private static readonly SemanticPalette Palette = new()
 	{
-		[SemanticMeaning.Neutral] = Neutrals,
-		[SemanticMeaning.Primary] = [Blue],
-		[SemanticMeaning.Alternate] = [Magenta],
-		[SemanticMeaning.Success] = [Green],
-		[SemanticMeaning.CallToAction] = [Cyan],
-		[SemanticMeaning.Information] = [Blue],
-		[SemanticMeaning.Caution] = [Yellow],
-		[SemanticMeaning.Warning] = [Orange],
-		[SemanticMeaning.Error] = [Red],
-		[SemanticMeaning.Failure] = [Red],
-		[SemanticMeaning.Debug] = [Pink]
+		Neutrals = ["#e0def4", "#1a1826"], // Fg0, BgAlt
+		Primary = "#9ccfd8", // Blue
+		Alternate = "#c4a7e7", // Magenta
+		Success = "#a3be8c", // Green
+		CallToAction = "#9ccfd8", // Cyan
+		Information = "#9ccfd8", // Blue
+		Caution = "#f6c177", // Yellow
+		Warning = "#ea9a97", // Orange
+		Error = "#eb6f92", // Red
+		Failure = "#eb6f92", // Red
+		Debug = "#f5c2e7", // Pink
 	};
+
+	/// <inheritdoc />
+	public Dictionary<SemanticMeaning, Collection<Color>> SemanticMapping => Palette.ToSemanticMapping();
 
 	/// <summary>
 	/// Duskfox is a dark theme
 	/// </summary>
 	public bool IsDarkTheme => true;
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 }

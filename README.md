@@ -1,6 +1,6 @@
 # ktsu.ThemeProvider
 
-> A semantic color theming library for .NET applications with 44+ themes, intelligent color mapping, and framework integration.
+> A semantic color theming library for .NET applications with 38 themes, intelligent color mapping, and framework integration.
 
 [![License](https://img.shields.io/github/license/ktsu-dev/ThemeProvider.svg?label=License&logo=nuget)](LICENSE.md)
 [![NuGet Version](https://img.shields.io/nuget/v/ktsu.ThemeProvider?label=Stable&logo=nuget)](https://nuget.org/packages/ktsu.ThemeProvider)
@@ -12,12 +12,12 @@
 
 ## Introduction
 
-`ktsu.ThemeProvider` is a comprehensive theming system that uses semantic color specifications rather than arbitrary color names. Instead of hardcoding colors like "blue" or "red", you define colors by their purpose (Primary, Error, Warning) and priority level, and the library generates consistent, accessible color palettes. It includes 44 carefully crafted themes from popular color schemes and provides built-in Dear ImGui integration with an extensible architecture for other UI frameworks.
+`ktsu.ThemeProvider` is a comprehensive theming system that uses semantic color specifications rather than arbitrary color names. Instead of hardcoding colors like "blue" or "red", you define colors by their purpose (Primary, Error, Warning) and priority level, and the library generates consistent, accessible color palettes. It includes 38 carefully crafted themes from popular color schemes and provides built-in Dear ImGui integration with an extensible architecture for other UI frameworks.
 
 ## Features
 
 - **Semantic Color System**: Define colors by purpose (Primary, Error, Warning, Neutral) and priority level rather than specific hues, enabling consistent theming across any UI framework
-- **44 Built-in Themes**: Includes Catppuccin, Tokyo Night, Gruvbox, Everforest, Nightfox, Kanagawa, PaperColor, Nord, Dracula, VSCode, One Dark, Monokai, and Nightfly theme families
+- **38 Built-in Themes**: Includes Catppuccin, Tokyo Night, Gruvbox, Everforest, Nightfox, Kanagawa, PaperColor, Nord, Dracula, VSCode, One Dark, Monokai, and Nightfly theme families
 - **Centralized Theme Registry**: Discover, filter, and instantiate themes by name, family, or light/dark classification with rich metadata
 - **Dear ImGui Integration**: Companion package `ktsu.ThemeProvider.ImGui` provides complete ImGui color palette mapping via `ImGuiPaletteMapper`
 - **Perceptual Color Science**: Uses Oklab perceptual color space for uniform color interpolation, extrapolation, and lightness-based priority mapping
@@ -202,7 +202,8 @@ public class MyFrameworkMapper : IPaletteMapper<MyColorEnum, MyColorType>
 
 ### Creating Custom Themes
 
-Implement `ISemanticTheme` with colors from your palette:
+Declare your palette as a `SemanticPalette` and let it build the mapping. Colors are written as hex
+strings, the notation upstream color schemes publish, so a theme can be diffed against its source:
 
 ```csharp
 using ktsu.ThemeProvider;
@@ -211,23 +212,30 @@ using System.Collections.ObjectModel;
 
 public class MyCustomTheme : ISemanticTheme
 {
-    private static readonly Color Background = Color.FromHex("#1A1B26");
-    private static readonly Color Foreground = Color.FromHex("#C0CAF5");
-    private static readonly Color Blue = Color.FromHex("#7AA2F7");
-    private static readonly Color Green = Color.FromHex("#9ECE6A");
-    private static readonly Color Red = Color.FromHex("#F7768E");
+    private static readonly SemanticPalette Palette = new()
+    {
+        // Neutrals are a ramp; the mapper interpolates between them across priority levels.
+        Neutrals = ["#C0CAF5", "#1A1B26"],
+        Primary = "#7AA2F7",
+        Alternate = "#BB9AF7",
+        Success = "#9ECE6A",
+        CallToAction = "#9ECE6A",
+        Information = "#7DCFFF",
+        Caution = "#FF9E64",
+        Warning = "#E0AF68",
+        Error = "#F7768E",
+        Failure = "#F7768E",
+        Debug = "#BB9AF7",
+    };
+
+    public Dictionary<SemanticMeaning, Collection<Color>> SemanticMapping => Palette.ToSemanticMapping();
 
     public bool IsDarkTheme => true;
-
-    public Dictionary<SemanticMeaning, Collection<Color>> SemanticMapping { get; } = new()
-    {
-        { SemanticMeaning.Neutral, new() { Background, Foreground } },
-        { SemanticMeaning.Primary, new() { Blue } },
-        { SemanticMeaning.Success, new() { Green } },
-        { SemanticMeaning.Error, new() { Red } },
-    };
 }
 ```
+
+`SemanticMapping` is the only contract, so a theme with unusual needs (more than two neutrals, or a
+meaning driven by something other than a fixed hex) can still build the dictionary itself.
 
 ## API Reference
 
@@ -291,7 +299,7 @@ Static class providing centralized theme discovery and management.
 
 | Name | Type | Description |
 |------|------|-------------|
-| `AllThemes` | `IReadOnlyList<ThemeInfo>` | All 44 registered themes with metadata |
+| `AllThemes` | `IReadOnlyList<ThemeInfo>` | All 38 registered themes with metadata |
 | `DarkThemes` | `IReadOnlyList<ThemeInfo>` | All dark themes |
 | `LightThemes` | `IReadOnlyList<ThemeInfo>` | All light themes |
 | `Families` | `IReadOnlyList<string>` | All theme family names |
