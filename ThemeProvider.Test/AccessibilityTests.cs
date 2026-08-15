@@ -32,8 +32,8 @@ public class AccessibilityTests
 	[TestMethod]
 	public void LowContrastMochaPair_AdjustedForAA_ReachesAtLeastAA()
 	{
-		Color background = Color.FromHex("#1e1e2e"); // Mocha.Base — very dark
-		Color foreground = Color.FromHex("#313244"); // Mocha.Surface0 — dark, low contrast
+		Color background = Color.FromHex("#1e1e2e"); // Catppuccin Mocha base — very dark
+		Color foreground = Color.FromHex("#313244"); // Catppuccin Mocha surface0 — dark, low contrast
 
 		Color adjusted = foreground.AdjustForContrast(background, AccessibilityLevel.AA);
 		AccessibilityLevel level = adjusted.AccessibilityLevelAgainst(background);

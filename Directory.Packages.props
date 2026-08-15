@@ -8,5 +8,7 @@
     <PackageVersion Include="ktsu.ImGui.App" Version="3.3.12" />
     <PackageVersion Include="Polyfill" Version="11.2.0" />
     <PackageVersion Include="System.Numerics.Vectors" Version="4.6.1" />
+    <PackageVersion Include="System.Memory" Version="4.6.3" />
+    <PackageVersion Include="System.Threading.Tasks.Extensions" Version="4.6.3" />
   </ItemGroup>
 </Project>

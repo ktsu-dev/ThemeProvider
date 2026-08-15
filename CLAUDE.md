@@ -21,7 +21,7 @@ dotnet run --project ThemeProviderDemo
 
 ## Project Structure
 
-This is a .NET library (`ktsu.ThemeProvider`) providing a semantic color theming system with 44 built-in themes and framework integration. The solution uses:
+This is a .NET library (`ktsu.ThemeProvider`) providing a semantic color theming system with 38 built-in themes and framework integration. The solution uses:
 
 - **ktsu.Sdk** - Custom SDK providing shared build configuration
 - Multi-targeting: net10.0;net9.0;net8.0;net7.0;net6.0;net5.0;netstandard2.0;netstandard2.1
@@ -30,14 +30,16 @@ This is a .NET library (`ktsu.ThemeProvider`) providing a semantic color theming
 
 - `ThemeProvider/ISemanticTheme.cs` - Core theme interface (SemanticMapping + IsDarkTheme)
 - `ThemeProvider/SemanticColorMapper.cs` - Maps semantic color requests to actual colors using Oklab color space
-- `ThemeProvider/ThemeRegistry.cs` - Central registration of all 44 themes with metadata and factory functions
+- `ThemeProvider/ThemeRegistry.cs` - Central registration of all 38 themes with metadata and factory functions
 - Color types (`Color`, `Srgb`, `Oklab`/`Oklch`, `AccessibilityLevel`, color-space conversions, WCAG, gradients) come from the **`ktsu.Semantics.Color`** package — there are no in-house color types (they were removed in v2.0)
 - `ThemeProvider/IPaletteMapper.cs` - Generic interface for framework-specific color mapping
 - `ThemeProvider/SemanticColorRequest.cs` - Readonly record struct combining SemanticMeaning + Priority
+- `ThemeProvider/SemanticPalette.cs` - Declares the one shape every theme shares (neutral ramp + one accent per meaning) and builds the `SemanticMapping` dictionary from it
+- `ThemeProvider/HexColor.cs` - Hex-string color notation used by `SemanticPalette`, parsed once on first resolve
 - `ThemeProvider/SemanticMeaning.cs` - Enum of semantic color purposes (Neutral, Primary, Error, etc.)
 - `ThemeProvider/Priority.cs` - Enum of 7 priority levels (VeryLow to VeryHigh)
 - `ThemeProvider/ColorRange.cs` - Color range interpolation helper (built on `ktsu.Semantics.Color`)
-- `ThemeProvider/Themes/` - 44 theme implementations organized by family
+- `ThemeProvider/Themes/` - 38 theme implementations organized by family
 - `ThemeProvider.ImGui/ImGuiPaletteMapper.cs` - Dear ImGui integration mapping ImGuiCol to Vector4
 - `ThemeProviderDemo/Program.cs` - Interactive demo application using ktsu.ImGuiApp
 
@@ -55,7 +57,7 @@ This is a .NET library (`ktsu.ThemeProvider`) providing a semantic color theming
 
 The library uses meaning-based color specifications instead of hardcoded colors:
 
-1. **ISemanticTheme** provides a `Dictionary<SemanticMeaning, Collection<Color>>` mapping (`Color` from `ktsu.Semantics.Color`)
+1. **ISemanticTheme** provides a `Dictionary<SemanticMeaning, Collection<Color>>` mapping (`Color` from `ktsu.Semantics.Color`). Built-in themes build theirs from a **SemanticPalette** declared in hex
 2. **SemanticColorMapper** maps `SemanticColorRequest` (meaning + priority) to actual colors
 3. The mapper calculates a global lightness range across all theme colors, then interpolates/extrapolates in Oklab space to achieve target lightness for each priority level
 4. Dark themes: higher priority = higher lightness; Light themes: higher priority = lower lightness
@@ -64,9 +66,18 @@ The library uses meaning-based color specifications instead of hardcoded colors:
 ### Adding New Themes
 
 1. Create a new class in `ThemeProvider/Themes/{Family}/{ThemeName}.cs`
-2. Implement `ISemanticTheme` with static `Color` fields from hex values using `Color.FromHex("#hex")` (`Color` from `ktsu.Semantics.Color`)
-3. Map semantic meanings to color collections (Neutral typically gets multiple colors; other meanings get single accent colors)
+2. Declare a `private static readonly SemanticPalette Palette` initializer assigning a hex string to
+   each semantic meaning, plus a `Neutrals` ramp (conventionally lightest then darkest). Write the
+   colors as hex, not `Color.FromHex(...)` — `SemanticPalette` parses them once, and keeping the
+   upstream notation lets the file be diffed against the color scheme it mirrors.
+3. Implement `ISemanticTheme` as `SemanticMapping => Palette.ToSemanticMapping();` plus `IsDarkTheme`.
+   Annotate each palette line with the upstream palette's own name for that color.
 4. Register in `ThemeRegistry.AllThemes` with a `ThemeInfo` record
+5. Regenerate `ThemeProvider.Test/ThemeSnapshot.approved.txt` — `ThemeSnapshotTests` pins the exact
+   hex values of every theme, so a new theme fails until its palette is recorded there
+
+Themes deliberately expose no per-color public fields. Every theme is the same shape, so declaring
+that shape once in `SemanticPalette` is what keeps the catalog free of copy-paste duplication.
 
 ### Framework Integration
 

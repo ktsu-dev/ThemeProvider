@@ -11,7 +11,7 @@ using ktsu.Semantics.Color;
 /// Maps semantic color requests to actual colors using a global lightness-based priority system.
 /// All colors with the same priority across different semantic meanings will have similar lightness levels.
 /// </summary>
-public sealed class SemanticColorMapper
+public static class SemanticColorMapper
 {
 	/// <summary>
 	/// Maps a collection of semantic color requests to actual colors using the provided theme.
@@ -43,7 +43,6 @@ public sealed class SemanticColorMapper
 #else
 		Priority[] allPriorities = (Priority[])Enum.GetValues(typeof(Priority));
 #endif
-		List<Priority> priorityLevels = [.. allPriorities.OrderBy(p => p)];
 
 		Dictionary<SemanticColorRequest, Color> result = [];
 
@@ -128,9 +127,8 @@ public sealed class SemanticColorMapper
 		double globalMin = double.MaxValue;
 		double globalMax = double.MinValue;
 
-		foreach (KeyValuePair<SemanticMeaning, Collection<Color>> kvp in theme.SemanticMapping)
+		foreach (Collection<Color> colors in theme.SemanticMapping.Values)
 		{
-			Collection<Color> colors = kvp.Value;
 			for (int i = 0; i < colors.Count; i++)
 			{
 				double l = colors[i].ToOklab().L;
@@ -145,8 +143,9 @@ public sealed class SemanticColorMapper
 			}
 		}
 
-		// Ensure we have a valid range
-		if (globalMin == double.MaxValue || globalMax == double.MinValue)
+		// Ensure we have a valid range. The seeds are deliberately inverted, so they stay crossed
+		// unless at least one lightness value was observed.
+		if (globalMin > globalMax)
 		{
 			return (0.0, 1.0); // Fallback range
 		}

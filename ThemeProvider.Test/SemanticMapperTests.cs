@@ -6,89 +6,108 @@ using System;
 using System.Collections.Generic;
 using ktsu.Semantics.Color;
 using ktsu.ThemeProvider;
-using ktsu.ThemeProvider.Themes.Catppuccin;
-using ktsu.ThemeProvider.Themes.Gruvbox;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 /// <summary>
-/// Verifies in-gamut and lightness-ordering guarantees for <see cref="SemanticColorMapper.MakeCompletePalette"/>.
+/// Verifies the priority-to-lightness contract of <see cref="SemanticColorMapper.MakeCompletePalette"/>.
+/// <para>
+/// In-gamut guarantees are asserted across the whole catalog by
+/// <see cref="SemanticColorMapperEdgeCaseTests.MakeCompletePalette_ForEveryTheme_StaysInGamut"/>;
+/// this class covers the ordering guarantee instead.
+/// </para>
 /// </summary>
 [TestClass]
 public class SemanticMapperTests
 {
 	/// <summary>
-	/// Every color produced by the mapper for the Catppuccin Mocha theme must have
-	/// linear-RGB channels within [0, 1].
+	/// The mapper targets a strictly increasing lightness per priority level, but Oklab-to-linear
+	/// round-trips leave floating-point residuals (~1e-12), so an epsilon guards the comparison.
 	/// </summary>
-	[TestMethod]
-	public void MochaPalette_AllColorsInGamut()
-	{
-		Mocha theme = new();
-		IReadOnlyDictionary<SemanticColorRequest, Color> palette = SemanticColorMapper.MakeCompletePalette(theme);
-
-		foreach (KeyValuePair<SemanticColorRequest, Color> kvp in palette)
-		{
-			Color c = kvp.Value;
-			string label = kvp.Key.ToString();
-			Assert.IsTrue(c.R is >= 0.0 and <= 1.0, $"Red out of gamut ({c.R:F4}) for {label}");
-			Assert.IsTrue(c.G is >= 0.0 and <= 1.0, $"Green out of gamut ({c.G:F4}) for {label}");
-			Assert.IsTrue(c.B is >= 0.0 and <= 1.0, $"Blue out of gamut ({c.B:F4}) for {label}");
-		}
-	}
+	private const double LightnessEpsilon = 1e-9;
 
 	/// <summary>
-	/// Every color produced by the mapper for the Gruvbox Dark theme must have
-	/// linear-RGB channels within [0, 1].
+	/// Across every registered theme, Oklab lightness must move monotonically as Priority rises
+	/// from VeryLow to VeryHigh — upward for dark themes, downward for light ones. This is the
+	/// visual-hierarchy guarantee the whole priority system rests on.
 	/// </summary>
 	[TestMethod]
-	public void GruvboxDarkPalette_AllColorsInGamut()
+	public void CompletePalette_LightnessIsMonotonicInPriority()
 	{
-		GruvboxDark theme = new();
-		IReadOnlyDictionary<SemanticColorRequest, Color> palette = SemanticColorMapper.MakeCompletePalette(theme);
-
-		foreach (KeyValuePair<SemanticColorRequest, Color> kvp in palette)
-		{
-			Color c = kvp.Value;
-			string label = kvp.Key.ToString();
-			Assert.IsTrue(c.R is >= 0.0 and <= 1.0, $"Red out of gamut ({c.R:F4}) for {label}");
-			Assert.IsTrue(c.G is >= 0.0 and <= 1.0, $"Green out of gamut ({c.G:F4}) for {label}");
-			Assert.IsTrue(c.B is >= 0.0 and <= 1.0, $"Blue out of gamut ({c.B:F4}) for {label}");
-		}
-	}
-
-	/// <summary>
-	/// For each semantic meaning in the Catppuccin Mocha dark theme, Oklab lightness must be
-	/// non-decreasing as Priority rises from VeryLow to VeryHigh.
-	/// <para>
-	/// The mapper targets a strictly increasing lightness per priority level; floating-point
-	/// residuals from Oklab-to-linear round-trips may introduce tiny deviations (~1e-12),
-	/// so we allow an epsilon of 1e-9 before calling the invariant violated.
-	/// </para>
-	/// </summary>
-	[TestMethod]
-	public void MochaPalette_PriorityLightnessNonDecreasingForDarkTheme()
-	{
-		Mocha theme = new();
-		IReadOnlyDictionary<SemanticColorRequest, Color> palette = SemanticColorMapper.MakeCompletePalette(theme);
-
 		// Enum.GetValues returns values in ascending numeric order (VeryLow=0 … VeryHigh=6).
 		Priority[] priorities = Enum.GetValues<Priority>();
 
-		foreach (SemanticMeaning meaning in theme.SemanticMapping.Keys)
+		foreach (ThemeRegistry.ThemeInfo info in ThemeRegistry.AllThemes)
 		{
-			double previousL = double.MinValue;
-			foreach (Priority priority in priorities)
+			ISemanticTheme theme = info.CreateInstance();
+			IReadOnlyDictionary<SemanticColorRequest, Color> palette =
+				SemanticColorMapper.MakeCompletePalette(theme);
+
+			foreach (SemanticMeaning meaning in theme.SemanticMapping.Keys)
 			{
-				SemanticColorRequest request = new(meaning, priority);
-				if (palette.TryGetValue(request, out Color color))
+				AssertMonotonic(info.Name, theme.IsDarkTheme, meaning, priorities, palette);
+			}
+		}
+	}
+
+	private static void AssertMonotonic(
+		string themeName,
+		bool isDarkTheme,
+		SemanticMeaning meaning,
+		Priority[] priorities,
+		IReadOnlyDictionary<SemanticColorRequest, Color> palette)
+	{
+		double? previous = null;
+
+		foreach (Priority priority in priorities)
+		{
+			if (!palette.TryGetValue(new SemanticColorRequest(meaning, priority), out Color color))
+			{
+				continue;
+			}
+
+			double lightness = color.ToOklab().L;
+
+			if (previous is { } previousLightness)
+			{
+				string detail =
+					$"{themeName}: lightness moved the wrong way ({previousLightness:F6} → {lightness:F6}) " +
+					$"for {meaning} at {priority}";
+
+				if (isDarkTheme)
 				{
-					double l = color.ToOklab().L;
-					Assert.IsTrue(
-						l >= previousL - 1e-9,
-						$"Lightness decreased ({previousL:F6} → {l:F6}) for {meaning} at {priority}");
-					previousL = l;
+					Assert.IsGreaterThanOrEqualTo(previousLightness - LightnessEpsilon, lightness, detail);
+				}
+				else
+				{
+					Assert.IsLessThanOrEqualTo(previousLightness + LightnessEpsilon, lightness, detail);
 				}
 			}
+
+			previous = lightness;
+		}
+	}
+
+	/// <summary>
+	/// The lowest and highest priority of a meaning must actually differ, otherwise the ramp is flat
+	/// and priority carries no visual information.
+	/// </summary>
+	[TestMethod]
+	public void CompletePalette_PriorityRampSpansARange()
+	{
+		foreach (ThemeRegistry.ThemeInfo info in ThemeRegistry.AllThemes)
+		{
+			ISemanticTheme theme = info.CreateInstance();
+			IReadOnlyDictionary<SemanticColorRequest, Color> palette =
+				SemanticColorMapper.MakeCompletePalette(theme);
+
+			double lowest = palette[new(SemanticMeaning.Neutral, Priority.VeryLow)].ToOklab().L;
+			double highest = palette[new(SemanticMeaning.Neutral, Priority.VeryHigh)].ToOklab().L;
+
+			Assert.AreNotEqual(
+				lowest,
+				highest,
+				LightnessEpsilon,
+				$"{info.Name}: neutral ramp is flat across priorities");
 		}
 	}
 }

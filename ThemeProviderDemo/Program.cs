@@ -143,64 +143,80 @@ internal static class Program
 		// Browse by family
 		foreach (string family in Families)
 		{
-			IReadOnlyList<ThemeInfo> themesInFamily = GetThemesInFamily(family);
-
-			if (ImGui.CollapsingHeader($"{family} ({themesInFamily.Count} variants)", ImGuiTreeNodeFlags.DefaultOpen))
-			{
-				ImGui.Indent();
-
-				// Show themes in a grid
-				if (ImGui.BeginTable($"Family_{family}", 4, ImGuiTableFlags.Borders | ImGuiTableFlags.RowBg))
-				{
-					ImGui.TableSetupColumn("Theme");
-					ImGui.TableSetupColumn("Type");
-					ImGui.TableSetupColumn("Description");
-					ImGui.TableSetupColumn("Action");
-					ImGui.TableHeadersRow();
-
-					for (int i = 0; i < themesInFamily.Count; i++)
-					{
-						ThemeInfo themeInfo = themesInFamily[i];
-						ImGui.TableNextRow();
-
-						ImGui.TableSetColumnIndex(0);
-						ImGui.TextUnformatted(themeInfo.Name);
-
-						ImGui.TableSetColumnIndex(1);
-						ImGui.TextColored(themeInfo.IsDark ? new Vector4(0.8f, 0.8f, 1.0f, 1.0f) : new Vector4(1.0f, 1.0f, 0.8f, 1.0f),
-							themeInfo.IsDark ? "Dark" : "Light");
-
-						ImGui.TableSetColumnIndex(2);
-						ImGui.TextWrapped(themeInfo.Description);
-
-						ImGui.TableSetColumnIndex(3);
-						if (ImGui.Button($"Preview##{family}_{i}"))
-						{
-							// Find this theme in the main array and select it
-							for (int j = 0; j < availableThemes.Length; j++)
-							{
-								if (availableThemes[j].Name == themeInfo.Name)
-								{
-									selectedThemeIndex = j;
-									theme = themeInfo.CreateInstance();
-									cachedTheme = null;
-									cachedCompletePalette = null;
-									break;
-								}
-							}
-						}
-					}
-
-					ImGui.EndTable();
-				}
-
-				ImGui.Unindent();
-			}
+			RenderFamilySection(family);
 		}
 
 		ImGui.Separator();
 		ImGui.TextUnformatted("Usage Example:");
 		ImGui.Text("// Get all themes\nvar allThemes = ThemeRegistry.AllThemes;\n\n// Get themes by family\nvar gruvboxThemes = ThemeRegistry.GetThemesInFamily(\"Gruvbox\");\n\n// Find specific theme\nvar theme = ThemeRegistry.FindTheme(\"Catppuccin Mocha\");\nvar instance = theme?.CreateInstance();");
+	}
+
+	private static void RenderFamilySection(string family)
+	{
+		IReadOnlyList<ThemeInfo> themesInFamily = GetThemesInFamily(family);
+
+		if (!ImGui.CollapsingHeader($"{family} ({themesInFamily.Count} variants)", ImGuiTreeNodeFlags.DefaultOpen))
+		{
+			return;
+		}
+
+		ImGui.Indent();
+
+		// Show themes in a grid
+		if (ImGui.BeginTable($"Family_{family}", 4, ImGuiTableFlags.Borders | ImGuiTableFlags.RowBg))
+		{
+			ImGui.TableSetupColumn("Theme");
+			ImGui.TableSetupColumn("Type");
+			ImGui.TableSetupColumn("Description");
+			ImGui.TableSetupColumn("Action");
+			ImGui.TableHeadersRow();
+
+			for (int i = 0; i < themesInFamily.Count; i++)
+			{
+				RenderThemeBrowserRow(family, i, themesInFamily[i]);
+			}
+
+			ImGui.EndTable();
+		}
+
+		ImGui.Unindent();
+	}
+
+	private static void RenderThemeBrowserRow(string family, int index, ThemeInfo themeInfo)
+	{
+		ImGui.TableNextRow();
+
+		ImGui.TableSetColumnIndex(0);
+		ImGui.TextUnformatted(themeInfo.Name);
+
+		ImGui.TableSetColumnIndex(1);
+		ImGui.TextColored(themeInfo.IsDark ? new Vector4(0.8f, 0.8f, 1.0f, 1.0f) : new Vector4(1.0f, 1.0f, 0.8f, 1.0f),
+			themeInfo.IsDark ? "Dark" : "Light");
+
+		ImGui.TableSetColumnIndex(2);
+		ImGui.TextWrapped(themeInfo.Description);
+
+		ImGui.TableSetColumnIndex(3);
+		if (ImGui.Button($"Preview##{family}_{index}"))
+		{
+			SelectTheme(themeInfo);
+		}
+	}
+
+	private static void SelectTheme(ThemeInfo themeInfo)
+	{
+		// Find this theme in the main array and select it
+		for (int i = 0; i < availableThemes.Length; i++)
+		{
+			if (availableThemes[i].Name == themeInfo.Name)
+			{
+				selectedThemeIndex = i;
+				theme = themeInfo.CreateInstance();
+				cachedTheme = null;
+				cachedCompletePalette = null;
+				return;
+			}
+		}
 	}
 
 	private static void RenderThemeOverview()
@@ -230,57 +246,65 @@ internal static class Program
 		Priority[] sortedPriorities = [Priority.VeryLow, Priority.Low, Priority.MediumLow, Priority.Medium, Priority.MediumHigh, Priority.High, Priority.VeryHigh];
 
 		// Create a single table showing all semantics and priorities in a grid
-		if (ImGui.BeginTable("ColorGrid", sortedPriorities.Length + 1, ImGuiTableFlags.Borders | ImGuiTableFlags.RowBg))
-		{
-			// Setup columns - first column for semantic names, rest for priorities
-			ImGui.TableSetupColumn("Semantic", ImGuiTableColumnFlags.WidthFixed, 100);
-			foreach (Priority priority in sortedPriorities)
-			{
-				ImGui.TableSetupColumn(priority.ToString(), ImGuiTableColumnFlags.WidthFixed, 100);
-			}
-			ImGui.TableHeadersRow();
-
-			// Create a row for each semantic meaning
-			foreach (SemanticMeaning meaning in semanticMeanings)
-			{
-				ImGui.TableNextRow();
-
-				// First column: semantic meaning name
-				ImGui.TableSetColumnIndex(0);
-				ImGui.TextUnformatted(meaning.ToString());
-
-				// Rest of columns: color swatches for each priority
-				for (int i = 0; i < sortedPriorities.Length; i++)
-				{
-					ImGui.TableSetColumnIndex(i + 1);
-					Priority priority = sortedPriorities[i];
-					SemanticColorRequest request = new(meaning, priority);
-
-					if (GetColorFromTheme(request) is { } color)
-					{
-						Srgb colorSrgb = color.ToSrgb();
-						Vector4 colorVec = new((float)colorSrgb.R, (float)colorSrgb.G, (float)colorSrgb.B, 1.0f);
-						Vector2 swatchSize = new(90, 30);
-
-						if (ImGui.ColorButton($"##{meaning}_{priority}", colorVec, ImGuiColorEditFlags.NoTooltip, swatchSize))
-						{
-							// Optional: could copy color to clipboard or do something on click
-						}
-
-						if (ImGui.IsItemHovered())
-						{
-							ImGui.SetTooltip($"{meaning} - {priority}\nLightness: {color.ToOklab().L:F2}\nRGB: {colorSrgb.R:F3}, {colorSrgb.G:F3}, {colorSrgb.B:F3}\nHex: {color.ToHex()}");
-						}
-					}
-				}
-			}
-
-			ImGui.EndTable();
-		}
+		RenderSemanticColorGrid(semanticMeanings, sortedPriorities);
 
 		ImGui.Spacing();
 		ImGui.TextUnformatted("Note: Neutral uses full global range, non-neutral uses 50-90% of global range");
 		ImGui.TextUnformatted($"Theme Type: {(theme.IsDarkTheme ? "Dark" : "Light")} - Priority ordering {(theme.IsDarkTheme ? "low to high" : "high to low")} lightness");
+	}
+
+	private static void RenderSemanticColorGrid(SemanticMeaning[] semanticMeanings, Priority[] sortedPriorities)
+	{
+		if (!ImGui.BeginTable("ColorGrid", sortedPriorities.Length + 1, ImGuiTableFlags.Borders | ImGuiTableFlags.RowBg))
+		{
+			return;
+		}
+
+		// Setup columns - first column for semantic names, rest for priorities
+		ImGui.TableSetupColumn("Semantic", ImGuiTableColumnFlags.WidthFixed, 100);
+		foreach (Priority priority in sortedPriorities)
+		{
+			ImGui.TableSetupColumn(priority.ToString(), ImGuiTableColumnFlags.WidthFixed, 100);
+		}
+		ImGui.TableHeadersRow();
+
+		// Create a row for each semantic meaning
+		foreach (SemanticMeaning meaning in semanticMeanings)
+		{
+			ImGui.TableNextRow();
+
+			// First column: semantic meaning name
+			ImGui.TableSetColumnIndex(0);
+			ImGui.TextUnformatted(meaning.ToString());
+
+			// Rest of columns: color swatches for each priority
+			for (int i = 0; i < sortedPriorities.Length; i++)
+			{
+				ImGui.TableSetColumnIndex(i + 1);
+				RenderGridSwatch(meaning, sortedPriorities[i]);
+			}
+		}
+
+		ImGui.EndTable();
+	}
+
+	private static void RenderGridSwatch(SemanticMeaning meaning, Priority priority)
+	{
+		if (GetColorFromTheme(new SemanticColorRequest(meaning, priority)) is not { } color)
+		{
+			return;
+		}
+
+		Srgb colorSrgb = color.ToSrgb();
+		Vector4 colorVec = new((float)colorSrgb.R, (float)colorSrgb.G, (float)colorSrgb.B, 1.0f);
+		Vector2 swatchSize = new(90, 30);
+
+		ImGui.ColorButton($"##{meaning}_{priority}", colorVec, ImGuiColorEditFlags.NoTooltip, swatchSize);
+
+		if (ImGui.IsItemHovered())
+		{
+			ImGui.SetTooltip($"{meaning} - {priority}\nLightness: {color.ToOklab().L:F2}\nRGB: {colorSrgb.R:F3}, {colorSrgb.G:F3}, {colorSrgb.B:F3}\nHex: {color.ToHex()}");
+		}
 	}
 
 	private static void RenderSemanticColors()
@@ -345,78 +369,88 @@ internal static class Program
 
 		if (ImGui.CollapsingHeader("Lightness-Based Priority System", ImGuiTreeNodeFlags.DefaultOpen))
 		{
-			// Show how all priorities map to lightness values
-			Priority[] allPriorities = Enum.GetValues<Priority>();
-			SemanticMeaning currentMeaning = (SemanticMeaning)selectedSemanticMeaning;
+			RenderLightnessMappingDemo();
+		}
+	}
 
-			// Get original colors available for this semantic
-			if (theme.SemanticMapping.TryGetValue(currentMeaning, out Collection<Color>? availableColors))
+	private static void RenderLightnessMappingDemo()
+	{
+		SemanticMeaning currentMeaning = (SemanticMeaning)selectedSemanticMeaning;
+
+		// Get original colors available for this semantic
+		if (!theme.SemanticMapping.TryGetValue(currentMeaning, out Collection<Color>? availableColors))
+		{
+			return;
+		}
+
+		ImGui.TextUnformatted($"Original colors for {currentMeaning}: {availableColors.Count}");
+
+		// Show original color lightness values
+		ImGui.Indent();
+		foreach (Color originalColor in availableColors)
+		{
+			ImGui.TextColored(ToImVec4(originalColor), $"• {originalColor.ToHex()} (L: {originalColor.ToOklab().L:F2})");
+		}
+		ImGui.Unindent();
+
+		ImGui.Separator();
+
+		// Show what each priority maps to
+		ImGui.TextUnformatted("Priority → Mapped Lightness (Interpolation/Extrapolation):");
+
+		// Get complete mapping for this semantic meaning (more efficient than individual requests)
+		IReadOnlyDictionary<SemanticColorRequest, Color> completeMapping = GetCompleteMappingForSemantic();
+
+		if (!ImGui.BeginTable("PriorityMappingTable", 5, ImGuiTableFlags.Borders | ImGuiTableFlags.RowBg))
+		{
+			return;
+		}
+
+		ImGui.TableSetupColumn("Priority");
+		ImGui.TableSetupColumn("Target L");
+		ImGui.TableSetupColumn("Actual L");
+		ImGui.TableSetupColumn("Color");
+		ImGui.TableSetupColumn("Method");
+		ImGui.TableHeadersRow();
+
+		foreach (Priority priority in Enum.GetValues<Priority>())
+		{
+			if (completeMapping.TryGetValue(new SemanticColorRequest(currentMeaning, priority), out Color color))
 			{
-				ImGui.TextUnformatted($"Original colors for {currentMeaning}: {availableColors.Count}");
-
-				// Show original color lightness values
-				ImGui.Indent();
-				foreach (Color originalColor in availableColors)
-				{
-					ImGui.TextColored(ToImVec4(originalColor), $"• {originalColor.ToHex()} (L: {originalColor.ToOklab().L:F2})");
-				}
-				ImGui.Unindent();
-
-				ImGui.Separator();
-
-				// Show what each priority maps to
-				ImGui.TextUnformatted("Priority → Mapped Lightness (Interpolation/Extrapolation):");
-
-				// Get complete mapping for this semantic meaning (more efficient than individual requests)
-				IReadOnlyDictionary<SemanticColorRequest, Color> completeMapping = GetCompleteMappingForSemantic();
-
-				if (ImGui.BeginTable("PriorityMappingTable", 5, ImGuiTableFlags.Borders | ImGuiTableFlags.RowBg))
-				{
-					ImGui.TableSetupColumn("Priority");
-					ImGui.TableSetupColumn("Target L");
-					ImGui.TableSetupColumn("Actual L");
-					ImGui.TableSetupColumn("Color");
-					ImGui.TableSetupColumn("Method");
-					ImGui.TableHeadersRow();
-
-					foreach (Priority priority in allPriorities)
-					{
-						SemanticColorRequest request = new(currentMeaning, priority);
-						if (completeMapping.TryGetValue(request, out Color color))
-						{
-							ImGui.TableNextRow();
-
-							ImGui.TableSetColumnIndex(0);
-							ImGui.TextUnformatted(priority.ToString());
-
-							ImGui.TableSetColumnIndex(1);
-							// Calculate what the target lightness would be for this priority
-							float targetLightness = CalculateTargetLightnessForPriority(priority);
-							ImGui.TextUnformatted($"{targetLightness:F2}");
-
-							ImGui.TableSetColumnIndex(2);
-							ImGui.TextUnformatted($"{color.ToOklab().L:F2}");
-
-							ImGui.TableSetColumnIndex(3);
-							// Small color swatch
-							ImDrawListPtr tableDrawList = ImGui.GetWindowDrawList();
-							Vector2 tablePos = ImGui.GetCursorScreenPos();
-							float swatchSize = 15f;
-							tableDrawList.AddRectFilled(tablePos, new Vector2(tablePos.X + swatchSize, tablePos.Y + swatchSize),
-														ImGui.ColorConvertFloat4ToU32(ToImVec4(color)));
-							ImGui.Dummy(new Vector2(swatchSize, swatchSize));
-
-							ImGui.TableSetColumnIndex(4);
-							// Determine if this was interpolated or extrapolated
-							string method = DetermineMethod(availableColors, color);
-							ImGui.TextUnformatted(method);
-						}
-					}
-
-					ImGui.EndTable();
-				}
+				RenderPriorityMappingRow(priority, color, availableColors);
 			}
 		}
+
+		ImGui.EndTable();
+	}
+
+	private static void RenderPriorityMappingRow(Priority priority, Color color, Collection<Color> availableColors)
+	{
+		ImGui.TableNextRow();
+
+		ImGui.TableSetColumnIndex(0);
+		ImGui.TextUnformatted(priority.ToString());
+
+		ImGui.TableSetColumnIndex(1);
+		// Calculate what the target lightness would be for this priority
+		float targetLightness = CalculateTargetLightnessForPriority(priority);
+		ImGui.TextUnformatted($"{targetLightness:F2}");
+
+		ImGui.TableSetColumnIndex(2);
+		ImGui.TextUnformatted($"{color.ToOklab().L:F2}");
+
+		ImGui.TableSetColumnIndex(3);
+		// Small color swatch
+		ImDrawListPtr tableDrawList = ImGui.GetWindowDrawList();
+		Vector2 tablePos = ImGui.GetCursorScreenPos();
+		const float swatchSize = 15f;
+		tableDrawList.AddRectFilled(tablePos, new Vector2(tablePos.X + swatchSize, tablePos.Y + swatchSize),
+									ImGui.ColorConvertFloat4ToU32(ToImVec4(color)));
+		ImGui.Dummy(new Vector2(swatchSize, swatchSize));
+
+		ImGui.TableSetColumnIndex(4);
+		// Determine if this was interpolated or extrapolated
+		ImGui.TextUnformatted(DetermineMethod(availableColors, color));
 	}
 
 	private static float CalculateTargetLightnessForPriority(Priority priority)
@@ -463,22 +497,28 @@ internal static class Program
 		}
 	}
 
+	// Lightness values are the result of Oklab round-trips, so compare them with a tolerance
+	// rather than exactly. 0.01 is well below a perceptible step in Oklab L.
+	private const double LightnessTolerance = 0.01;
+
 	private static string DetermineMethod(Collection<Color> availableColors, Color resultColor)
 	{
+		double resultL = resultColor.ToOklab().L;
+
 		if (availableColors.Count == 1)
 		{
-			return availableColors.First().ToOklab().L == resultColor.ToOklab().L ? "Original" : "Extrapolated";
+			return Math.Abs(availableColors[0].ToOklab().L - resultL) < LightnessTolerance ? "Original" : "Extrapolated";
 		}
 
 		List<Color> sortedColors = [.. availableColors.OrderBy(c => c.ToOklab().L)];
-		double minL = sortedColors.First().ToOklab().L;
-		double maxL = sortedColors.Last().ToOklab().L;
+		double minL = sortedColors[0].ToOklab().L;
+		double maxL = sortedColors[^1].ToOklab().L;
 
-		if (resultColor.ToOklab().L < minL - 0.01 || resultColor.ToOklab().L > maxL + 0.01)
+		if (resultL < minL - LightnessTolerance || resultL > maxL + LightnessTolerance)
 		{
 			return "Extrapolated";
 		}
-		else if (availableColors.Any(c => Math.Abs(c.ToOklab().L - resultColor.ToOklab().L) < 0.01))
+		else if (availableColors.Any(c => Math.Abs(c.ToOklab().L - resultL) < LightnessTolerance))
 		{
 			return "Original";
 		}
@@ -618,49 +658,7 @@ internal static class Program
 		ImGui.TextUnformatted("Live preview of semantic theme applied to various UI elements:");
 		ImGui.Separator();
 
-		// Semantic buttons
-		ImGui.TextUnformatted("Semantic Buttons:");
-
-		if (ImGui.Button("Primary"))
-		{
-			// Action
-		}
-		ImGui.SameLine();
-
-		if (GetColorFromTheme(new(SemanticMeaning.Alternate, Priority.MediumHigh)) is { } alternateColor)
-		{
-			ImGui.PushStyleColor(ImGuiCol.Button, ToImVec4(alternateColor));
-			ImGui.PushStyleColor(ImGuiCol.ButtonHovered, ToImVec4(AdjustBrightness(alternateColor, 1.1f)));
-			if (ImGui.Button("Alternate"))
-			{
-				// Action
-			}
-			ImGui.PopStyleColor(2);
-			ImGui.SameLine();
-		}
-
-		if (GetColorFromTheme(new(SemanticMeaning.CallToAction, Priority.MediumHigh)) is { } ctaColor)
-		{
-			ImGui.PushStyleColor(ImGuiCol.Button, ToImVec4(ctaColor));
-			ImGui.PushStyleColor(ImGuiCol.ButtonHovered, ToImVec4(AdjustBrightness(ctaColor, 1.1f)));
-			if (ImGui.Button("Call-to-Action"))
-			{
-				// Action
-			}
-			ImGui.PopStyleColor(2);
-			ImGui.SameLine();
-		}
-
-		if (GetColorFromTheme(new(SemanticMeaning.Caution, Priority.MediumHigh)) is { } cautionColor)
-		{
-			ImGui.PushStyleColor(ImGuiCol.Button, ToImVec4(cautionColor));
-			ImGui.PushStyleColor(ImGuiCol.ButtonHovered, ToImVec4(AdjustBrightness(cautionColor, 1.1f)));
-			if (ImGui.Button("Caution"))
-			{
-				// Action
-			}
-			ImGui.PopStyleColor(2);
-		}
+		RenderSemanticButtons();
 
 		ImGui.Separator();
 
@@ -672,53 +670,79 @@ internal static class Program
 
 		ImGui.Separator();
 
-		// Progress bars with semantic colors
-		ImGui.TextUnformatted("Progress Indicators:");
-
-		if (GetColorFromTheme(new(SemanticMeaning.Success, Priority.High)) is { } successWidget)
-		{
-			ImGui.PushStyleColor(ImGuiCol.PlotHistogram, ToImVec4(successWidget));
-			ImGui.ProgressBar(0.7f, new Vector2(0, 0), "70% Complete");
-			ImGui.PopStyleColor();
-		}
-
-		if (GetColorFromTheme(new(SemanticMeaning.Warning, Priority.High)) is { } warningWidget)
-		{
-			ImGui.PushStyleColor(ImGuiCol.PlotHistogram, ToImVec4(warningWidget));
-			ImGui.ProgressBar(0.4f, new Vector2(0, 0), "40% Warning");
-			ImGui.PopStyleColor();
-		}
-
-		if (GetColorFromTheme(new(SemanticMeaning.Error, Priority.High)) is { } errorWidget)
-		{
-			ImGui.PushStyleColor(ImGuiCol.PlotHistogram, ToImVec4(errorWidget));
-			ImGui.ProgressBar(0.2f, new Vector2(0, 0), "20% Critical");
-			ImGui.PopStyleColor();
-		}
+		RenderProgressIndicators();
 
 		ImGui.Separator();
 
-		// Semantic text
+		RenderSemanticText();
+	}
+
+	private static void RenderSemanticButtons()
+	{
+		ImGui.TextUnformatted("Semantic Buttons:");
+
+		ImGui.Button("Primary");
+		ImGui.SameLine();
+
+		RenderSemanticButton(SemanticMeaning.Alternate, "Alternate", sameLine: true);
+		RenderSemanticButton(SemanticMeaning.CallToAction, "Call-to-Action", sameLine: true);
+		RenderSemanticButton(SemanticMeaning.Caution, "Caution", sameLine: false);
+	}
+
+	private static void RenderSemanticButton(SemanticMeaning meaning, string label, bool sameLine)
+	{
+		if (GetColorFromTheme(new SemanticColorRequest(meaning, Priority.MediumHigh)) is not { } color)
+		{
+			return;
+		}
+
+		ImGui.PushStyleColor(ImGuiCol.Button, ToImVec4(color));
+		ImGui.PushStyleColor(ImGuiCol.ButtonHovered, ToImVec4(AdjustBrightness(color, 1.1f)));
+		ImGui.Button(label);
+		ImGui.PopStyleColor(2);
+
+		if (sameLine)
+		{
+			ImGui.SameLine();
+		}
+	}
+
+	private static void RenderProgressIndicators()
+	{
+		ImGui.TextUnformatted("Progress Indicators:");
+
+		RenderSemanticProgressBar(SemanticMeaning.Success, 0.7f, "70% Complete");
+		RenderSemanticProgressBar(SemanticMeaning.Warning, 0.4f, "40% Warning");
+		RenderSemanticProgressBar(SemanticMeaning.Error, 0.2f, "20% Critical");
+	}
+
+	private static void RenderSemanticProgressBar(SemanticMeaning meaning, float fraction, string overlay)
+	{
+		if (GetColorFromTheme(new SemanticColorRequest(meaning, Priority.High)) is not { } color)
+		{
+			return;
+		}
+
+		ImGui.PushStyleColor(ImGuiCol.PlotHistogram, ToImVec4(color));
+		ImGui.ProgressBar(fraction, new Vector2(0, 0), overlay);
+		ImGui.PopStyleColor();
+	}
+
+	private static void RenderSemanticText()
+	{
 		ImGui.TextUnformatted("Semantic Text:");
 
-		if (GetColorFromTheme(new(SemanticMeaning.Success, Priority.VeryHigh)) is { } successText)
-		{
-			ImGui.TextColored(ToImVec4(successText), "Success: Operation completed successfully");
-		}
+		RenderSemanticTextLine(SemanticMeaning.Success, "Success: Operation completed successfully");
+		RenderSemanticTextLine(SemanticMeaning.Warning, "Warning: Please review your input");
+		RenderSemanticTextLine(SemanticMeaning.Error, "Error: Operation failed");
+		RenderSemanticTextLine(SemanticMeaning.Information, "Information: Additional details available");
+	}
 
-		if (GetColorFromTheme(new(SemanticMeaning.Warning, Priority.VeryHigh)) is { } warningText)
+	private static void RenderSemanticTextLine(SemanticMeaning meaning, string text)
+	{
+		if (GetColorFromTheme(new SemanticColorRequest(meaning, Priority.VeryHigh)) is { } color)
 		{
-			ImGui.TextColored(ToImVec4(warningText), "Warning: Please review your input");
-		}
-
-		if (GetColorFromTheme(new(SemanticMeaning.Error, Priority.VeryHigh)) is { } errorText)
-		{
-			ImGui.TextColored(ToImVec4(errorText), "Error: Operation failed");
-		}
-
-		if (GetColorFromTheme(new(SemanticMeaning.Information, Priority.VeryHigh)) is { } infoText)
-		{
-			ImGui.TextColored(ToImVec4(infoText), "Information: Additional details available");
+			ImGui.TextColored(ToImVec4(color), text);
 		}
 	}
 

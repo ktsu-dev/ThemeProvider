@@ -2,6 +2,7 @@
 
 namespace ktsu.ThemeProvider.Themes.Monokai;
 
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using ktsu.Semantics.Color;
 
@@ -11,44 +12,28 @@ using ktsu.Semantics.Color;
 /// </summary>
 public class Monokai : ISemanticTheme
 {
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-	public static readonly Color Background = Color.FromHex("#272822");
-	public static readonly Color CurrentLine = Color.FromHex("#49483e");
-	public static readonly Color Selection = Color.FromHex("#49483e");
-	public static readonly Color Foreground = Color.FromHex("#f8f8f2");
-	public static readonly Color Comment = Color.FromHex("#75715e");
-	public static readonly Color Red = Color.FromHex("#f92672");
-	public static readonly Color Orange = Color.FromHex("#fd971f");
-	public static readonly Color Yellow = Color.FromHex("#f4bf75");
-	public static readonly Color Green = Color.FromHex("#a6e22e");
-	public static readonly Color Aqua = Color.FromHex("#a1efe4");
-	public static readonly Color Blue = Color.FromHex("#66d9ef");
-	public static readonly Color Purple = Color.FromHex("#ae81ff");
-
-	public static Collection<Color> Neutrals =>
-	[
-		Foreground,    // Lightest
-		Background,    // Darkest
-	];
-
-	public Dictionary<SemanticMeaning, Collection<Color>> SemanticMapping => new()
+	// Hex values are the palette this theme mirrors; the trailing comment on each line is
+	// that palette's own name for the color.
+	private static readonly SemanticPalette Palette = new()
 	{
-		[SemanticMeaning.Neutral] = Neutrals,
-		[SemanticMeaning.Primary] = [Blue],
-		[SemanticMeaning.Alternate] = [Purple],
-		[SemanticMeaning.Success] = [Green],
-		[SemanticMeaning.CallToAction] = [Green],
-		[SemanticMeaning.Information] = [Aqua],
-		[SemanticMeaning.Caution] = [Orange],
-		[SemanticMeaning.Warning] = [Yellow],
-		[SemanticMeaning.Error] = [Red],
-		[SemanticMeaning.Failure] = [Red],
-		[SemanticMeaning.Debug] = [Purple]
+		Neutrals = ["#f8f8f2", "#272822"], // Foreground, Background
+		Primary = "#66d9ef", // Blue
+		Alternate = "#ae81ff", // Purple
+		Success = "#a6e22e", // Green
+		CallToAction = "#a6e22e", // Green
+		Information = "#a1efe4", // Aqua
+		Caution = "#fd971f", // Orange
+		Warning = "#f4bf75", // Yellow
+		Error = "#f92672", // Red
+		Failure = "#f92672", // Red
+		Debug = "#ae81ff", // Purple
 	};
+
+	/// <inheritdoc />
+	public Dictionary<SemanticMeaning, Collection<Color>> SemanticMapping => Palette.ToSemanticMapping();
 
 	/// <summary>
 	/// Monokai is a dark theme
 	/// </summary>
 	public bool IsDarkTheme => true;
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 }

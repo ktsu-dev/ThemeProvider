@@ -2,6 +2,7 @@
 
 namespace ktsu.ThemeProvider.Themes.Gruvbox;
 
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using ktsu.Semantics.Color;
 
@@ -11,61 +12,28 @@ using ktsu.Semantics.Color;
 /// </summary>
 public class GruvboxDark : ISemanticTheme
 {
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-	// Dark colors
-	public static readonly Color DarkHard = Color.FromHex("#1d2021");
-	public static readonly Color Dark0 = Color.FromHex("#282828");
-	public static readonly Color Dark0Soft = Color.FromHex("#32302f");
-	public static readonly Color Dark1 = Color.FromHex("#3c3836");
-	public static readonly Color Dark2 = Color.FromHex("#504945");
-	public static readonly Color Dark3 = Color.FromHex("#665c54");
-	public static readonly Color Dark4 = Color.FromHex("#7c6f64");
-
-	// Light colors
-	public static readonly Color Light0Hard = Color.FromHex("#f9f5d7");
-	public static readonly Color Light0 = Color.FromHex("#fbf1c7");
-	public static readonly Color Light0Soft = Color.FromHex("#f2e5bc");
-	public static readonly Color Light1 = Color.FromHex("#ebdbb2");
-	public static readonly Color Light2 = Color.FromHex("#d5c4a1");
-	public static readonly Color Light3 = Color.FromHex("#bdae93");
-	public static readonly Color Light4 = Color.FromHex("#a89984");
-
-	// Bright colors
-	public static readonly Color BrightRed = Color.FromHex("#fb4934");
-	public static readonly Color BrightGreen = Color.FromHex("#b8bb26");
-	public static readonly Color BrightYellow = Color.FromHex("#fabd2f");
-	public static readonly Color BrightBlue = Color.FromHex("#83a598");
-	public static readonly Color BrightPurple = Color.FromHex("#d3869b");
-	public static readonly Color BrightAqua = Color.FromHex("#8ec07c");
-	public static readonly Color BrightOrange = Color.FromHex("#fe8019");
-
-	// Neutral colors
-	public static readonly Color Gray = Color.FromHex("#928374");
-
-	public static Collection<Color> Neutrals =>
-	[
-		Light1,      // Lightest
-		DarkHard,    // Darkest
-	];
-
-	public Dictionary<SemanticMeaning, Collection<Color>> SemanticMapping => new()
+	// Hex values are the palette this theme mirrors; the trailing comment on each line is
+	// that palette's own name for the color.
+	private static readonly SemanticPalette Palette = new()
 	{
-		[SemanticMeaning.Neutral] = Neutrals,
-		[SemanticMeaning.Primary] = [BrightOrange],
-		[SemanticMeaning.Alternate] = [BrightPurple],
-		[SemanticMeaning.Success] = [BrightGreen],
-		[SemanticMeaning.CallToAction] = [BrightGreen],
-		[SemanticMeaning.Information] = [BrightAqua],
-		[SemanticMeaning.Caution] = [BrightBlue],
-		[SemanticMeaning.Warning] = [BrightYellow],
-		[SemanticMeaning.Error] = [BrightRed],
-		[SemanticMeaning.Failure] = [BrightRed],
-		[SemanticMeaning.Debug] = [BrightPurple]
+		Neutrals = ["#ebdbb2", "#1d2021"], // Light1, DarkHard
+		Primary = "#fe8019", // BrightOrange
+		Alternate = "#d3869b", // BrightPurple
+		Success = "#b8bb26", // BrightGreen
+		CallToAction = "#b8bb26", // BrightGreen
+		Information = "#8ec07c", // BrightAqua
+		Caution = "#83a598", // BrightBlue
+		Warning = "#fabd2f", // BrightYellow
+		Error = "#fb4934", // BrightRed
+		Failure = "#fb4934", // BrightRed
+		Debug = "#d3869b", // BrightPurple
 	};
+
+	/// <inheritdoc />
+	public Dictionary<SemanticMeaning, Collection<Color>> SemanticMapping => Palette.ToSemanticMapping();
 
 	/// <summary>
 	/// Gruvbox Dark is a dark theme
 	/// </summary>
 	public bool IsDarkTheme => true;
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 }

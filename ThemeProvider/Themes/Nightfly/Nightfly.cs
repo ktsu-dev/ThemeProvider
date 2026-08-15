@@ -2,6 +2,7 @@
 
 namespace ktsu.ThemeProvider.Themes.Nightfly;
 
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using ktsu.Semantics.Color;
 
@@ -11,50 +12,28 @@ using ktsu.Semantics.Color;
 /// </summary>
 public class Nightfly : ISemanticTheme
 {
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-	public static readonly Color Background = Color.FromHex("#011627");
-	public static readonly Color Selection = Color.FromHex("#1d3b53");
-	public static readonly Color Foreground = Color.FromHex("#d6deeb");
-	public static readonly Color Comment = Color.FromHex("#637777");
-	public static readonly Color Red = Color.FromHex("#fc514e");
-	public static readonly Color Orange = Color.FromHex("#f78c6c");
-	public static readonly Color Yellow = Color.FromHex("#e3d18a");
-	public static readonly Color Green = Color.FromHex("#addb67");
-	public static readonly Color Teal = Color.FromHex("#4db5bd");
-	public static readonly Color Blue = Color.FromHex("#82aaff");
-	public static readonly Color Purple = Color.FromHex("#c792ea");
-	public static readonly Color Cyan = Color.FromHex("#7fdbca");
-	public static readonly Color White = Color.FromHex("#ffffff");
-	public static readonly Color Gray1 = Color.FromHex("#1e2030");
-	public static readonly Color Gray2 = Color.FromHex("#2c3043");
-	public static readonly Color Gray3 = Color.FromHex("#506477");
-	public static readonly Color Gray4 = Color.FromHex("#7e8294");
-	public static readonly Color Gray5 = Color.FromHex("#a1aab8");
-
-	public static Collection<Color> Neutrals =>
-	[
-		White,       // Lightest
-		Background,  // Darkest
-	];
-
-	public Dictionary<SemanticMeaning, Collection<Color>> SemanticMapping => new()
+	// Hex values are the palette this theme mirrors; the trailing comment on each line is
+	// that palette's own name for the color.
+	private static readonly SemanticPalette Palette = new()
 	{
-		[SemanticMeaning.Neutral] = Neutrals,
-		[SemanticMeaning.Primary] = [Blue],
-		[SemanticMeaning.Alternate] = [Purple],
-		[SemanticMeaning.Success] = [Green],
-		[SemanticMeaning.CallToAction] = [Green],
-		[SemanticMeaning.Information] = [Cyan],
-		[SemanticMeaning.Caution] = [Orange],
-		[SemanticMeaning.Warning] = [Yellow],
-		[SemanticMeaning.Error] = [Red],
-		[SemanticMeaning.Failure] = [Red],
-		[SemanticMeaning.Debug] = [Purple]
+		Neutrals = ["#ffffff", "#011627"], // White, Background
+		Primary = "#82aaff", // Blue
+		Alternate = "#c792ea", // Purple
+		Success = "#addb67", // Green
+		CallToAction = "#addb67", // Green
+		Information = "#7fdbca", // Cyan
+		Caution = "#f78c6c", // Orange
+		Warning = "#e3d18a", // Yellow
+		Error = "#fc514e", // Red
+		Failure = "#fc514e", // Red
+		Debug = "#c792ea", // Purple
 	};
+
+	/// <inheritdoc />
+	public Dictionary<SemanticMeaning, Collection<Color>> SemanticMapping => Palette.ToSemanticMapping();
 
 	/// <summary>
 	/// Nightfly is a dark theme
 	/// </summary>
 	public bool IsDarkTheme => true;
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
 }
