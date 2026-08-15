@@ -12,6 +12,9 @@ using ktsu.Semantics.Color;
 /// </summary>
 public class EverforestDark : ISemanticTheme
 {
+	// Colors shared by several meanings are named once, after the palette entry they come from.
+	private const string Red = "#e67e80";
+
 	// Hex values are the palette this theme mirrors; the trailing comment on each line is
 	// that palette's own name for the color.
 	private static readonly SemanticPalette Palette = new()
@@ -23,9 +26,9 @@ public class EverforestDark : ISemanticTheme
 		CallToAction = "#83c092", // Aqua
 		Information = "#d699b6", // Purple
 		Caution = "#dbbc7f", // Yellow
-		Warning = "#e67e80", // Red
-		Error = "#e67e80", // Red
-		Failure = "#e67e80", // Red
+		Warning = Red,
+		Error = Red,
+		Failure = Red,
 		Debug = "#d699b6", // Purple
 	};
 

@@ -146,7 +146,7 @@ public class SemanticPaletteTests
 
 		foreach (SemanticMeaning meaning in first.Keys)
 		{
-			CollectionAssert.AreEqual(
+			Assert.AreSequenceEqual(
 				first[meaning],
 				second[meaning],
 				$"{meaning} differed between calls");

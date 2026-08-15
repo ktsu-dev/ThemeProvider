@@ -13,16 +13,19 @@ using ktsu.Semantics.Color;
 /// </summary>
 public class Dawnfox : ISemanticTheme
 {
+	// Colors shared by several meanings are named once, after the palette entry they come from.
+	private const string Blue = "#56949f";
+
 	// Hex values are the palette this theme mirrors; the trailing comment on each line is
 	// that palette's own name for the color.
 	private static readonly SemanticPalette Palette = new()
 	{
 		Neutrals = ["#575279", "#f4ede4"], // Fg0, BgAlt
-		Primary = "#56949f", // Blue
+		Primary = Blue,
 		Alternate = "#d685af", // Pink
 		Success = "#286983", // Green
-		CallToAction = "#56949f", // Blue
-		Information = "#56949f", // Blue
+		CallToAction = Blue,
+		Information = Blue,
 		Caution = "#d7827e", // Yellow
 		Warning = "#ea9d34", // Orange
 		Error = "#b4637a", // Red
