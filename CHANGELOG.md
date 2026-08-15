@@ -1,7 +1,8 @@
-## v2.1.0 (minor)
+## v3.0.0 (major)
 
 Changes since v2.0.0:
 
+- [major] Fix Sonar issues, eliminate theme duplication, raise coverage to 99.8% ([@matt-edmondson](https://github.com/matt-edmondson))
 - Sync .editorconfig ([@KtsuTools](https://github.com/KtsuTools))
 - Sync global.json ([@KtsuTools](https://github.com/KtsuTools))
 - chore: update ktsu.Sdk to 2.21.1 [patch] ([@matt-edmondson](https://github.com/matt-edmondson))
