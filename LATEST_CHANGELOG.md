@@ -1,6 +1,6 @@
-## v3.0.2 (patch)
+## v3.0.3 (patch)
 
-Changes since v3.0.1:
+Changes since v3.0.2:
 
-- Bump the ktsu group with 2 updates ([@dependabot[bot]](https://github.com/dependabot[bot]))
+- Stop Update SDKs failing when there is nothing to update ([@matt-edmondson](https://github.com/matt-edmondson))
 
