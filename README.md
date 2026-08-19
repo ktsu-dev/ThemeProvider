@@ -8,7 +8,7 @@
 [![NuGet Downloads](https://img.shields.io/nuget/dt/ktsu.ThemeProvider?label=Downloads&logo=nuget)](https://nuget.org/packages/ktsu.ThemeProvider)
 [![GitHub commit activity](https://img.shields.io/github/commit-activity/m/ktsu-dev/ThemeProvider?label=Commits&logo=github)](https://github.com/ktsu-dev/ThemeProvider/commits/main)
 [![GitHub contributors](https://img.shields.io/github/contributors/ktsu-dev/ThemeProvider?label=Contributors&logo=github)](https://github.com/ktsu-dev/ThemeProvider/graphs/contributors)
-[![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/ktsu-dev/ThemeProvider/dotnet.yml?label=Build&logo=github)](https://github.com/ktsu-dev/ThemeProvider/actions)
+[![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/ktsu-dev/ThemeProvider/dotnet.yml?branch=main&label=Build&logo=github)](https://github.com/ktsu-dev/ThemeProvider/actions)
 
 ## Introduction
 
