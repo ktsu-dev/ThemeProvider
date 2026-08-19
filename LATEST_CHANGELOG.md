@@ -1,7 +1,6 @@
-## v3.0.4 (patch)
+## v3.0.5 (patch)
 
-Changes since v3.0.3:
+Changes since v3.0.4:
 
-- chore: store icon.png in LFS as .gitattributes declares ([@matt-edmondson](https://github.com/matt-edmondson))
-- docs: scope build badge to the default branch ([@matt-edmondson](https://github.com/matt-edmondson))
+- Bump the ktsu group with 11 updates ([@dependabot[bot]](https://github.com/dependabot[bot]))
 
