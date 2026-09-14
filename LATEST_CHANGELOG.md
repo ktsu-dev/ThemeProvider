@@ -1,6 +1,6 @@
-## v3.0.22 (patch)
+## v3.0.23 (patch)
 
-Changes since v3.0.21:
+Changes since v3.0.22:
 
-- ci: adopt the consolidated .NET workflow [patch] ([@Claude](https://github.com/Claude))
+- Bump the ktsu group with 11 updates ([@dependabot[bot]](https://github.com/dependabot[bot]))
 
