@@ -1,6 +1,6 @@
-## v3.0.24 (patch)
+## v3.0.25 (patch)
 
-Changes since v3.0.23:
+Changes since v3.0.24:
 
-- Bump the ktsu group with 1 update ([@dependabot[bot]](https://github.com/dependabot[bot]))
+- Gate Dependabot auto-merge on CI actually being green ([@Claude](https://github.com/Claude))
 
