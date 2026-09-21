@@ -5,7 +5,7 @@ VisualStudioVersion = 17.14.36310.24
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThemeProvider", "ThemeProvider\ThemeProvider.csproj", "{E1F39D5E-2B7C-475C-9A78-10342D3E0173}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThemeProviderDemo", "ThemeProviderDemo\ThemeProviderDemo.csproj", "{2E37C5EA-2CF0-4087-8EAB-DEE735DF9077}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThemeProvider.Demo", "ThemeProvider.Demo\ThemeProvider.Demo.csproj", "{2E37C5EA-2CF0-4087-8EAB-DEE735DF9077}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThemeProvider.ImGui", "ThemeProvider.ImGui\ThemeProvider.ImGui.csproj", "{B7E91ECF-8C33-4F62-B092-EEDD315BC29A}"
 EndProject

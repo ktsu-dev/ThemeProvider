@@ -1,6 +1,6 @@
 // Copyright (c) 2023-2026 ktsu-dev contributors
 
-namespace ktsu.ThemeProviderDemo;
+namespace ktsu.ThemeProvider.Demo;
 
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

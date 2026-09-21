@@ -16,7 +16,7 @@ dotnet build ThemeProvider/ThemeProvider.csproj
 dotnet build -c Release
 
 # Run the demo application (requires .NET 10)
-dotnet run --project ThemeProviderDemo
+dotnet run --project ThemeProvider.Demo
 ```
 
 ## Project Structure
@@ -41,7 +41,7 @@ This is a .NET library (`ktsu.ThemeProvider`) providing a semantic color theming
 - `ThemeProvider/ColorRange.cs` - Color range interpolation helper (built on `ktsu.Semantics.Color`)
 - `ThemeProvider/Themes/` - 38 theme implementations organized by family
 - `ThemeProvider.ImGui/ImGuiPaletteMapper.cs` - Dear ImGui integration mapping ImGuiCol to Vector4
-- `ThemeProviderDemo/Program.cs` - Interactive demo application using ktsu.ImGuiApp
+- `ThemeProvider.Demo/Program.cs` - Interactive demo application using ktsu.ImGuiApp
 
 ### Dependencies
 
@@ -49,7 +49,7 @@ This is a .NET library (`ktsu.ThemeProvider`) providing a semantic color theming
 - **Polyfill** - Backfill support for newer .NET APIs on older targets
 - **System.Numerics.Vectors** - Vector types for netstandard2.0 target
 - **Hexa.NET.ImGui** - Dear ImGui bindings (ThemeProvider.ImGui project)
-- **ktsu.ImGui.App** - ImGui application framework (ThemeProviderDemo only)
+- **ktsu.ImGui.App** - ImGui application framework (ThemeProvider.Demo only)
 
 ## Architecture
 
