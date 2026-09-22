@@ -1,6 +1,6 @@
-## v3.0.30 (patch)
+## v3.0.31 (patch)
 
-Changes since v3.0.29:
+Changes since v3.0.30:
 
-- Rename ThemeProviderDemo to ThemeProvider.Demo [patch] ([@matt-edmondson](https://github.com/matt-edmondson))
+- Bump the ktsu group with 2 updates ([@dependabot[bot]](https://github.com/dependabot[bot]))
 
