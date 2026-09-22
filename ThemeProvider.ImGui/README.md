@@ -106,7 +106,7 @@ var imguiColors = imguiMapper.MapTheme(theme);
 
 ## Examples
 
-See the [ThemeProviderDemo](../ThemeProviderDemo/) project for a complete working example showcasing:
+See the [ThemeProvider.Demo](../ThemeProvider.Demo/) project for a complete working example showcasing:
 
 - Theme overview and color exploration
 - Semantic color specification builder
