@@ -1,6 +1,9 @@
-## v3.0.34
+## v3.0.35-pre.1 (prerelease)
 
-No significant changes detected since v3.0.34.
+Changes since v3.0.34:
+
+- Bump Polyfill from 11.4.0 to 11.4.1 ([@dependabot[bot]](https://github.com/dependabot[bot]))
+- Bump the ktsu group with 2 updates ([@dependabot[bot]](https://github.com/dependabot[bot]))
 
 ## v3.0.34 (patch)
 
@@ -213,8 +216,10 @@ Changes since v3.0.0:
 Changes since v2.0.0:
 
 - [major] Fix Sonar issues, eliminate theme duplication, raise coverage to 99.8% ([@matt-edmondson](https://github.com/matt-edmondson))
+- Sync .github\workflows\dotnet.yml ([@KtsuTools](https://github.com/KtsuTools))
 - Sync .editorconfig ([@KtsuTools](https://github.com/KtsuTools))
 - Sync global.json ([@KtsuTools](https://github.com/KtsuTools))
+- Sync .github\workflows\dotnet.yml ([@KtsuTools](https://github.com/KtsuTools))
 - chore: update ktsu.Sdk to 2.21.1 [patch] ([@matt-edmondson](https://github.com/matt-edmondson))
 - [minor] Rebalance semantic palette for text/glyph contrast ([@matt-edmondson](https://github.com/matt-edmondson))
 - [minor] Add ThemeProvider.Analysis palette audit tool ([@matt-edmondson](https://github.com/matt-edmondson))
@@ -421,7 +426,9 @@ Changes since v1.0.0:
 - chore: remove SourceLink package references from csproj files ([@matt-edmondson](https://github.com/matt-edmondson))
 - Update documentation in CLAUDE.md and README.md; add TAGS.md for semantic keywords ([@matt-edmondson](https://github.com/matt-edmondson))
 - Add SonarLint configuration for connected mode ([@matt-edmondson](https://github.com/matt-edmondson))
+- Sync .github\workflows\dotnet.yml ([@KtsuTools](https://github.com/KtsuTools))
 - Remove legacy build scripts ([@matt-edmondson](https://github.com/matt-edmondson))
+- Remove .github\workflows\project.yml ([@matt-edmondson](https://github.com/matt-edmondson))
 - Refactor null check in MapTheme method to use Ensure.NotNull ([@matt-edmondson](https://github.com/matt-edmondson))
 - Migrate to dotnet 10 ([@matt-edmondson](https://github.com/matt-edmondson))
 - Refactor SonarQube scanner steps and update coverage report paths in CI workflow ([@matt-edmondson](https://github.com/matt-edmondson))
@@ -528,10 +535,13 @@ Changes since v1.0.16:
 
 - Update documentation in CLAUDE.md and README.md; add TAGS.md for semantic keywords ([@matt-edmondson](https://github.com/matt-edmondson))
 - Add SonarLint configuration for connected mode ([@matt-edmondson](https://github.com/matt-edmondson))
+- Sync .github\workflows\dotnet.yml ([@KtsuTools](https://github.com/KtsuTools))
 
 ## v1.0.17-pre.1 (prerelease)
 
-No significant changes detected since v1.0.17.
+Changes since v1.0.16:
+
+- Sync .github\workflows\dotnet.yml ([@KtsuTools](https://github.com/KtsuTools))
 
 ## v1.0.16 (patch)
 
@@ -545,7 +555,11 @@ Changes since v1.0.15:
 
 ## v1.0.16-pre.1 (prerelease)
 
-No significant changes detected since v1.0.16.
+Changes since v1.0.15:
+
+- Sync .github\workflows\dotnet.yml ([@ktsu[bot]](https://github.com/ktsu[bot]))
+- Sync .github\workflows\dotnet.yml ([@ktsu[bot]](https://github.com/ktsu[bot]))
+- Sync .github\workflows\dotnet.yml ([@ktsu[bot]](https://github.com/ktsu[bot]))
 
 ## v1.0.15 (patch)
 
@@ -627,7 +641,11 @@ Changes since v1.0.14-pre.1:
 
 ## v1.0.14-pre.1 (prerelease)
 
-No significant changes detected since v1.0.14.
+Changes since v1.0.13:
+
+- Sync scripts\update-winget-manifests.ps1 ([@ktsu[bot]](https://github.com/ktsu[bot]))
+- Sync global.json ([@ktsu[bot]](https://github.com/ktsu[bot]))
+- Sync COPYRIGHT.md ([@ktsu[bot]](https://github.com/ktsu[bot]))
 
 ## v1.0.13 (patch)
 
@@ -671,7 +689,10 @@ Changes since v1.0.11-pre.1:
 
 ## v1.0.11-pre.1 (prerelease)
 
-No significant changes detected since v1.0.11.
+Changes since v1.0.10:
+
+- Sync scripts\PSBuild.psm1 ([@ktsu[bot]](https://github.com/ktsu[bot]))
+- Sync .github\workflows\dotnet.yml ([@ktsu[bot]](https://github.com/ktsu[bot]))
 
 ## v1.0.10 (patch)
 
@@ -701,7 +722,9 @@ Changes since v1.0.9-pre.1:
 
 ## v1.0.9-pre.1 (prerelease)
 
-No significant changes detected since v1.0.9.
+Changes since v1.0.8:
+
+- Update ktsu.ImGuiApp package version to 2.1.0 ([@matt-edmondson](https://github.com/matt-edmondson))
 
 ## v1.0.8 (patch)
 
@@ -724,7 +747,9 @@ Changes since v1.0.5:
 
 ## v1.0.6-pre.1 (prerelease)
 
-No significant changes detected since v1.0.6.
+Changes since v1.0.5:
+
+- Update package versions and UI color mappings ([@matt-edmondson](https://github.com/matt-edmondson))
 
 ## v1.0.5 (patch)
 
@@ -775,4 +800,5 @@ Changes since v1.0.0:
 - Refactor ThemeProvider to implement semantic color system and Catppuccin Mocha theme ([@matt-edmondson](https://github.com/matt-edmondson))
 - Enhance ThemeProviderDemo with UI improvements and semantic palette features ([@matt-edmondson](https://github.com/matt-edmondson))
 - Add Catppuccin Mocha theme implementation and color management utilities ([@matt-edmondson](https://github.com/matt-edmondson))
+- Initial commit: Add project structure with essential configuration files, including .editorconfig, .gitattributes, .gitignore, and .runsettings. Introduce core project files such as ThemeProvider and ThemeProviderDemo, along with necessary scripts for CI/CD automation and SDK management. Include licensing and author information, and set up GitHub workflows for dependency management and project automation. ([@matt-edmondson](https://github.com/matt-edmondson))
 
