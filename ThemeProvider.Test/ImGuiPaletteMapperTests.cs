@@ -76,6 +76,66 @@ public class ImGuiPaletteMapperTests
 	}
 
 	/// <summary>
+	/// Every <see cref="ImGuiCol"/> slot must be assigned. An unassigned slot keeps whatever style was
+	/// active before the theme was applied, usually <c>StyleColorsDark()</c>, so a light theme would be
+	/// left with a white text cursor and navy dimmed tabs. Comparing themes against each other cannot
+	/// catch a slot that every theme is missing.
+	/// </summary>
+	[TestMethod]
+	public void MapTheme_AssignsEveryImGuiColor()
+	{
+		ImGuiPaletteMapper mapper = new();
+
+		foreach (ThemeRegistry.ThemeInfo info in ThemeRegistry.AllThemes)
+		{
+			IReadOnlyDictionary<ImGuiCol, Vector4> palette = mapper.MapTheme(info.CreateInstance());
+
+			for (int i = 0; i < (int)ImGuiCol.Count; i++)
+			{
+				ImGuiCol key = (ImGuiCol)i;
+				Assert.IsTrue(palette.ContainsKey(key), $"{info.Name}: missing ImGui color {key}");
+			}
+		}
+	}
+
+	/// <summary>
+	/// The text cursor is drawn over input frames, so it takes the text color rather than a fixed one.
+	/// </summary>
+	[TestMethod]
+	public void MapTheme_InputTextCursorMatchesText()
+	{
+		ImGuiPaletteMapper mapper = new();
+
+		foreach (ThemeRegistry.ThemeInfo info in ThemeRegistry.AllThemes)
+		{
+			IReadOnlyDictionary<ImGuiCol, Vector4> palette = mapper.MapTheme(info.CreateInstance());
+			Assert.IsTrue(palette.TryGetValue(ImGuiCol.InputTextCursor, out Vector4 cursor), $"{info.Name}: InputTextCursor unmapped");
+			Assert.AreEqual(palette[ImGuiCol.Text], cursor, info.Name);
+		}
+	}
+
+	/// <summary>
+	/// The dimming overlays cover the whole viewport, so they must be translucent or they would hide
+	/// everything behind a modal or the window switcher.
+	/// </summary>
+	[TestMethod]
+	public void MapTheme_DimBackgroundsAreTranslucent()
+	{
+		ImGuiPaletteMapper mapper = new();
+
+		foreach (ThemeRegistry.ThemeInfo info in ThemeRegistry.AllThemes)
+		{
+			IReadOnlyDictionary<ImGuiCol, Vector4> palette = mapper.MapTheme(info.CreateInstance());
+
+			foreach (ImGuiCol key in new[] { ImGuiCol.ModalWindowDimBg, ImGuiCol.NavWindowingDimBg })
+			{
+				Assert.IsTrue(palette.TryGetValue(key, out Vector4 dim), $"{info.Name}: {key} unmapped");
+				Assert.IsTrue(dim.W is > 0f and < 1f, $"{info.Name}: {key} alpha is {dim.W}");
+			}
+		}
+	}
+
+	/// <summary>
 	/// ImGui expects color components in [0, 1]; anything outside that renders as a clipped or
 	/// wrapped color.
 	/// </summary>
