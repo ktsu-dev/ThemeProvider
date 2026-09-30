@@ -42,6 +42,9 @@ public sealed class ImGuiPaletteMapper : IPaletteMapper<ImGuiCol, Vector4>
 			{ ImGuiCol.FrameBgActive, new(SemanticMeaning.Neutral, Priority.Medium)},
 			{ ImGuiCol.TextDisabled, new(SemanticMeaning.Neutral, Priority.High)},
 			{ ImGuiCol.Text, new(SemanticMeaning.Neutral, Priority.VeryHigh)},
+			// The caret is drawn over input frames like text is, so it takes the text color.
+			{ ImGuiCol.InputTextCursor, new(SemanticMeaning.Neutral, Priority.VeryHigh)},
+			{ ImGuiCol.TextLink, new(SemanticMeaning.Primary, Priority.High)},
 
 			{ ImGuiCol.ScrollbarBg, new(SemanticMeaning.Neutral, Priority.Low)},
 			{ ImGuiCol.ScrollbarGrab, new(SemanticMeaning.Neutral, Priority.Medium)},
@@ -66,6 +69,14 @@ public sealed class ImGuiPaletteMapper : IPaletteMapper<ImGuiCol, Vector4>
 			{ ImGuiCol.ResizeGripActive, new(SemanticMeaning.Neutral, Priority.VeryHigh)},
 
 			{ ImGuiCol.NavWindowingHighlight, new(SemanticMeaning.Primary, Priority.VeryHigh)},
+			{ ImGuiCol.NavCursor, new(SemanticMeaning.Primary, Priority.High)},
+			{ ImGuiCol.DragDropTarget, new(SemanticMeaning.Primary, Priority.High)},
+			{ ImGuiCol.DockingPreview, new(SemanticMeaning.Primary, Priority.High)},
+			{ ImGuiCol.DockingEmptyBg, new(SemanticMeaning.Neutral, Priority.VeryLow)},
+
+			// The dimming overlays cover the whole viewport; their alpha is set below.
+			{ ImGuiCol.NavWindowingDimBg, new(SemanticMeaning.Neutral, Priority.Medium)},
+			{ ImGuiCol.ModalWindowDimBg, new(SemanticMeaning.Neutral, Priority.Medium)},
 
 			{ ImGuiCol.SliderGrab, new(SemanticMeaning.Primary, Priority.MediumLow)},
 			{ ImGuiCol.SliderGrabActive, new(SemanticMeaning.Primary, Priority.High)},
@@ -73,10 +84,16 @@ public sealed class ImGuiPaletteMapper : IPaletteMapper<ImGuiCol, Vector4>
 			{ ImGuiCol.Separator, new(SemanticMeaning.Neutral, Priority.MediumHigh)},
 			{ ImGuiCol.SeparatorHovered, new(SemanticMeaning.Neutral, Priority.High)},
 			{ ImGuiCol.SeparatorActive, new(SemanticMeaning.Neutral, Priority.VeryHigh)},
+			{ ImGuiCol.TreeLines, new(SemanticMeaning.Neutral, Priority.MediumHigh)},
 
 			{ ImGuiCol.Tab, new(SemanticMeaning.Neutral, Priority.Low)},
 			{ ImGuiCol.TabSelected, new(SemanticMeaning.Primary, Priority.VeryLow)},
 			{ ImGuiCol.TabHovered, new(SemanticMeaning.Primary, Priority.Low)},
+			{ ImGuiCol.TabSelectedOverline, new(SemanticMeaning.Primary, Priority.High)},
+			// Tabs in an unfocused window drop to neutral so the focused window's tabs stand out.
+			{ ImGuiCol.TabDimmed, new(SemanticMeaning.Neutral, Priority.VeryLow)},
+			{ ImGuiCol.TabDimmedSelected, new(SemanticMeaning.Neutral, Priority.Low)},
+			{ ImGuiCol.TabDimmedSelectedOverline, new(SemanticMeaning.Primary, Priority.High)},
 
 			// Alternate elements spread across the full 50-90% range for better contrast
 			{ ImGuiCol.PlotLines, new(SemanticMeaning.Alternate, Priority.Medium)},
@@ -101,6 +118,13 @@ public sealed class ImGuiPaletteMapper : IPaletteMapper<ImGuiCol, Vector4>
 			{ ImGuiCol.BorderShadow, new(SemanticMeaning.Neutral, Priority.Low) },
 		};
 
+		// Overlays drawn over other content, with the opacity ImGui's stock styles give them.
+		Dictionary<ImGuiCol, float> alphaOverrides = new()
+		{
+			{ ImGuiCol.NavWindowingDimBg, 0.20f },
+			{ ImGuiCol.ModalWindowDimBg, 0.35f },
+		};
+
 		// Convert the semantic colors to ImGui Vector4 format
 		Dictionary<ImGuiCol, Vector4> result = [];
 		foreach (KeyValuePair<ImGuiCol, SemanticColorRequest> kv in colorMapping)
@@ -109,7 +133,13 @@ public sealed class ImGuiPaletteMapper : IPaletteMapper<ImGuiCol, Vector4>
 			SemanticColorRequest request = kv.Value;
 			if (completePalette.TryGetValue(request, out Color color))
 			{
-				result[imguiCol] = color.ToSrgbVector4();
+				Vector4 value = color.ToSrgbVector4();
+				if (alphaOverrides.TryGetValue(imguiCol, out float alpha))
+				{
+					value.W = alpha;
+				}
+
+				result[imguiCol] = value;
 			}
 		}
 
