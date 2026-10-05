@@ -179,6 +179,59 @@ public class SemanticColorMapperEdgeCaseTests
 	}
 
 	/// <summary>
+	/// A meaning with a single source color keeps that color's alpha, the same way an interpolated
+	/// neutral ramp does, rather than coming out opaque.
+	/// </summary>
+	[TestMethod]
+	public void MapColors_WithSingleTranslucentSourceColor_KeepsItsAlpha()
+	{
+		StubTheme theme = new(
+			new Dictionary<SemanticMeaning, Collection<Color>>
+			{
+				[SemanticMeaning.Neutral] = [Color.FromHex("#10101080"), Color.FromHex("#f0f0f080")],
+				[SemanticMeaning.Primary] = [Color.FromHex("#3366cc80")],
+			},
+			isDark: true);
+
+		IReadOnlyDictionary<SemanticColorRequest, Color> palette = SemanticColorMapper.MakeCompletePalette(theme);
+		double sourceAlpha = Color.FromHex("#3366cc80").A;
+
+		foreach (Priority priority in Enum.GetValues<Priority>())
+		{
+			Assert.AreEqual(
+				sourceAlpha,
+				palette[new(SemanticMeaning.Primary, priority)].A,
+				1e-9,
+				$"Primary at {priority} lost its source alpha");
+		}
+	}
+
+	/// <summary>
+	/// Extrapolating a color to its own lightness returns that color unchanged. Saturated sRGB
+	/// primaries sit exactly on the gamut boundary, so the Oklab round trip leaves them a hair
+	/// outside it, and an exact gamut test would wrongly shave their chroma (#ff0000 to #ff0201).
+	/// </summary>
+	/// <param name="hex">The source color.</param>
+	[TestMethod]
+	[DataRow("#FF0000")]
+	[DataRow("#00FF00")]
+	[DataRow("#0000FF")]
+	[DataRow("#FFFF00")]
+	[DataRow("#00FFFF")]
+	[DataRow("#FF00FF")]
+	[DataRow("#FFFFFF")]
+	[DataRow("#000000")]
+	[DataRow("#3366CC80")]
+	public void ExtrapolateColorToLightness_AtItsOwnLightness_ReturnsTheSameColor(string hex)
+	{
+		Color source = Color.FromHex(hex);
+
+		Color result = SemanticColorMapper.ExtrapolateColorToLightness(source, source.ToOklab().L);
+
+		Assert.AreEqual(hex, result.ToHex());
+	}
+
+	/// <summary>
 	/// Every color the mapper emits for every registered theme must be inside the sRGB gamut.
 	/// The mapper reduces chroma to stay in gamut, and this pins that it always succeeds.
 	/// </summary>
