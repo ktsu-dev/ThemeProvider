@@ -1,8 +1,8 @@
-## v3.1.1-pre.3 (prerelease)
+## v3.1.1 (patch)
 
-Changes since v3.1.1-pre.2:
+Changes since v3.1.0:
 
-- Bump the ktsu group with 1 update ([@dependabot[bot]](https://github.com/dependabot[bot]))
+- Keep source alpha and tolerate round-trip error when extrapolating a single colour [patch] ([@Claude](https://github.com/Claude))
 
 ## v3.1.1-pre.3 (prerelease)
 
