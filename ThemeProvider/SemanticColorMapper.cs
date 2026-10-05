@@ -268,9 +268,9 @@ public static class SemanticColorMapper
 	}
 
 	/// <summary>
-	/// Extrapolates a single color to a target lightness while preserving its hue and chroma.
+	/// Extrapolates a single color to a target lightness while preserving its hue, chroma and alpha.
 	/// </summary>
-	private static Color ExtrapolateColorToLightness(Color baseColor, double targetLightness)
+	internal static Color ExtrapolateColorToLightness(Color baseColor, double targetLightness)
 	{
 		// Work in Oklab space for perceptually uniform lightness adjustment
 		Oklab baseOklab = baseColor.ToOklab();
@@ -283,17 +283,12 @@ public static class SemanticColorMapper
 		);
 
 		// Convert to Color to check if it's in gamut
-		Color targetColor = Color.FromOklab(targetOklab);
+		Color targetColor = Color.FromOklab(targetOklab, baseColor.A);
 
-		// Check if RGB values are within valid range
-		bool inGamut = targetColor.R >= 0.0 && targetColor.R <= 1.0 &&
-				   targetColor.G >= 0.0 && targetColor.G <= 1.0 &&
-				   targetColor.B >= 0.0 && targetColor.B <= 1.0;
-
-		if (inGamut)
+		if (IsInGamut(targetColor))
 		{
-			// Color is in gamut, use it directly
-			return targetColor;
+			// Color is in gamut, use it directly (clamped to absorb the round-trip error IsInGamut tolerates)
+			return targetColor.Clamp();
 		}
 
 		// Color is out of gamut, we need to find the best in-gamut color
@@ -320,13 +315,9 @@ public static class SemanticColorMapper
 				B: testChroma * Math.Sin(hue)
 			);
 
-			Color testColor = Color.FromOklab(testOklab);
+			Color testColor = Color.FromOklab(testOklab, baseColor.A);
 
-			bool testInGamut = testColor.R >= 0.0 && testColor.R <= 1.0 &&
-						   testColor.G >= 0.0 && testColor.G <= 1.0 &&
-						   testColor.B >= 0.0 && testColor.B <= 1.0;
-
-			if (testInGamut)
+			if (IsInGamut(testColor))
 			{
 				// This chroma works, try higher
 				minChroma = testChroma;
@@ -339,17 +330,26 @@ public static class SemanticColorMapper
 			}
 		}
 
-		// Convert the best in-gamut color to the final Color
-		Color bestColor = Color.FromOklab(bestOklab);
-
-		// Final safety clamp (should not be needed if binary search worked correctly)
-		return Color.FromLinear(
-			Math.Max(0.0, Math.Min(bestColor.R, 1.0)),
-			Math.Max(0.0, Math.Min(bestColor.G, 1.0)),
-			Math.Max(0.0, Math.Min(bestColor.B, 1.0)),
-			bestColor.A
-		);
+		// Convert the best in-gamut color to the final Color, clamping away the tolerated round-trip error
+		return Color.FromOklab(bestOklab, baseColor.A).Clamp();
 	}
+
+	/// <summary>
+	/// How far outside [0, 1] a linear channel may stray and still count as in gamut. An Oklab round
+	/// trip of an in-gamut color leaves error on the order of 1e-7, so an exact bounds check would
+	/// misclassify colors like pure sRGB red as out of gamut and needlessly reduce their chroma.
+	/// </summary>
+	private const double GamutTolerance = 1e-6;
+
+	/// <summary>
+	/// Determines whether every linear channel of <paramref name="color"/> lies within the sRGB gamut,
+	/// allowing <see cref="GamutTolerance"/> of floating-point error.
+	/// </summary>
+	private static bool IsInGamut(Color color) =>
+		IsChannelInGamut(color.R) && IsChannelInGamut(color.G) && IsChannelInGamut(color.B);
+
+	private static bool IsChannelInGamut(double channel) =>
+		channel is >= -GamutTolerance and <= 1.0 + GamutTolerance;
 
 	/// <summary>
 	/// Interpolates between colors in a sorted list to achieve a target lightness.
