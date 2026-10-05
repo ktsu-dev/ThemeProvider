@@ -1,6 +1,4 @@
-## v3.1.1 (patch)
+## v3.1.1
 
-Changes since v3.1.0:
-
-- Keep source alpha and tolerate round-trip error when extrapolating a single colour [patch] ([@Claude](https://github.com/Claude))
+No significant changes detected since v3.1.1.
 
