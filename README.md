@@ -352,6 +352,8 @@ Interface for mapping semantic themes to framework-specific color palettes.
 
 ## Available Themes
 
+The [theme gallery](docs/gallery/README.md) shows every theme as Dear ImGui draws it through `ImGuiPaletteMapper`.
+
 | Family | Variants | Description |
 |--------|----------|-------------|
 | **Catppuccin** | Latte, Frappe, Macchiato, Mocha | Warm pastel themes with excellent readability |

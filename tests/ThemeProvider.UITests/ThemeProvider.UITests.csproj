@@ -1,0 +1,33 @@
+<Project>
+  <Sdk Name="MSTest.Sdk" />
+  <Sdk Name="ktsu.Sdk" />
+
+  <PropertyGroup>
+    <IsTestProject>true</IsTestProject>
+    <TargetFramework>net10.0</TargetFramework>
+    <TargetFrameworks></TargetFrameworks>
+    <!-- The SDK folds the tests/ folder into the derived namespace (ktsu.tests.ThemeProvider.*),
+         so these stay until ktsu-dev/Sdk#37 teaches it to skip scaffolding folders. -->
+    <RootNamespace>ktsu.ThemeProvider.UITests</RootNamespace>
+    <AssemblyName>$(RootNamespace)</AssemblyName>
+    <EnableSourceLink>false</EnableSourceLink>
+    <!-- FontHelper's glyph range helper hands back a pointer; see GalleryFonts. -->
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
+    <TestingPlatformShowTestsFailure>true</TestingPlatformShowTestsFailure>
+    <TestingPlatformShowTestsFailureDetails>true</TestingPlatformShowTestsFailureDetails>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\ThemeProvider\ThemeProvider.csproj" />
+    <ProjectReference Include="..\..\ThemeProvider.ImGui\ThemeProvider.ImGui.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Hexa.NET.ImGui" />
+    <PackageReference Include="ktsu.ImGui.App" />
+    <PackageReference Include="ktsu.ImGui.App.Testing" />
+    <PackageReference Include="ktsu.Semantics.Color" />
+  </ItemGroup>
+
+</Project>
