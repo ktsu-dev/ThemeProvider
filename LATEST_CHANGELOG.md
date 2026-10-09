@@ -1,7 +1,8 @@
-## v3.1.2-pre.2 (prerelease)
+## v3.2.0 (minor)
 
-Changes since v3.1.2-pre.1:
+Changes since v3.1.0:
 
-- Bump MSTest.Sdk from 4.4.1 to 4.5.1 ([@dependabot[bot]](https://github.com/dependabot[bot]))
-- Bump the ktsu group with 2 updates ([@dependabot[bot]](https://github.com/dependabot[bot]))
+- Join gallery paths instead of combining them ([@Claude](https://github.com/Claude))
+- Add a theme gallery rendered headlessly from every registered theme ([@Claude](https://github.com/Claude))
+- Keep source alpha and tolerate round-trip error when extrapolating a single colour [patch] ([@Claude](https://github.com/Claude))
 
