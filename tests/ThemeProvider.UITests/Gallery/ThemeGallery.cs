@@ -36,7 +36,7 @@ public sealed class ThemeGallery
 	private const int SettleFrames = 4;
 
 	private static readonly Lazy<string> TemporaryOutput = new(() =>
-		Path.Combine(Path.GetTempPath(), $"themeprovider-gallery-{Guid.NewGuid():N}"));
+		Path.Join(Path.GetTempPath(), $"themeprovider-gallery-{Guid.NewGuid():N}"));
 
 	/// <summary>Gets or sets the context of the running test.</summary>
 	public TestContext TestContext { get; set; } = null!;
@@ -83,7 +83,7 @@ public sealed class ThemeGallery
 		Assert.AreEqual(entry.Height, picture.Height);
 
 		Directory.CreateDirectory(OutputDirectory);
-		string path = Path.Combine(OutputDirectory, entry.Slug + ".png");
+		string path = Path.Join(OutputDirectory, entry.Slug + ".png");
 		picture.SavePng(path);
 		TestContext.WriteLine($"Wrote {path} ({picture.Width}x{picture.Height}).");
 	}
@@ -96,7 +96,7 @@ public sealed class ThemeGallery
 		Assert.IsTrue(slugs.All(slug => slug.Length > 0), "An entry's name has no letters or digits to name its file after.");
 
 		Directory.CreateDirectory(OutputDirectory);
-		File.WriteAllText(Path.Combine(OutputDirectory, "README.md"), GalleryIndex.Render(GalleryCatalog.Entries));
+		File.WriteAllText(Path.Join(OutputDirectory, "README.md"), GalleryIndex.Render(GalleryCatalog.Entries));
 	}
 
 	[TestMethod]
