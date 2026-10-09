@@ -83,7 +83,7 @@ Tokyo Night Day [family=Tokyo Night, variant=Day, isDark=false, themeIsDark=fals
   Failure = #F52A65
   Debug = #9854F1
 Gruvbox Dark [family=Gruvbox, variant=Dark, isDark=true, themeIsDark=true]
-  Neutral = #EBDBB2 #1D2021
+  Neutral = #EBDBB2 #282828
   Primary = #FE8019
   Alternate = #D3869B
   Success = #B8BB26
@@ -119,7 +119,7 @@ Gruvbox Dark Soft [family=Gruvbox, variant=Dark Soft, isDark=true, themeIsDark=t
   Failure = #FB4934
   Debug = #D3869B
 Gruvbox Light [family=Gruvbox, variant=Light, isDark=false, themeIsDark=false]
-  Neutral = #1D2021 #F9F5D7
+  Neutral = #1D2021 #FBF1C7
   Primary = #D65D0E
   Alternate = #B16286
   Success = #98971A
@@ -162,7 +162,7 @@ Everforest Dark [family=Everforest, variant=Dark, isDark=true, themeIsDark=true]
   CallToAction = #83C092
   Information = #D699B6
   Caution = #DBBC7F
-  Warning = #E67E80
+  Warning = #E69875
   Error = #E67E80
   Failure = #E67E80
   Debug = #D699B6
@@ -174,7 +174,7 @@ Everforest Dark Hard [family=Everforest, variant=Dark Hard, isDark=true, themeIs
   CallToAction = #83C092
   Information = #D699B6
   Caution = #DBBC7F
-  Warning = #E67E80
+  Warning = #E69875
   Error = #E67E80
   Failure = #E67E80
   Debug = #D699B6
@@ -186,7 +186,7 @@ Everforest Dark Soft [family=Everforest, variant=Dark Soft, isDark=true, themeIs
   CallToAction = #83C092
   Information = #D699B6
   Caution = #DBBC7F
-  Warning = #E67E80
+  Warning = #E69875
   Error = #E67E80
   Failure = #E67E80
   Debug = #D699B6
@@ -198,7 +198,7 @@ Everforest Light [family=Everforest, variant=Light, isDark=false, themeIsDark=fa
   CallToAction = #35A77C
   Information = #DF69BA
   Caution = #DFA000
-  Warning = #F85552
+  Warning = #F57D26
   Error = #F85552
   Failure = #F85552
   Debug = #DF69BA
@@ -210,7 +210,7 @@ Everforest Light Hard [family=Everforest, variant=Light Hard, isDark=false, them
   CallToAction = #35A77C
   Information = #DF69BA
   Caution = #DFA000
-  Warning = #F85552
+  Warning = #F57D26
   Error = #F85552
   Failure = #F85552
   Debug = #DF69BA
@@ -222,7 +222,7 @@ Everforest Light Soft [family=Everforest, variant=Light Soft, isDark=false, them
   CallToAction = #35A77C
   Information = #DF69BA
   Caution = #DFA000
-  Warning = #F85552
+  Warning = #F57D26
   Error = #F85552
   Failure = #F85552
   Debug = #DF69BA

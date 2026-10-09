@@ -10,6 +10,8 @@
 [![GitHub contributors](https://img.shields.io/github/contributors/ktsu-dev/ThemeProvider?label=Contributors&logo=github)](https://github.com/ktsu-dev/ThemeProvider/graphs/contributors)
 [![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/ktsu-dev/ThemeProvider/dotnet.yml?branch=main&label=Build&logo=github)](https://github.com/ktsu-dev/ThemeProvider/actions)
 
+[![Every ThemeProvider theme drawn by Dear ImGui](docs/gallery/overview.png)](docs/gallery/README.md)
+
 ## Introduction
 
 `ktsu.ThemeProvider` is a comprehensive theming system that uses semantic color specifications rather than arbitrary color names. Instead of hardcoding colors like "blue" or "red", you define colors by their purpose (Primary, Error, Warning) and priority level, and the library generates consistent, accessible color palettes. It includes 38 carefully crafted themes from popular color schemes and provides built-in Dear ImGui integration with an extensible architecture for other UI frameworks.
