@@ -17,14 +17,14 @@ public class Terafox : ISemanticTheme
 	// that palette's own name for the color.
 	private static readonly SemanticPalette Palette = new()
 	{
-		Neutrals = ["#fbebd3", "#0f1c1e"], // Fg0, BgAlt
+		Neutrals = ["#e6eaea", "#0f1c1e"], // Fg1, BgAlt
 		Primary = "#7aa4a1", // Green
-		Alternate = "#ffa500", // Orange
+		Alternate = "#ff8349", // Orange
 		Success = "#7aa4a1", // Green
 		CallToAction = "#a1cdd8", // Cyan
 		Information = "#5a93aa", // Blue
-		Caution = "#fdb292", // Yellow
-		Warning = "#ffa500", // Orange
+		Caution = "#fda47f", // Yellow
+		Warning = "#ff8349", // Orange
 		Error = "#e85c51", // Red
 		Failure = "#e85c51", // Red
 		Debug = "#ad5c7c", // Magenta

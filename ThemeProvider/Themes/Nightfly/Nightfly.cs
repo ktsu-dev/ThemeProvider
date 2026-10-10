@@ -16,11 +16,11 @@ public class Nightfly : ISemanticTheme
 	// that palette's own name for the color.
 	private static readonly SemanticPalette Palette = new()
 	{
-		Neutrals = ["#ffffff", "#011627"], // White, Background
+		Neutrals = ["#c3ccdc", "#011627"], // White, Background
 		Primary = "#82aaff", // Blue
 		Alternate = "#c792ea", // Purple
-		Success = "#addb67", // Green
-		CallToAction = "#addb67", // Green
+		Success = "#a1cd5e", // Green
+		CallToAction = "#a1cd5e", // Green
 		Information = "#7fdbca", // Cyan
 		Caution = "#f78c6c", // Orange
 		Warning = "#e3d18a", // Yellow

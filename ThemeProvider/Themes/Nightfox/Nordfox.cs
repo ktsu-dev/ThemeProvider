@@ -24,7 +24,7 @@ public class Nordfox : ISemanticTheme
 		CallToAction = "#88c0d0", // Cyan
 		Information = "#81a1c1", // Blue
 		Caution = "#ebcb8b", // Yellow
-		Warning = "#d08770", // Orange
+		Warning = "#c9826b", // Orange
 		Error = "#bf616a", // Red
 		Failure = "#bf616a", // Red
 		Debug = "#b48ead", // Magenta

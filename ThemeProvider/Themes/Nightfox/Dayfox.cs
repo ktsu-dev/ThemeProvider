@@ -17,17 +17,17 @@ public class Dayfox : ISemanticTheme
 	// that palette's own name for the color.
 	private static readonly SemanticPalette Palette = new()
 	{
-		Neutrals = ["#1d344f", "#efeae6"], // Fg0, BgAlt
+		Neutrals = ["#3d2b5a", "#e4dcd4"], // Fg1, BgAlt
 		Primary = "#2848a9", // Blue
-		Alternate = "#955f20", // Orange
+		Alternate = "#955f61", // Orange
 		Success = "#396847", // Green
 		CallToAction = "#287980", // Cyan
 		Information = "#2848a9", // Blue
-		Caution = "#986936", // Yellow
-		Warning = "#955f20", // Orange
+		Caution = "#ac5402", // Yellow
+		Warning = "#955f61", // Orange
 		Error = "#a5222f", // Red
 		Failure = "#a5222f", // Red
-		Debug = "#7847bd", // Magenta
+		Debug = "#6e33ce", // Magenta
 	};
 
 	/// <inheritdoc />

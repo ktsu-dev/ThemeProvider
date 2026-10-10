@@ -16,7 +16,7 @@ public class GruvboxDark : ISemanticTheme
 	// that palette's own name for the color.
 	private static readonly SemanticPalette Palette = new()
 	{
-		Neutrals = ["#ebdbb2", "#1d2021"], // Light1, DarkHard
+		Neutrals = ["#ebdbb2", "#282828"], // Light1, Dark0
 		Primary = "#fe8019", // BrightOrange
 		Alternate = "#d3869b", // BrightPurple
 		Success = "#b8bb26", // BrightGreen

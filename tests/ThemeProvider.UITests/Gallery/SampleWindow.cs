@@ -59,7 +59,9 @@ internal sealed class SampleWindow(ThemeRegistry.ThemeInfo info)
 		ImGui.SetNextWindowFocus();
 		if (ImGui.Begin(info.Name, ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoMove | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoSavedSettings))
 		{
-			ImGui.TextDisabled($"{info.Family} / {info.Variant} / {(info.IsDark ? "dark" : "light")}");
+			ImGui.TextDisabled(string.IsNullOrEmpty(info.Variant)
+				? $"{info.Family} / {(info.IsDark ? "dark" : "light")}"
+				: $"{info.Family} / {info.Variant} / {(info.IsDark ? "dark" : "light")}");
 			ImGui.Separator();
 
 			if (ImGui.BeginTable("##layout", 2, ImGuiTableFlags.None))
