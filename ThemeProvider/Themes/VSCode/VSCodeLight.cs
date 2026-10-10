@@ -21,11 +21,11 @@ public class VSCodeLight : ISemanticTheme
 		Alternate = "#af00db", // Purple
 		Success = "#098658", // Number
 		CallToAction = "#098658", // Number
-		Information = "#316bcd", // Info
+		Information = "#0063d3", // EditorInfo
 		Caution = "#a31515", // StringColor
-		Warning = "#bf8803", // Warning
-		Error = "#cd3131", // Error
-		Failure = "#cd3131", // Error
+		Warning = "#bf8803", // EditorWarning
+		Error = "#e51400", // EditorError
+		Failure = "#e51400", // EditorError
 		Debug = "#af00db", // Purple
 	};
 

@@ -18,16 +18,16 @@ public class PaperColorDark : ISemanticTheme
 	private static readonly SemanticPalette Palette = new()
 	{
 		Neutrals = ["#d0d0d0", "#1c1c1c"], // Fg0, Background
-		Primary = "#0087d7", // Blue
+		Primary = "#5fafd7", // Blue
 		Alternate = "#af87d7", // Purple
 		Success = "#5faf00", // Green
 		CallToAction = "#00afaf", // Teal
-		Information = "#0087d7", // Blue
+		Information = "#5fafd7", // Blue
 		Caution = "#ffaf00", // Yellow
 		Warning = "#ff8700", // Orange
 		Error = "#af005f", // Red
 		Failure = "#af005f", // Red
-		Debug = "#d70087", // Pink
+		Debug = "#ff5faf", // Pink
 	};
 
 	/// <inheritdoc />

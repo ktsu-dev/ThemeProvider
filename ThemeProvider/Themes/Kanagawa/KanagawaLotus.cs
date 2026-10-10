@@ -17,16 +17,16 @@ public class KanagawaLotus : ISemanticTheme
 	// that palette's own name for the color.
 	private static readonly SemanticPalette Palette = new()
 	{
-		Neutrals = ["#545464", "#f7f4dd"], // Fg0, BgAlt
+		Neutrals = ["#545464", "#f2ecbc"], // LotusInk1, LotusWhite3
 		Primary = "#4d699b", // CrystalBlue
 		Alternate = "#b35b79", // SakuraPink
 		Success = "#6f894e", // SummerGreen
 		CallToAction = "#5e857a", // SpringBlue
-		Information = "#7e9fb8", // IceBlue
+		Information = "#5a7785", // LotusTeal3
 		Caution = "#77713f", // AutumnYellow
-		Warning = "#b98f56", // BoatYellow2
-		Error = "#cc5d73", // WaveRed
-		Failure = "#cc5d73", // WaveRed
+		Warning = "#e98a00", // LotusOrange2
+		Error = "#e82424", // LotusRed3
+		Failure = "#e82424", // LotusRed3
 		Debug = "#b35b79", // SakuraPink
 	};
 

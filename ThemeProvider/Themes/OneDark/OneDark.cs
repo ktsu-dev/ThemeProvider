@@ -16,7 +16,7 @@ public class OneDark : ISemanticTheme
 	// that palette's own name for the color.
 	private static readonly SemanticPalette Palette = new()
 	{
-		Neutrals = ["#ffffff", "#181a1f"], // White, Black
+		Neutrals = ["#abb2bf", "#181a1f"], // White, Black
 		Primary = "#61afef", // Blue
 		Alternate = "#c678dd", // Purple
 		Success = "#98c379", // Green

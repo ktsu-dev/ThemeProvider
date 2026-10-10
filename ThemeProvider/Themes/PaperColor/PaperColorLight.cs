@@ -17,7 +17,7 @@ public class PaperColorLight : ISemanticTheme
 	// that palette's own name for the color.
 	private static readonly SemanticPalette Palette = new()
 	{
-		Neutrals = ["#444444", "#ffffff"], // Fg0, BgAlt
+		Neutrals = ["#444444", "#eeeeee"], // Color07, Color00
 		Primary = "#0087af", // Blue
 		Alternate = "#8700af", // Purple
 		Success = "#008700", // Green

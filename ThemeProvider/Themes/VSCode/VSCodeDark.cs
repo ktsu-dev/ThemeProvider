@@ -21,11 +21,11 @@ public class VSCodeDark : ISemanticTheme
 		Alternate = "#c586c0", // Purple
 		Success = "#b5cea8", // Number
 		CallToAction = "#b5cea8", // Number
-		Information = "#75beff", // Info
+		Information = "#59a4f9", // EditorInfo
 		Caution = "#ce9178", // StringColor
-		Warning = "#ffcc02", // Warning
-		Error = "#f44747", // Error
-		Failure = "#f44747", // Error
+		Warning = "#cca700", // EditorWarning
+		Error = "#f14c4c", // EditorError
+		Failure = "#f14c4c", // EditorError
 		Debug = "#c586c0", // Purple
 	};
 

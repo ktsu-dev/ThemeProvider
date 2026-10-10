@@ -191,7 +191,7 @@ Everforest Dark Soft [family=Everforest, variant=Dark Soft, isDark=true, themeIs
   Failure = #E67E80
   Debug = #D699B6
 Everforest Light [family=Everforest, variant=Light, isDark=false, themeIsDark=false]
-  Neutral = #5C6A72 #F3EFDA
+  Neutral = #5C6A72 #EFEBD4
   Primary = #8DA101
   Alternate = #F57D26
   Success = #3A94C5
@@ -203,7 +203,7 @@ Everforest Light [family=Everforest, variant=Light, isDark=false, themeIsDark=fa
   Failure = #F85552
   Debug = #DF69BA
 Everforest Light Hard [family=Everforest, variant=Light Hard, isDark=false, themeIsDark=false]
-  Neutral = #5C6A72 #F8F4E6
+  Neutral = #5C6A72 #F2EFDF
   Primary = #8DA101
   Alternate = #F57D26
   Success = #3A94C5
@@ -215,7 +215,7 @@ Everforest Light Hard [family=Everforest, variant=Light Hard, isDark=false, them
   Failure = #F85552
   Debug = #DF69BA
 Everforest Light Soft [family=Everforest, variant=Light Soft, isDark=false, themeIsDark=false]
-  Neutral = #5C6A72 #F0F0E2
+  Neutral = #5C6A72 #E5DFC5
   Primary = #8DA101
   Alternate = #F57D26
   Success = #3A94C5
@@ -239,29 +239,29 @@ Nightfox [family=Nightfox, variant=-, isDark=true, themeIsDark=true]
   Failure = #C94F6D
   Debug = #9D79D6
 Dayfox [family=Nightfox, variant=Dayfox, isDark=false, themeIsDark=false]
-  Neutral = #1D344F #EFEAE6
+  Neutral = #3D2B5A #E4DCD4
   Primary = #2848A9
-  Alternate = #955F20
+  Alternate = #955F61
   Success = #396847
   CallToAction = #287980
   Information = #2848A9
-  Caution = #986936
-  Warning = #955F20
+  Caution = #AC5402
+  Warning = #955F61
   Error = #A5222F
   Failure = #A5222F
-  Debug = #7847BD
+  Debug = #6E33CE
 Duskfox [family=Nightfox, variant=Duskfox, isDark=true, themeIsDark=true]
-  Neutral = #E0DEF4 #1A1826
-  Primary = #9CCFD8
+  Neutral = #E0DEF4 #191726
+  Primary = #569FBA
   Alternate = #C4A7E7
   Success = #A3BE8C
   CallToAction = #9CCFD8
-  Information = #9CCFD8
+  Information = #569FBA
   Caution = #F6C177
   Warning = #EA9A97
   Error = #EB6F92
   Failure = #EB6F92
-  Debug = #F5C2E7
+  Debug = #EB98C3
 Nordfox [family=Nightfox, variant=Nordfox, isDark=true, themeIsDark=true]
   Neutral = #CDCECF #232831
   Primary = #81A1C1
@@ -270,19 +270,19 @@ Nordfox [family=Nightfox, variant=Nordfox, isDark=true, themeIsDark=true]
   CallToAction = #88C0D0
   Information = #81A1C1
   Caution = #EBCB8B
-  Warning = #D08770
+  Warning = #C9826B
   Error = #BF616A
   Failure = #BF616A
   Debug = #B48EAD
 Terafox [family=Nightfox, variant=Terafox, isDark=true, themeIsDark=true]
-  Neutral = #FBEBD3 #0F1C1E
+  Neutral = #E6EAEA #0F1C1E
   Primary = #7AA4A1
-  Alternate = #FFA500
+  Alternate = #FF8349
   Success = #7AA4A1
   CallToAction = #A1CDD8
   Information = #5A93AA
-  Caution = #FDB292
-  Warning = #FFA500
+  Caution = #FDA47F
+  Warning = #FF8349
   Error = #E85C51
   Failure = #E85C51
   Debug = #AD5C7C
@@ -299,14 +299,14 @@ Carbonfox [family=Nightfox, variant=Carbonfox, isDark=true, themeIsDark=true]
   Failure = #EE5396
   Debug = #BE95FF
 Dawnfox [family=Nightfox, variant=Dawnfox, isDark=false, themeIsDark=false]
-  Neutral = #575279 #F4EDE4
-  Primary = #56949F
+  Neutral = #575279 #EBE5DF
+  Primary = #286983
   Alternate = #D685AF
-  Success = #286983
+  Success = #618774
   CallToAction = #56949F
   Information = #56949F
-  Caution = #D7827E
-  Warning = #EA9D34
+  Caution = #EA9D34
+  Warning = #D7827E
   Error = #B4637A
   Failure = #B4637A
   Debug = #907AA9
@@ -335,19 +335,19 @@ Kanagawa Dragon [family=Kanagawa, variant=Dragon, isDark=true, themeIsDark=true]
   Failure = #C4746E
   Debug = #C4746E
 Kanagawa Lotus [family=Kanagawa, variant=Lotus, isDark=false, themeIsDark=false]
-  Neutral = #545464 #F7F4DD
+  Neutral = #545464 #F2ECBC
   Primary = #4D699B
   Alternate = #B35B79
   Success = #6F894E
   CallToAction = #5E857A
-  Information = #7E9FB8
+  Information = #5A7785
   Caution = #77713F
-  Warning = #B98F56
-  Error = #CC5D73
-  Failure = #CC5D73
+  Warning = #E98A00
+  Error = #E82424
+  Failure = #E82424
   Debug = #B35B79
 PaperColor Light [family=PaperColor, variant=Light, isDark=false, themeIsDark=false]
-  Neutral = #444444 #FFFFFF
+  Neutral = #444444 #EEEEEE
   Primary = #0087AF
   Alternate = #8700AF
   Success = #008700
@@ -360,16 +360,16 @@ PaperColor Light [family=PaperColor, variant=Light, isDark=false, themeIsDark=fa
   Debug = #D70087
 PaperColor Dark [family=PaperColor, variant=Dark, isDark=true, themeIsDark=true]
   Neutral = #D0D0D0 #1C1C1C
-  Primary = #0087D7
+  Primary = #5FAFD7
   Alternate = #AF87D7
   Success = #5FAF00
   CallToAction = #00AFAF
-  Information = #0087D7
+  Information = #5FAFD7
   Caution = #FFAF00
   Warning = #FF8700
   Error = #AF005F
   Failure = #AF005F
-  Debug = #D70087
+  Debug = #FF5FAF
 Nord [family=Nord, variant=-, isDark=true, themeIsDark=true]
   Neutral = #ECEFF4 #2E3440
   Primary = #88C0D0
@@ -400,11 +400,11 @@ VSCode Dark [family=VSCode, variant=Dark, isDark=true, themeIsDark=true]
   Alternate = #C586C0
   Success = #B5CEA8
   CallToAction = #B5CEA8
-  Information = #75BEFF
+  Information = #59A4F9
   Caution = #CE9178
-  Warning = #FFCC02
-  Error = #F44747
-  Failure = #F44747
+  Warning = #CCA700
+  Error = #F14C4C
+  Failure = #F14C4C
   Debug = #C586C0
 VSCode Light [family=VSCode, variant=Light, isDark=false, themeIsDark=false]
   Neutral = #000000 #FFFFFF
@@ -412,14 +412,14 @@ VSCode Light [family=VSCode, variant=Light, isDark=false, themeIsDark=false]
   Alternate = #AF00DB
   Success = #098658
   CallToAction = #098658
-  Information = #316BCD
+  Information = #0063D3
   Caution = #A31515
   Warning = #BF8803
-  Error = #CD3131
-  Failure = #CD3131
+  Error = #E51400
+  Failure = #E51400
   Debug = #AF00DB
 One Dark [family=One Dark, variant=-, isDark=true, themeIsDark=true]
-  Neutral = #FFFFFF #181A1F
+  Neutral = #ABB2BF #181A1F
   Primary = #61AFEF
   Alternate = #C678DD
   Success = #98C379
@@ -443,11 +443,11 @@ Monokai [family=Monokai, variant=-, isDark=true, themeIsDark=true]
   Failure = #F92672
   Debug = #AE81FF
 Nightfly [family=Nightfly, variant=-, isDark=true, themeIsDark=true]
-  Neutral = #FFFFFF #011627
+  Neutral = #C3CCDC #011627
   Primary = #82AAFF
   Alternate = #C792EA
-  Success = #ADDB67
-  CallToAction = #ADDB67
+  Success = #A1CD5E
+  CallToAction = #A1CD5E
   Information = #7FDBCA
   Caution = #F78C6C
   Warning = #E3D18A

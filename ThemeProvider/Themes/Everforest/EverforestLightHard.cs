@@ -21,7 +21,7 @@ public class EverforestLightHard : ISemanticTheme
 	// that palette's own name for the color.
 	private static readonly SemanticPalette Palette = new()
 	{
-		Neutrals = ["#5c6a72", "#f8f4e6"], // Fg, BgDim
+		Neutrals = ["#5c6a72", "#f2efdf"], // Fg, BgDim
 		Primary = "#8da101", // Green
 		Alternate = Orange,
 		Success = "#3a94c5", // Blue

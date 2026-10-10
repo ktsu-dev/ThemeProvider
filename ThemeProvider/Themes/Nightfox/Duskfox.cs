@@ -14,23 +14,23 @@ using ktsu.Semantics.Color;
 public class Duskfox : ISemanticTheme
 {
 	// Colors shared by several meanings are named once, after the palette entry they come from.
-	private const string Blue = "#9ccfd8";
+	private const string Blue = "#569fba";
 
 	// Hex values are the palette this theme mirrors; the trailing comment on each line is
 	// that palette's own name for the color.
 	private static readonly SemanticPalette Palette = new()
 	{
-		Neutrals = ["#e0def4", "#1a1826"], // Fg0, BgAlt
+		Neutrals = ["#e0def4", "#191726"], // Fg1, BgAlt
 		Primary = Blue,
 		Alternate = "#c4a7e7", // Magenta
 		Success = "#a3be8c", // Green
-		CallToAction = Blue, // Cyan
+		CallToAction = "#9ccfd8", // Cyan
 		Information = Blue,
 		Caution = "#f6c177", // Yellow
 		Warning = "#ea9a97", // Orange
 		Error = "#eb6f92", // Red
 		Failure = "#eb6f92", // Red
-		Debug = "#f5c2e7", // Pink
+		Debug = "#eb98c3", // Pink
 	};
 
 	/// <inheritdoc />
