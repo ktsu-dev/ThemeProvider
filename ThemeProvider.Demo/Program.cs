@@ -249,7 +249,7 @@ internal static class Program
 		RenderSemanticColorGrid(semanticMeanings, sortedPriorities);
 
 		ImGui.Spacing();
-		ImGui.TextUnformatted("Note: Neutral uses full global range, non-neutral uses 50-90% of global range");
+		ImGui.TextUnformatted("Note: Neutral uses full global range, non-neutral uses 20-82% of global range");
 		ImGui.TextUnformatted($"Theme Type: {(theme.IsDarkTheme ? "Dark" : "Light")} - Priority ordering {(theme.IsDarkTheme ? "low to high" : "high to low")} lightness");
 	}
 

@@ -155,7 +155,7 @@ public static class SemanticColorMapper
 
 	/// <summary>
 	/// Calculates the target lightness for a specific semantic meaning and priority.
-	/// Neutral semantics use the full global range, while non-neutral semantics use 50-90% of it.
+	/// Neutral semantics use the full global range, while non-neutral semantics use 20-82% of it.
 	/// </summary>
 	private static double CalculateTargetLightnessForSemantic(
 		Priority priority,

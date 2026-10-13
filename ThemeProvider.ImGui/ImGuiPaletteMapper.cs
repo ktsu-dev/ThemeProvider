@@ -95,7 +95,7 @@ public sealed class ImGuiPaletteMapper : IPaletteMapper<ImGuiCol, Vector4>
 			{ ImGuiCol.TabDimmedSelected, new(SemanticMeaning.Neutral, Priority.Low)},
 			{ ImGuiCol.TabDimmedSelectedOverline, new(SemanticMeaning.Primary, Priority.High)},
 
-			// Alternate elements spread across the full 50-90% range for better contrast
+			// Alternate elements spread across the full 20-82% non-neutral range for better contrast
 			{ ImGuiCol.PlotLines, new(SemanticMeaning.Alternate, Priority.Medium)},
 			{ ImGuiCol.PlotLinesHovered, new(SemanticMeaning.Alternate, Priority.High)},
 
