@@ -232,6 +232,82 @@ public class SemanticColorMapperEdgeCaseTests
 	}
 
 	/// <summary>
+	/// Extrapolating to the very top or bottom of the lightness range lands on white or black. No
+	/// chroma above zero is in gamut there, so the chroma search finds nothing, and it must fall
+	/// back to the achromatic color rather than to the out-of-gamut target, whose clamp would tint
+	/// it and pull it off the target lightness.
+	/// </summary>
+	/// <param name="hex">The source color.</param>
+	/// <param name="targetLightness">The lightness to extrapolate to.</param>
+	/// <param name="expected">The color that lightness must produce.</param>
+	[TestMethod]
+	[DataRow("#CDD6F4", 1.0, "#FFFFFF")]
+	[DataRow("#FF0000", 1.0, "#FFFFFF")]
+	[DataRow("#1E1E2E", 0.0, "#000000")]
+	[DataRow("#FF0000", 0.0, "#000000")]
+	public void ExtrapolateColorToLightness_ToTheEndOfTheRange_ReturnsWhiteOrBlack(
+		string hex, double targetLightness, string expected)
+	{
+		Color result = SemanticColorMapper.ExtrapolateColorToLightness(Color.FromHex(hex), targetLightness);
+
+		Assert.AreEqual(expected, result.ToHex());
+	}
+
+	/// <summary>
+	/// A single white anywhere in a custom theme stretches the global lightness range to 1, so the
+	/// top of the neutral ramp must come out as white at that lightness, not a tinted, darker color.
+	/// </summary>
+	[TestMethod]
+	public void MapColors_WhenThemeContainsWhite_NeutralVeryHighIsWhite()
+	{
+		StubTheme theme = new(
+			new Dictionary<SemanticMeaning, Collection<Color>>
+			{
+				[SemanticMeaning.Neutral] = [Color.FromHex("#1e1e2e"), Color.FromHex("#cdd6f4")],
+				[SemanticMeaning.Primary] = [Color.FromHex("#89b4fa")],
+				[SemanticMeaning.Information] = [Color.FromHex("#ffffff")],
+			},
+			isDark: true);
+
+		Color veryHigh = SemanticColorMapper.MakeCompletePalette(theme)[new(SemanticMeaning.Neutral, Priority.VeryHigh)];
+
+		Assert.AreEqual("#FFFFFF", veryHigh.ToHex());
+		Assert.AreEqual(1.0, veryHigh.ToOklab().L, 1e-3);
+	}
+
+	/// <summary>
+	/// A single saturated neutral in a theme that also reaches black and white is extrapolated to
+	/// both ends of the range, and its lightness must still rise with priority.
+	/// </summary>
+	[TestMethod]
+	public void MapColors_SaturatedNeutralBetweenBlackAndWhite_LightnessIsMonotonic()
+	{
+		StubTheme theme = new(
+			new Dictionary<SemanticMeaning, Collection<Color>>
+			{
+				[SemanticMeaning.Neutral] = [Color.FromHex("#ff0000")],
+				[SemanticMeaning.Primary] = [Color.FromHex("#000000")],
+				[SemanticMeaning.Information] = [Color.FromHex("#ffffff")],
+			},
+			isDark: true);
+
+		IReadOnlyDictionary<SemanticColorRequest, Color> palette = SemanticColorMapper.MakeCompletePalette(theme);
+		Priority[] priorities = Enum.GetValues<Priority>();
+
+		for (int i = 1; i < priorities.Length; i++)
+		{
+			double lower = palette[new(SemanticMeaning.Neutral, priorities[i - 1])].ToOklab().L;
+			double higher = palette[new(SemanticMeaning.Neutral, priorities[i])].ToOklab().L;
+			Assert.IsTrue(
+				higher >= lower,
+				$"Neutral {priorities[i]} (L={higher:F4}) is darker than {priorities[i - 1]} (L={lower:F4})");
+		}
+
+		Assert.AreEqual("#000000", palette[new(SemanticMeaning.Neutral, Priority.VeryLow)].ToHex());
+		Assert.AreEqual("#FFFFFF", palette[new(SemanticMeaning.Neutral, Priority.VeryHigh)].ToHex());
+	}
+
+	/// <summary>
 	/// Every color the mapper emits for every registered theme must be inside the sRGB gamut.
 	/// The mapper reduces chroma to stay in gamut, and this pins that it always succeeds.
 	/// </summary>
