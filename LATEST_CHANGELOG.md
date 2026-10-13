@@ -1,7 +1,7 @@
-## v3.2.1 (patch)
+## v3.2.2-pre.1 (prerelease)
 
-Changes since v3.2.0:
+Changes since v3.2.1:
 
-- Match theme palettes to their upstream schemes ([@Claude](https://github.com/Claude))
-- Separate Gruvbox Dark/Light from Hard, give Everforest an orange Warning ([@Claude](https://github.com/Claude))
+- Bump Polyfill from 11.4.3 to 11.4.5 ([@dependabot[bot]](https://github.com/dependabot[bot]))
+- Bump the ktsu group with 3 updates ([@dependabot[bot]](https://github.com/dependabot[bot]))
 
