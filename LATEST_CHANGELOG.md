@@ -1,7 +1,6 @@
-## v3.2.2-pre.1 (prerelease)
+## v3.2.2 (patch)
 
 Changes since v3.2.1:
 
-- Bump Polyfill from 11.4.3 to 11.4.5 ([@dependabot[bot]](https://github.com/dependabot[bot]))
-- Bump the ktsu group with 3 updates ([@dependabot[bot]](https://github.com/dependabot[bot]))
+- Bring the README sample and lightness-band docs up to date ([@matt-edmondson](https://github.com/matt-edmondson))
 
