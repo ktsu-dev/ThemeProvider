@@ -274,10 +274,11 @@ public static class SemanticColorMapper
 	{
 		// Work in Oklab space for perceptually uniform lightness adjustment
 		Oklab baseOklab = baseColor.ToOklab();
+		double clampedLightness = Math.Max(0.0, Math.Min(targetLightness, 1.0));
 
 		// Start with the target lightness and original chroma
 		Oklab targetOklab = new(
-			L: Math.Max(0.0, Math.Min(targetLightness, 1.0)),
+			L: clampedLightness,
 			A: baseOklab.A,
 			B: baseOklab.B
 		);
@@ -302,7 +303,11 @@ public static class SemanticColorMapper
 		const double tolerance = 0.001;
 		const int maxIterations = 20;
 
-		Oklab bestOklab = targetOklab;
+		// Seed the fallback with the achromatic color at the target lightness, which is in gamut for
+		// every L in [0, 1]. Near L = 0 or 1 no chroma above zero is in gamut, so the search never
+		// succeeds, and falling back to the out-of-gamut target would let the clamp tint it and pull
+		// it off the target lightness.
+		Oklab bestOklab = new(L: clampedLightness, A: 0.0, B: 0.0);
 
 		for (int i = 0; i < maxIterations && (maxChroma - minChroma) > tolerance; i++)
 		{
@@ -310,7 +315,7 @@ public static class SemanticColorMapper
 
 			// Create color with reduced chroma
 			Oklab testOklab = new(
-				L: targetLightness,
+				L: clampedLightness,
 				A: testChroma * Math.Cos(hue),
 				B: testChroma * Math.Sin(hue)
 			);
