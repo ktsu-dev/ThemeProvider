@@ -61,7 +61,7 @@ The library uses meaning-based color specifications instead of hardcoded colors:
 2. **SemanticColorMapper** maps `SemanticColorRequest` (meaning + priority) to actual colors
 3. The mapper calculates a global lightness range across all theme colors, then interpolates/extrapolates in Oklab space to achieve target lightness for each priority level
 4. Dark themes: higher priority = higher lightness; Light themes: higher priority = lower lightness
-5. Non-neutral meanings use 50-90% of the global lightness range; neutral uses the full range
+5. Non-neutral meanings use 20-82% of the global lightness range; neutral uses the full range
 
 ### Adding New Themes
 

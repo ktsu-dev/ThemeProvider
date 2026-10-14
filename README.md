@@ -194,7 +194,7 @@ public class MyFrameworkMapper : IPaletteMapper<MyColorEnum, MyColorType>
         {
             if (palette.TryGetValue(kvp.Value, out var color))
             {
-                result[kvp.Key] = ConvertToMyColor(color.RgbValue);
+                result[kvp.Key] = ConvertToMyColor(color.ToSrgb());
             }
         }
         return result;
