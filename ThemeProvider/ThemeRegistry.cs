@@ -101,13 +101,15 @@ public static class ThemeRegistry
 	];
 
 	/// <summary>
-	/// Gets themes grouped by family.
+	/// Gets themes grouped by family. Family names are matched case-insensitively, as theme names are by
+	/// <see cref="FindTheme"/>.
 	/// </summary>
 	public static IReadOnlyDictionary<string, IReadOnlyList<ThemeInfo>> ThemesByFamily { get; } =
 		AllThemes.GroupBy(t => t.Family)
 			.ToDictionary<IGrouping<string, ThemeInfo>, string, IReadOnlyList<ThemeInfo>>(
 				g => g.Key,
-				g => [.. g]);
+				g => [.. g],
+				StringComparer.OrdinalIgnoreCase);
 
 	/// <summary>
 	/// Gets all dark themes.
@@ -139,13 +141,13 @@ public static class ThemeRegistry
 	}
 
 	/// <summary>
-	/// Gets all themes in a specific family.
+	/// Gets all themes in a specific family (case-insensitive).
 	/// </summary>
 	/// <param name="family">The family name</param>
-	/// <returns>Array of themes in the family</returns>
+	/// <returns>Array of themes in the family, empty if there is no such family</returns>
 	public static IReadOnlyList<ThemeInfo> GetThemesInFamily(string family)
 	{
-		if (ThemesByFamily.TryGetValue(family, out IReadOnlyList<ThemeInfo>? themes) && themes is not null)
+		if (family is not null && ThemesByFamily.TryGetValue(family, out IReadOnlyList<ThemeInfo>? themes) && themes is not null)
 		{
 			return [.. themes];
 		}
