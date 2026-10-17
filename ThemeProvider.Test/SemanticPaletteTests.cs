@@ -2,6 +2,7 @@
 
 namespace ktsu.ThemeProvider.Test;
 
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using ktsu.Semantics.Color;
@@ -154,11 +155,11 @@ public class SemanticPaletteTests
 	}
 
 	/// <summary>
-	/// A palette with an empty neutral ramp still maps, leaving the mapper to fall back to its
-	/// default lightness range.
+	/// A palette with an empty neutral ramp is refused, naming <see cref="SemanticPalette.Neutrals"/>,
+	/// rather than mapping to a theme with no text or background colors.
 	/// </summary>
 	[TestMethod]
-	public void ToSemanticMapping_WithEmptyNeutrals_ProducesEmptyNeutralCollection()
+	public void ToSemanticMapping_WithEmptyNeutrals_ThrowsNamingNeutrals()
 	{
 		SemanticPalette palette = new()
 		{
@@ -174,6 +175,33 @@ public class SemanticPaletteTests
 			Debug = "#cba6f7",
 		};
 
-		Assert.IsEmpty(palette.ToSemanticMapping()[SemanticMeaning.Neutral]);
+		InvalidOperationException exception = Assert.ThrowsExactly<InvalidOperationException>(palette.ToSemanticMapping);
+
+		Assert.Contains("SemanticPalette.Neutrals", exception.Message);
+	}
+
+	/// <summary>
+	/// An accent left unassigned is refused with a message naming that accent.
+	/// </summary>
+	[TestMethod]
+	public void ToSemanticMapping_WithUnassignedAccent_ThrowsNamingTheAccent()
+	{
+		SemanticPalette palette = new()
+		{
+			Neutrals = ["#cdd6f4", "#11111b"],
+			Primary = "#89b4fa",
+			Alternate = "#f5c2e7",
+			Success = "#a6e3a1",
+			CallToAction = "#a6e3a1",
+			Information = "#74c7ec",
+			Warning = "#fab387",
+			Error = "#f38ba8",
+			Failure = "#f38ba8",
+			Debug = "#cba6f7",
+		};
+
+		InvalidOperationException exception = Assert.ThrowsExactly<InvalidOperationException>(palette.ToSemanticMapping);
+
+		Assert.Contains("SemanticPalette.Caution", exception.Message);
 	}
 }
