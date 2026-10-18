@@ -2,6 +2,7 @@
 
 namespace ktsu.ThemeProvider;
 
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -20,7 +21,8 @@ public sealed class SemanticPalette
 {
 	/// <summary>
 	/// Gets the neutral ramp, ordered as the theme publishes it. Conventionally the lightest and
-	/// darkest surface colors; <see cref="SemanticColorMapper"/> interpolates between them.
+	/// darkest surface colors; <see cref="SemanticColorMapper"/> interpolates between them. It must
+	/// not be empty: the neutrals supply a theme's text and background.
 	/// </summary>
 	public IReadOnlyList<HexColor> Neutrals { get; init; } = [];
 
@@ -66,6 +68,9 @@ public sealed class SemanticPalette
 	/// A fresh, caller-owned dictionary. Each call returns new collections so that a caller mutating
 	/// the result cannot corrupt the theme.
 	/// </returns>
+	/// <exception cref="InvalidOperationException">
+	/// <see cref="Neutrals"/> is empty, or an accent was never assigned. The message names the member.
+	/// </exception>
 	public Dictionary<SemanticMeaning, Collection<Color>> ToSemanticMapping()
 	{
 		IReadOnlyList<KeyValuePair<SemanticMeaning, Color[]>> entries = resolved ??= Resolve();
@@ -79,18 +84,33 @@ public sealed class SemanticPalette
 		return mapping;
 	}
 
-	private KeyValuePair<SemanticMeaning, Color[]>[] Resolve() =>
-	[
-		new(SemanticMeaning.Neutral, [.. Neutrals.Select(n => n.ToColor())]),
-		new(SemanticMeaning.Primary, [Primary.ToColor()]),
-		new(SemanticMeaning.Alternate, [Alternate.ToColor()]),
-		new(SemanticMeaning.Success, [Success.ToColor()]),
-		new(SemanticMeaning.CallToAction, [CallToAction.ToColor()]),
-		new(SemanticMeaning.Information, [Information.ToColor()]),
-		new(SemanticMeaning.Caution, [Caution.ToColor()]),
-		new(SemanticMeaning.Warning, [Warning.ToColor()]),
-		new(SemanticMeaning.Error, [Error.ToColor()]),
-		new(SemanticMeaning.Failure, [Failure.ToColor()]),
-		new(SemanticMeaning.Debug, [Debug.ToColor()]),
-	];
+	private KeyValuePair<SemanticMeaning, Color[]>[] Resolve()
+	{
+		// Without neutrals the mapper silently drops Text, WindowBg and the rest of the surface colors,
+		// leaving the toolkit's defaults under an otherwise themed UI, so this is refused rather than
+		// mapped.
+		if (Neutrals.Count == 0)
+		{
+			throw new InvalidOperationException($"{nameof(SemanticPalette)}.{nameof(Neutrals)} is empty; a palette needs at least one neutral color.");
+		}
+
+		return
+		[
+			new(SemanticMeaning.Neutral, [.. Neutrals.Select(n => n.ToColor())]),
+			new(SemanticMeaning.Primary, [Accent(Primary, nameof(Primary))]),
+			new(SemanticMeaning.Alternate, [Accent(Alternate, nameof(Alternate))]),
+			new(SemanticMeaning.Success, [Accent(Success, nameof(Success))]),
+			new(SemanticMeaning.CallToAction, [Accent(CallToAction, nameof(CallToAction))]),
+			new(SemanticMeaning.Information, [Accent(Information, nameof(Information))]),
+			new(SemanticMeaning.Caution, [Accent(Caution, nameof(Caution))]),
+			new(SemanticMeaning.Warning, [Accent(Warning, nameof(Warning))]),
+			new(SemanticMeaning.Error, [Accent(Error, nameof(Error))]),
+			new(SemanticMeaning.Failure, [Accent(Failure, nameof(Failure))]),
+			new(SemanticMeaning.Debug, [Accent(Debug, nameof(Debug))]),
+		];
+	}
+
+	private static Color Accent(HexColor value, string member) => value.Value is null
+		? throw new InvalidOperationException($"{nameof(SemanticPalette)}.{member} was not assigned a value.")
+		: value.ToColor();
 }
