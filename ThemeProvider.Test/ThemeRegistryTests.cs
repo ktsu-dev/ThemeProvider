@@ -140,6 +140,26 @@ public class ThemeRegistryTests
 	}
 
 	/// <summary>
+	/// Lookup by family is case-insensitive, like lookup by name.
+	/// </summary>
+	[TestMethod]
+	public void GetThemesInFamily_IsCaseInsensitive()
+	{
+		int count = ThemeRegistry.GetThemesInFamily("Catppuccin").Count;
+
+		Assert.AreEqual(4, count);
+		Assert.HasCount(count, ThemeRegistry.GetThemesInFamily("catppuccin"));
+		Assert.HasCount(count, ThemeRegistry.CreateThemeInstancesInFamily("CATPPUCCIN"));
+	}
+
+	/// <summary>
+	/// A null family yields an empty list, as a null name yields null from <see cref="ThemeRegistry.FindTheme"/>.
+	/// </summary>
+	[TestMethod]
+	public void GetThemesInFamily_NullFamily_ReturnsEmpty() =>
+		Assert.IsEmpty(ThemeRegistry.GetThemesInFamily(null!));
+
+	/// <summary>
 	/// An unknown family yields an empty list rather than throwing.
 	/// </summary>
 	[TestMethod]
