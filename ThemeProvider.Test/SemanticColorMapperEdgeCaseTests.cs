@@ -71,7 +71,7 @@ public class SemanticColorMapperEdgeCaseTests
 		StubTheme theme = new([], isDark: true);
 
 		ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() => SemanticColorMapper.MakeCompletePalette(theme));
-		StringAssert.Contains(ex.Message, nameof(SemanticMeaning.Neutral));
+		Assert.Contains(nameof(SemanticMeaning.Neutral), ex.Message);
 	}
 
 	/// <summary>
@@ -84,7 +84,7 @@ public class SemanticColorMapperEdgeCaseTests
 		StubTheme theme = new(new() { [SemanticMeaning.Primary] = [Color.FromHex("#89b4fa")] }, isDark: true);
 
 		ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() => SemanticColorMapper.MakeCompletePalette(theme));
-		StringAssert.Contains(ex.Message, nameof(SemanticMeaning.Neutral));
+		Assert.Contains(nameof(SemanticMeaning.Neutral), ex.Message);
 	}
 
 	/// <summary>
@@ -102,7 +102,7 @@ public class SemanticColorMapperEdgeCaseTests
 			isDark: true);
 
 		ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() => SemanticColorMapper.MakeCompletePalette(theme));
-		StringAssert.Contains(ex.Message, nameof(SemanticMeaning.Neutral));
+		Assert.Contains(nameof(SemanticMeaning.Neutral), ex.Message);
 	}
 
 	/// <summary>

@@ -41,7 +41,7 @@ public class ImGuiPaletteMapperTests
 		NoNeutralTheme theme = new();
 
 		ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() => new ImGuiPaletteMapper().MapTheme(theme));
-		StringAssert.Contains(ex.Message, nameof(SemanticMeaning.Neutral));
+		Assert.Contains(nameof(SemanticMeaning.Neutral), ex.Message);
 	}
 
 	/// <summary>
