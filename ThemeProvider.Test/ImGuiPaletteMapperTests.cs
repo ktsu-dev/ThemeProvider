@@ -3,8 +3,10 @@
 namespace ktsu.ThemeProvider.Test;
 
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Numerics;
 using Hexa.NET.ImGui;
+using ktsu.Semantics.Color;
 using ktsu.ThemeProvider.ImGui;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -28,6 +30,19 @@ public class ImGuiPaletteMapperTests
 	[TestMethod]
 	public void MapTheme_WithNullTheme_Throws() =>
 		Assert.ThrowsExactly<ArgumentNullException>(() => new ImGuiPaletteMapper().MapTheme(null!));
+
+	/// <summary>
+	/// A hand-written theme with accents but no neutrals is refused rather than mapped to a palette
+	/// with no Text or WindowBg, which would leave ImGui's defaults under a themed UI.
+	/// </summary>
+	[TestMethod]
+	public void MapTheme_WithNoNeutrals_Throws()
+	{
+		NoNeutralTheme theme = new();
+
+		ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() => new ImGuiPaletteMapper().MapTheme(theme));
+		StringAssert.Contains(ex.Message, nameof(SemanticMeaning.Neutral));
+	}
 
 	/// <summary>
 	/// Mapping a theme fills in the ImGui colors the mapper claims to cover.
@@ -194,5 +209,16 @@ public class ImGuiPaletteMapperTests
 
 			Assert.AreNotEqual(text, background, $"{info.Name}: text and window background are identical");
 		}
+	}
+
+	private sealed class NoNeutralTheme : ISemanticTheme
+	{
+		public Dictionary<SemanticMeaning, Collection<Color>> SemanticMapping { get; } = new()
+		{
+			[SemanticMeaning.Primary] = [Color.FromHex("#89b4fa")],
+			[SemanticMeaning.Error] = [Color.FromHex("#f38ba8")],
+		};
+
+		public bool IsDarkTheme => true;
 	}
 }
