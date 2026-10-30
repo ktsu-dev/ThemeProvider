@@ -84,17 +84,27 @@ public static class SemanticColorMapper
 	/// </summary>
 	/// <param name="theme">The semantic theme to generate the complete palette from</param>
 	/// <returns>A dictionary mapping every possible semantic color request to its assigned color</returns>
+	/// <exception cref="ArgumentException">
+	/// The theme has no <see cref="SemanticMeaning.Neutral"/> colors.
+	/// </exception>
 	public static IReadOnlyDictionary<SemanticColorRequest, Color> MakeCompletePalette(ISemanticTheme theme)
 	{
 		Ensure.NotNull(theme);
 
+		// Text, window backgrounds and every other surface color come from the neutrals. Without them a
+		// palette mapper silently leaves those slots to the toolkit's defaults under an otherwise themed UI,
+		// so the theme is refused here, where every IPaletteMapper passes, rather than only in
+		// SemanticPalette.
+		if (!theme.SemanticMapping.TryGetValue(SemanticMeaning.Neutral, out Collection<Color>? neutrals) ||
+			neutrals.Count == 0)
+		{
+			throw new ArgumentException(
+				$"The theme has no {nameof(SemanticMeaning.Neutral)} colors; a palette needs at least one neutral color.",
+				nameof(theme));
+		}
+
 		// Get all available semantic meanings from the theme
 		HashSet<SemanticMeaning> availableMeanings = [.. theme.SemanticMapping.Keys];
-
-		if (availableMeanings.Count == 0)
-		{
-			return new Dictionary<SemanticColorRequest, Color>();
-		}
 
 		// Get all possible priorities
 #if NET5_0_OR_GREATER

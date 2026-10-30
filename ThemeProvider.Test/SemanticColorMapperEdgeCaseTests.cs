@@ -62,14 +62,47 @@ public class SemanticColorMapperEdgeCaseTests
 		Assert.ThrowsExactly<ArgumentNullException>(() => SemanticColorMapper.MakeCompletePalette(null!));
 
 	/// <summary>
-	/// A theme that defines no meanings yields an empty palette rather than throwing.
+	/// A theme that defines no meanings has no neutrals either, so it is refused like any other theme
+	/// without them rather than mapped to an empty palette.
 	/// </summary>
 	[TestMethod]
-	public void MakeCompletePalette_WithEmptyTheme_ReturnsEmpty()
+	public void MakeCompletePalette_WithEmptyTheme_Throws()
 	{
 		StubTheme theme = new([], isDark: true);
 
-		Assert.IsEmpty(SemanticColorMapper.MakeCompletePalette(theme));
+		ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() => SemanticColorMapper.MakeCompletePalette(theme));
+		Assert.Contains(nameof(SemanticMeaning.Neutral), ex.Message);
+	}
+
+	/// <summary>
+	/// A hand-written theme with accents but no Neutral key would map to a palette with no text or
+	/// window background, so it is refused, naming the missing meaning.
+	/// </summary>
+	[TestMethod]
+	public void MakeCompletePalette_WithNoNeutralKey_Throws()
+	{
+		StubTheme theme = new(new() { [SemanticMeaning.Primary] = [Color.FromHex("#89b4fa")] }, isDark: true);
+
+		ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() => SemanticColorMapper.MakeCompletePalette(theme));
+		Assert.Contains(nameof(SemanticMeaning.Neutral), ex.Message);
+	}
+
+	/// <summary>
+	/// An empty Neutral collection is the same gap as a missing key, and is refused the same way.
+	/// </summary>
+	[TestMethod]
+	public void MakeCompletePalette_WithEmptyNeutrals_Throws()
+	{
+		StubTheme theme = new(
+			new()
+			{
+				[SemanticMeaning.Neutral] = [],
+				[SemanticMeaning.Primary] = [Color.FromHex("#89b4fa")],
+			},
+			isDark: true);
+
+		ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() => SemanticColorMapper.MakeCompletePalette(theme));
+		Assert.Contains(nameof(SemanticMeaning.Neutral), ex.Message);
 	}
 
 	/// <summary>
