@@ -14,7 +14,7 @@ using ktsu.Semantics.Color;
 public class KanagawaDragon : ISemanticTheme
 {
 	// Colors shared by several meanings are named once, after the palette entry they come from.
-	private const string SakuraPink = "#c4746e";
+	private const string DragonRed = "#c4746e";
 
 	// Hex values are the palette this theme mirrors; the trailing comment on each line is
 	// that palette's own name for the color.
@@ -22,15 +22,15 @@ public class KanagawaDragon : ISemanticTheme
 	{
 		Neutrals = ["#c5c9c5", "#0d0c0c"], // Fg0, Background
 		Primary = "#8ba4b0", // CrystalBlue
-		Alternate = SakuraPink,
+		Alternate = "#a292a3", // DragonPink
 		Success = "#8a9a7b", // SummerGreen
-		CallToAction = "#7fb4ca", // SpringBlue
-		Information = "#9cabca", // IceBlue
+		CallToAction = "#7fb4ca", // SpringBlue (a Wave color, not a dragon* one)
+		Information = "#9cabca", // SpringViolet2
 		Caution = "#c4b28a", // AutumnYellow
 		Warning = "#b6927b", // BoatYellow2
-		Error = SakuraPink, // WaveRed
-		Failure = SakuraPink, // WaveRed
-		Debug = SakuraPink,
+		Error = DragonRed,
+		Failure = DragonRed,
+		Debug = "#8992a7", // DragonViolet
 	};
 
 	/// <inheritdoc />
