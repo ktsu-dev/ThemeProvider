@@ -211,6 +211,28 @@ public class ImGuiPaletteMapperTests
 		}
 	}
 
+	/// <summary>
+	/// With RowBg on, ImGui fills odd rows with TableRowBgAlt, and an input frame in such a row is drawn
+	/// in FrameBg with no border by default. The stripe as drawn over the window must not be the frame's
+	/// color, or every other row's frames disappear.
+	/// </summary>
+	[TestMethod]
+	public void MapTheme_AlternateRowDiffersFromFrame()
+	{
+		ImGuiPaletteMapper mapper = new();
+
+		foreach (ThemeRegistry.ThemeInfo info in ThemeRegistry.AllThemes)
+		{
+			IReadOnlyDictionary<ImGuiCol, Vector4> palette = mapper.MapTheme(info.CreateInstance());
+			Vector4 stripe = palette[ImGuiCol.TableRowBgAlt];
+			Vector4 window = palette[ImGuiCol.WindowBg];
+			Vector3 drawn = (new Vector3(stripe.X, stripe.Y, stripe.Z) * stripe.W) + (new Vector3(window.X, window.Y, window.Z) * (1f - stripe.W));
+			Vector4 frame = palette[ImGuiCol.FrameBg];
+
+			Assert.IsGreaterThan(1f / 255f, Vector3.Distance(drawn, new Vector3(frame.X, frame.Y, frame.Z)), $"{info.Name}: an alternate row is drawn in the frame color");
+		}
+	}
+
 	private sealed class NoNeutralTheme : ISemanticTheme
 	{
 		public Dictionary<SemanticMeaning, Collection<Color>> SemanticMapping { get; } = new()
