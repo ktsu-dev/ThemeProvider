@@ -325,7 +325,7 @@ Kanagawa Wave [family=Kanagawa, variant=Wave, isDark=true, themeIsDark=true]
 Kanagawa Dragon [family=Kanagawa, variant=Dragon, isDark=true, themeIsDark=true]
   Neutral = #C5C9C5 #0D0C0C
   Primary = #8BA4B0
-  Alternate = #C4746E
+  Alternate = #A292A3
   Success = #8A9A7B
   CallToAction = #7FB4CA
   Information = #9CABCA
@@ -333,7 +333,7 @@ Kanagawa Dragon [family=Kanagawa, variant=Dragon, isDark=true, themeIsDark=true]
   Warning = #B6927B
   Error = #C4746E
   Failure = #C4746E
-  Debug = #C4746E
+  Debug = #8992A7
 Kanagawa Lotus [family=Kanagawa, variant=Lotus, isDark=false, themeIsDark=false]
   Neutral = #545464 #F2ECBC
   Primary = #4D699B

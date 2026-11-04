@@ -125,6 +125,9 @@ public sealed class ImGuiPaletteMapper : IPaletteMapper<ImGuiCol, Vector4>
 		{
 			{ ImGuiCol.NavWindowingDimBg, 0.20f },
 			{ ImGuiCol.ModalWindowDimBg, 0.35f },
+			// Striped rows hold input frames, which are drawn in FrameBg with no border by default. A
+			// translucent stripe lands between the row and frame colors, so a frame in an odd row stays visible.
+			{ ImGuiCol.TableRowBgAlt, 0.50f },
 		};
 
 		// Convert the semantic colors to ImGui Vector4 format
