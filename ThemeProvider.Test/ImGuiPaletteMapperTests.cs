@@ -233,6 +233,30 @@ public class ImGuiPaletteMapperTests
 		}
 	}
 
+	/// <summary>
+	/// ImGui fills a dock node's tab bar with TitleBgActive when focused and TitleBg otherwise, and draws
+	/// the selected tab with TabSelected or TabDimmedSelected. Each selected tab must differ from the bar
+	/// it sits on, or only the 1px overline shows which tab is open. Hovering must also read differently
+	/// from being selected.
+	/// </summary>
+	[TestMethod]
+	public void MapTheme_SelectedTabsDifferFromTheirTabBar()
+	{
+		ImGuiPaletteMapper mapper = new();
+
+		foreach (ThemeRegistry.ThemeInfo info in ThemeRegistry.AllThemes)
+		{
+			IReadOnlyDictionary<ImGuiCol, Vector4> palette = mapper.MapTheme(info.CreateInstance());
+
+			AssertDistinct(palette, ImGuiCol.TabSelected, ImGuiCol.TitleBgActive, info.Name);
+			AssertDistinct(palette, ImGuiCol.TabDimmedSelected, ImGuiCol.TitleBg, info.Name);
+			AssertDistinct(palette, ImGuiCol.TabHovered, ImGuiCol.TabSelected, info.Name);
+		}
+	}
+
+	private static void AssertDistinct(IReadOnlyDictionary<ImGuiCol, Vector4> palette, ImGuiCol first, ImGuiCol second, string themeName) =>
+		Assert.IsGreaterThan(1f / 255f, Vector4.Distance(palette[first], palette[second]), $"{themeName}: {first} is drawn in the {second} color");
+
 	private sealed class NoNeutralTheme : ISemanticTheme
 	{
 		public Dictionary<SemanticMeaning, Collection<Color>> SemanticMapping { get; } = new()

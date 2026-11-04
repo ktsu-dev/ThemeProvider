@@ -87,12 +87,14 @@ public sealed class ImGuiPaletteMapper : IPaletteMapper<ImGuiCol, Vector4>
 			{ ImGuiCol.TreeLines, new(SemanticMeaning.Neutral, Priority.MediumHigh)},
 
 			{ ImGuiCol.Tab, new(SemanticMeaning.Neutral, Priority.Low)},
-			{ ImGuiCol.TabSelected, new(SemanticMeaning.Primary, Priority.VeryLow)},
-			{ ImGuiCol.TabHovered, new(SemanticMeaning.Primary, Priority.Low)},
+			// The tab bar is filled with the title bar's color, so the selected tab sits one step above it
+			// to read as the open tab, and hovering steps up once more.
+			{ ImGuiCol.TabSelected, new(SemanticMeaning.Primary, Priority.Low)},
+			{ ImGuiCol.TabHovered, new(SemanticMeaning.Primary, Priority.MediumLow)},
 			{ ImGuiCol.TabSelectedOverline, new(SemanticMeaning.Primary, Priority.High)},
 			// Tabs in an unfocused window drop to neutral so the focused window's tabs stand out.
 			{ ImGuiCol.TabDimmed, new(SemanticMeaning.Neutral, Priority.VeryLow)},
-			{ ImGuiCol.TabDimmedSelected, new(SemanticMeaning.Neutral, Priority.Low)},
+			{ ImGuiCol.TabDimmedSelected, new(SemanticMeaning.Neutral, Priority.MediumLow)},
 			{ ImGuiCol.TabDimmedSelectedOverline, new(SemanticMeaning.Primary, Priority.High)},
 
 			// Alternate elements spread across the full 20-82% non-neutral range for better contrast
