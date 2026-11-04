@@ -2,6 +2,7 @@
 
 Changes since v3.2.1:
 
+- Give the selected tab its own fill on the tab bar [patch] (#163) (matt-edmondson)
 - Keep input frames visible in striped table rows [patch] (#162) (matt-edmondson)
 - Give Kanagawa Dragon its own pink and violet for Alternate and Debug [patch] (#159) (matt-edmondson)
 - Use Assert.Contains for the Neutral message checks (MSTEST0046) (Claude)
