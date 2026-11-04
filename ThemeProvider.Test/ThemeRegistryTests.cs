@@ -3,7 +3,9 @@
 namespace ktsu.ThemeProvider.Test;
 
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using ktsu.Semantics.Color;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 /// <summary>
@@ -203,5 +205,31 @@ public class ThemeRegistryTests
 		ThemeRegistry.ThemeInfo info = ThemeRegistry.AllThemes[0];
 
 		Assert.AreNotSame(info.CreateInstance(), info.CreateInstance());
+	}
+
+	/// <summary>
+	/// Alternate and Debug are drawn for selected text, plots and progress bars, so a theme that gives
+	/// either one the same base color as Error makes ordinary UI look like an error state.
+	/// </summary>
+	[TestMethod]
+	[DataRow(SemanticMeaning.Alternate)]
+	[DataRow(SemanticMeaning.Debug)]
+	public void AllThemes_DoNotShareErrorBaseColor(SemanticMeaning meaning)
+	{
+		List<string> offenders = [];
+		foreach (ThemeRegistry.ThemeInfo info in ThemeRegistry.AllThemes)
+		{
+			Dictionary<SemanticMeaning, Collection<Color>> mapping = info.CreateInstance().SemanticMapping;
+			if (mapping.TryGetValue(meaning, out Collection<Color>? colors)
+				&& mapping.TryGetValue(SemanticMeaning.Error, out Collection<Color>? errors)
+				&& colors.Count > 0
+				&& errors.Count > 0
+				&& colors[0].ToHex() == errors[0].ToHex())
+			{
+				offenders.Add(info.Name);
+			}
+		}
+
+		Assert.IsEmpty(offenders, $"{meaning} uses the Error base color in: {string.Join(", ", offenders)}");
 	}
 }
