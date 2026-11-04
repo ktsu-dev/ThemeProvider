@@ -2,6 +2,8 @@
 
 Changes since v3.2.1:
 
+- Keep input frames visible in striped table rows [patch] (#162) (matt-edmondson)
+- Give Kanagawa Dragon its own pink and violet for Alternate and Debug [patch] (#159) (matt-edmondson)
 - Use Assert.Contains for the Neutral message checks (MSTEST0046) (Claude)
 - Refuse a theme with no Neutral colors in MakeCompletePalette (Claude)
 - Refuse a SemanticPalette with no neutrals, and name unassigned accents [patch] (Claude)
