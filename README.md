@@ -143,6 +143,8 @@ foreach ((ImGuiCol colorKey, Vector4 colorValue) in imguiColors)
 }
 ```
 
+`MapTheme` needs at least one `Neutral`, `Primary` and `Alternate` color, because every slot it themes comes from one of them. A custom `ISemanticTheme` that leaves one out is refused with an `ArgumentException` that names the missing meanings. Without that check, those slots would keep Dear ImGui's defaults. Every built-in theme and every `SemanticPalette` defines all three.
+
 ### Accessibility Checking
 
 ```csharp
