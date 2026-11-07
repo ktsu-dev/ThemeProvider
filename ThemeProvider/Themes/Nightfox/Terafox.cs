@@ -19,7 +19,7 @@ public class Terafox : ISemanticTheme
 	{
 		Neutrals = ["#e6eaea", "#0f1c1e"], // Fg1, BgAlt
 		Primary = "#7aa4a1", // Green
-		Alternate = "#ff8349", // Orange
+		Alternate = "#cb7985", // Pink
 		Success = "#7aa4a1", // Green
 		CallToAction = "#a1cdd8", // Cyan
 		Information = "#5a93aa", // Blue

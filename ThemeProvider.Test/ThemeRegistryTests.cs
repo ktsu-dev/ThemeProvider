@@ -209,27 +209,34 @@ public class ThemeRegistryTests
 
 	/// <summary>
 	/// Alternate and Debug are drawn for selected text, plots and progress bars, so a theme that gives
-	/// either one the same base color as Error makes ordinary UI look like an error state.
+	/// either one the same base color as a status meaning (Caution, Warning, Error or Failure) makes
+	/// ordinary UI look like that status, and a real status hard to tell from a selection.
 	/// </summary>
 	[TestMethod]
-	[DataRow(SemanticMeaning.Alternate)]
-	[DataRow(SemanticMeaning.Debug)]
-	public void AllThemes_DoNotShareErrorBaseColor(SemanticMeaning meaning)
+	[DataRow(SemanticMeaning.Alternate, SemanticMeaning.Caution)]
+	[DataRow(SemanticMeaning.Alternate, SemanticMeaning.Warning)]
+	[DataRow(SemanticMeaning.Alternate, SemanticMeaning.Error)]
+	[DataRow(SemanticMeaning.Alternate, SemanticMeaning.Failure)]
+	[DataRow(SemanticMeaning.Debug, SemanticMeaning.Caution)]
+	[DataRow(SemanticMeaning.Debug, SemanticMeaning.Warning)]
+	[DataRow(SemanticMeaning.Debug, SemanticMeaning.Error)]
+	[DataRow(SemanticMeaning.Debug, SemanticMeaning.Failure)]
+	public void AllThemes_DoNotShareStatusBaseColor(SemanticMeaning meaning, SemanticMeaning status)
 	{
 		List<string> offenders = [];
 		foreach (ThemeRegistry.ThemeInfo info in ThemeRegistry.AllThemes)
 		{
 			Dictionary<SemanticMeaning, Collection<Color>> mapping = info.CreateInstance().SemanticMapping;
 			if (mapping.TryGetValue(meaning, out Collection<Color>? colors)
-				&& mapping.TryGetValue(SemanticMeaning.Error, out Collection<Color>? errors)
+				&& mapping.TryGetValue(status, out Collection<Color>? statusColors)
 				&& colors.Count > 0
-				&& errors.Count > 0
-				&& colors[0].ToHex() == errors[0].ToHex())
+				&& statusColors.Count > 0
+				&& colors[0].ToHex() == statusColors[0].ToHex())
 			{
 				offenders.Add(info.Name);
 			}
 		}
 
-		Assert.IsEmpty(offenders, $"{meaning} uses the Error base color in: {string.Join(", ", offenders)}");
+		Assert.IsEmpty(offenders, $"{meaning} uses the {status} base color in: {string.Join(", ", offenders)}");
 	}
 }

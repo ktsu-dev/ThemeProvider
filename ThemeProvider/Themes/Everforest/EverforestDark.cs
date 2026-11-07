@@ -14,7 +14,7 @@ public class EverforestDark : ISemanticTheme
 {
 	// Colors shared by several meanings are named once, after the palette entry they come from.
 	private const string Red = "#e67e80";
-	private const string Orange = "#e69875";
+	private const string Aqua = "#83c092";
 
 	// Hex values are the palette this theme mirrors; the trailing comment on each line is
 	// that palette's own name for the color.
@@ -22,12 +22,12 @@ public class EverforestDark : ISemanticTheme
 	{
 		Neutrals = ["#d3c6aa", "#232a2e"], // Fg, BgDim
 		Primary = "#a7c080", // Green
-		Alternate = Orange,
+		Alternate = Aqua,
 		Success = "#7fbbb3", // Blue
-		CallToAction = "#83c092", // Aqua
+		CallToAction = Aqua,
 		Information = "#d699b6", // Purple
 		Caution = "#dbbc7f", // Yellow
-		Warning = Orange,
+		Warning = "#e69875", // Orange
 		Error = Red,
 		Failure = Red,
 		Debug = "#d699b6", // Purple
