@@ -157,7 +157,7 @@ Gruvbox Light Soft [family=Gruvbox, variant=Light Soft, isDark=false, themeIsDar
 Everforest Dark [family=Everforest, variant=Dark, isDark=true, themeIsDark=true]
   Neutral = #D3C6AA #232A2E
   Primary = #A7C080
-  Alternate = #E69875
+  Alternate = #83C092
   Success = #7FBBB3
   CallToAction = #83C092
   Information = #D699B6
@@ -169,7 +169,7 @@ Everforest Dark [family=Everforest, variant=Dark, isDark=true, themeIsDark=true]
 Everforest Dark Hard [family=Everforest, variant=Dark Hard, isDark=true, themeIsDark=true]
   Neutral = #D3C6AA #1E2326
   Primary = #A7C080
-  Alternate = #E69875
+  Alternate = #83C092
   Success = #7FBBB3
   CallToAction = #83C092
   Information = #D699B6
@@ -181,7 +181,7 @@ Everforest Dark Hard [family=Everforest, variant=Dark Hard, isDark=true, themeIs
 Everforest Dark Soft [family=Everforest, variant=Dark Soft, isDark=true, themeIsDark=true]
   Neutral = #D3C6AA #293136
   Primary = #A7C080
-  Alternate = #E69875
+  Alternate = #83C092
   Success = #7FBBB3
   CallToAction = #83C092
   Information = #D699B6
@@ -193,7 +193,7 @@ Everforest Dark Soft [family=Everforest, variant=Dark Soft, isDark=true, themeIs
 Everforest Light [family=Everforest, variant=Light, isDark=false, themeIsDark=false]
   Neutral = #5C6A72 #EFEBD4
   Primary = #8DA101
-  Alternate = #F57D26
+  Alternate = #35A77C
   Success = #3A94C5
   CallToAction = #35A77C
   Information = #DF69BA
@@ -205,7 +205,7 @@ Everforest Light [family=Everforest, variant=Light, isDark=false, themeIsDark=fa
 Everforest Light Hard [family=Everforest, variant=Light Hard, isDark=false, themeIsDark=false]
   Neutral = #5C6A72 #F2EFDF
   Primary = #8DA101
-  Alternate = #F57D26
+  Alternate = #35A77C
   Success = #3A94C5
   CallToAction = #35A77C
   Information = #DF69BA
@@ -217,7 +217,7 @@ Everforest Light Hard [family=Everforest, variant=Light Hard, isDark=false, them
 Everforest Light Soft [family=Everforest, variant=Light Soft, isDark=false, themeIsDark=false]
   Neutral = #5C6A72 #E5DFC5
   Primary = #8DA101
-  Alternate = #F57D26
+  Alternate = #35A77C
   Success = #3A94C5
   CallToAction = #35A77C
   Information = #DF69BA
@@ -229,7 +229,7 @@ Everforest Light Soft [family=Everforest, variant=Light Soft, isDark=false, them
 Nightfox [family=Nightfox, variant=-, isDark=true, themeIsDark=true]
   Neutral = #CDCECF #131A24
   Primary = #719CD6
-  Alternate = #F4A261
+  Alternate = #D67AD2
   Success = #81B29A
   CallToAction = #63CDCF
   Information = #719CD6
@@ -241,7 +241,7 @@ Nightfox [family=Nightfox, variant=-, isDark=true, themeIsDark=true]
 Dayfox [family=Nightfox, variant=Dayfox, isDark=false, themeIsDark=false]
   Neutral = #3D2B5A #E4DCD4
   Primary = #2848A9
-  Alternate = #955F61
+  Alternate = #A440B5
   Success = #396847
   CallToAction = #287980
   Information = #2848A9
@@ -277,7 +277,7 @@ Nordfox [family=Nightfox, variant=Nordfox, isDark=true, themeIsDark=true]
 Terafox [family=Nightfox, variant=Terafox, isDark=true, themeIsDark=true]
   Neutral = #E6EAEA #0F1C1E
   Primary = #7AA4A1
-  Alternate = #FF8349
+  Alternate = #CB7985
   Success = #7AA4A1
   CallToAction = #A1CDD8
   Information = #5A93AA
