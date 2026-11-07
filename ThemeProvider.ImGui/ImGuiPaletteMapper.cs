@@ -125,6 +125,9 @@ public sealed class ImGuiPaletteMapper : IPaletteMapper<ImGuiCol, Vector4>
 		{
 			{ ImGuiCol.NavWindowingDimBg, 0.20f },
 			{ ImGuiCol.ModalWindowDimBg, 0.35f },
+			// ImGui draws the shadow one pixel below and right of every framed widget once FrameBorderSize > 0,
+			// so it stays invisible unless a style opts in, as in ImGui's stock styles.
+			{ ImGuiCol.BorderShadow, 0f },
 			// Striped rows hold input frames, which are drawn in FrameBg with no border by default. A
 			// translucent stripe lands between the row and frame colors, so a frame in an odd row stays visible.
 			{ ImGuiCol.TableRowBgAlt, 0.50f },
