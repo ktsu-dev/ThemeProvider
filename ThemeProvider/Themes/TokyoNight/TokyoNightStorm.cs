@@ -19,7 +19,7 @@ public class TokyoNightStorm : ISemanticTheme
 	{
 		Neutrals = ["#c0caf5", "#1f2335"], // Fg0, BgAlt
 		Primary = "#7aa2f7", // Blue
-		Alternate = "#bb9af7", // Purple
+		Alternate = "#bb9af7", // Magenta
 		Success = "#9ece6a", // Green
 		CallToAction = "#7dcfff", // Cyan
 		Information = "#7aa2f7", // Blue
@@ -27,7 +27,7 @@ public class TokyoNightStorm : ISemanticTheme
 		Warning = "#ff9e64", // Orange
 		Error = "#f7768e", // Red
 		Failure = "#f7768e", // Red
-		Debug = "#bb9af7", // Magenta
+		Debug = "#9d7cd8", // Purple
 	};
 
 	/// <inheritdoc />
