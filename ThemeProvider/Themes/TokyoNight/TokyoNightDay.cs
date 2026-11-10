@@ -19,7 +19,7 @@ public class TokyoNightDay : ISemanticTheme
 	{
 		Neutrals = ["#3760bf", "#e9e9ed"], // Fg0, BgAlt
 		Primary = "#2e7de9", // Blue
-		Alternate = "#9854f1", // Purple
+		Alternate = "#9854f1", // Magenta
 		Success = "#587539", // Green
 		CallToAction = "#007197", // Cyan
 		Information = "#2e7de9", // Blue
@@ -27,7 +27,7 @@ public class TokyoNightDay : ISemanticTheme
 		Warning = "#b15c00", // Orange
 		Error = "#f52a65", // Red
 		Failure = "#f52a65", // Red
-		Debug = "#9854f1", // Magenta
+		Debug = "#7847bd", // Purple
 	};
 
 	/// <inheritdoc />

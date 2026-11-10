@@ -232,4 +232,24 @@ public class ThemeRegistryTests
 
 		Assert.IsEmpty(offenders, $"{meaning} uses the Error base color in: {string.Join(", ", offenders)}");
 	}
+
+	/// <summary>
+	/// Tokyo Night publishes a separate magenta and purple in every palette, so each variant must give
+	/// Debug its own color rather than repeating Alternate's.
+	/// </summary>
+	[TestMethod]
+	public void TokyoNightThemes_GiveDebugADifferentColorFromAlternate()
+	{
+		List<string> offenders = [];
+		foreach (ThemeRegistry.ThemeInfo info in ThemeRegistry.AllThemes.Where(t => t.Family == "Tokyo Night"))
+		{
+			Dictionary<SemanticMeaning, Collection<Color>> mapping = info.CreateInstance().SemanticMapping;
+			if (mapping[SemanticMeaning.Alternate][0].ToHex() == mapping[SemanticMeaning.Debug][0].ToHex())
+			{
+				offenders.Add(info.Name);
+			}
+		}
+
+		Assert.IsEmpty(offenders, $"Debug repeats Alternate's color in: {string.Join(", ", offenders)}");
+	}
 }
