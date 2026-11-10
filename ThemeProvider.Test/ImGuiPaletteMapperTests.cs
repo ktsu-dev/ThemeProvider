@@ -254,6 +254,33 @@ public class ImGuiPaletteMapperTests
 		}
 	}
 
+	/// <summary>
+	/// ImGui draws a table's outer border and the line under its header row in TableBorderStrong, and
+	/// the inner row and column dividers in TableBorderLight. Strong must stand out from the window
+	/// more than Light does, or the header no longer separates from the body. Light must also differ
+	/// from the row and header fills it is drawn between, or the inner dividers vanish.
+	/// </summary>
+	[TestMethod]
+	public void MapTheme_TableBorderStrongStandsOutMoreThanLight()
+	{
+		ImGuiPaletteMapper mapper = new();
+
+		foreach (ThemeRegistry.ThemeInfo info in ThemeRegistry.AllThemes)
+		{
+			IReadOnlyDictionary<ImGuiCol, Vector4> palette = mapper.MapTheme(info.CreateInstance());
+
+			AssertDistinct(palette, ImGuiCol.TableBorderStrong, ImGuiCol.TableBorderLight, info.Name);
+			AssertDistinct(palette, ImGuiCol.TableBorderLight, ImGuiCol.TableRowBg, info.Name);
+			AssertDistinct(palette, ImGuiCol.TableBorderLight, ImGuiCol.TableRowBgAlt, info.Name);
+			AssertDistinct(palette, ImGuiCol.TableBorderLight, ImGuiCol.TableHeaderBg, info.Name);
+
+			Vector4 window = palette[ImGuiCol.WindowBg];
+			float strong = Vector4.Distance(palette[ImGuiCol.TableBorderStrong], window);
+			float light = Vector4.Distance(palette[ImGuiCol.TableBorderLight], window);
+			Assert.IsGreaterThan(light, strong, $"{info.Name}: TableBorderStrong stands out from WindowBg no more than TableBorderLight");
+		}
+	}
+
 	private static void AssertDistinct(IReadOnlyDictionary<ImGuiCol, Vector4> palette, ImGuiCol first, ImGuiCol second, string themeName) =>
 		Assert.IsGreaterThan(1f / 255f, Vector4.Distance(palette[first], palette[second]), $"{themeName}: {first} is drawn in the {second} color");
 
