@@ -151,6 +151,25 @@ public class ImGuiPaletteMapperTests
 	}
 
 	/// <summary>
+	/// ImGui draws BorderShadow one pixel below and right of every framed widget's border once
+	/// FrameBorderSize is above zero. ImGui's stock styles make it transparent so that it shows only
+	/// when a style opts in; an opaque one reads as a doubled, misaligned border.
+	/// </summary>
+	[TestMethod]
+	public void MapTheme_BorderShadowIsTransparent()
+	{
+		ImGuiPaletteMapper mapper = new();
+
+		foreach (ThemeRegistry.ThemeInfo info in ThemeRegistry.AllThemes)
+		{
+			IReadOnlyDictionary<ImGuiCol, Vector4> palette = mapper.MapTheme(info.CreateInstance());
+
+			Assert.IsTrue(palette.TryGetValue(ImGuiCol.BorderShadow, out Vector4 shadow), $"{info.Name}: BorderShadow unmapped");
+			Assert.AreEqual(0f, shadow.W, $"{info.Name}: BorderShadow alpha is {shadow.W}");
+		}
+	}
+
+	/// <summary>
 	/// ImGui expects color components in [0, 1]; anything outside that renders as a clipped or
 	/// wrapped color.
 	/// </summary>
