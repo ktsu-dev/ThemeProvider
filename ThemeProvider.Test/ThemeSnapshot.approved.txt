@@ -69,7 +69,7 @@ Tokyo Night Storm [family=Tokyo Night, variant=Storm, isDark=true, themeIsDark=t
   Warning = #FF9E64
   Error = #F7768E
   Failure = #F7768E
-  Debug = #BB9AF7
+  Debug = #9D7CD8
 Tokyo Night Day [family=Tokyo Night, variant=Day, isDark=false, themeIsDark=false]
   Neutral = #3760BF #E9E9ED
   Primary = #2E7DE9
@@ -81,7 +81,7 @@ Tokyo Night Day [family=Tokyo Night, variant=Day, isDark=false, themeIsDark=fals
   Warning = #B15C00
   Error = #F52A65
   Failure = #F52A65
-  Debug = #9854F1
+  Debug = #7847BD
 Gruvbox Dark [family=Gruvbox, variant=Dark, isDark=true, themeIsDark=true]
   Neutral = #EBDBB2 #282828
   Primary = #FE8019

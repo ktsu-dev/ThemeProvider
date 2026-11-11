@@ -45,6 +45,79 @@ public class ImGuiPaletteMapperTests
 	}
 
 	/// <summary>
+	/// A hand-written theme without Primary is refused, naming Primary, rather than leaving the buttons,
+	/// checkmarks, tabs and title bar on Dear ImGui's defaults.
+	/// </summary>
+	[TestMethod]
+	public void MapTheme_WithoutPrimary_ThrowsNamingPrimary()
+	{
+		ISemanticTheme theme = WithoutMeanings(SemanticMeaning.Primary);
+
+		ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() => new ImGuiPaletteMapper().MapTheme(theme));
+		Assert.Contains(nameof(SemanticMeaning.Primary), ex.Message);
+		Assert.DoesNotContain(nameof(SemanticMeaning.Alternate), ex.Message);
+		Assert.AreEqual("theme", ex.ParamName);
+	}
+
+	/// <summary>
+	/// A hand-written theme without Alternate is refused, naming Alternate, rather than leaving the plots
+	/// and the text selection on Dear ImGui's defaults.
+	/// </summary>
+	[TestMethod]
+	public void MapTheme_WithoutAlternate_ThrowsNamingAlternate()
+	{
+		ISemanticTheme theme = WithoutMeanings(SemanticMeaning.Alternate);
+
+		ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() => new ImGuiPaletteMapper().MapTheme(theme));
+		Assert.Contains(nameof(SemanticMeaning.Alternate), ex.Message);
+		Assert.DoesNotContain(nameof(SemanticMeaning.Primary), ex.Message);
+	}
+
+	/// <summary>
+	/// A neutral-only theme names every missing meaning at once, so the caller fixes them in one pass.
+	/// </summary>
+	[TestMethod]
+	public void MapTheme_WithOnlyNeutrals_ThrowsNamingEveryMissingMeaning()
+	{
+		ISemanticTheme theme = WithoutMeanings(SemanticMeaning.Primary, SemanticMeaning.Alternate);
+
+		ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() => new ImGuiPaletteMapper().MapTheme(theme));
+		Assert.Contains(nameof(SemanticMeaning.Primary), ex.Message);
+		Assert.Contains(nameof(SemanticMeaning.Alternate), ex.Message);
+	}
+
+	/// <summary>
+	/// A meaning present with an empty color list is as absent as a missing key.
+	/// </summary>
+	[TestMethod]
+	public void MapTheme_WithAnEmptyPrimaryList_ThrowsNamingPrimary()
+	{
+		PartialTheme theme = WithoutMeanings();
+		theme.SemanticMapping[SemanticMeaning.Primary] = [];
+
+		ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() => new ImGuiPaletteMapper().MapTheme(theme));
+		Assert.Contains(nameof(SemanticMeaning.Primary), ex.Message);
+	}
+
+	/// <summary>
+	/// A hand-written theme that defines every meaning the mapper requests still maps, and themes every slot
+	/// a built-in theme does. Meanings the mapper doesn't use, such as Error, aren't required.
+	/// </summary>
+	[TestMethod]
+	public void MapTheme_WithOnlyTheMeaningsTheMapperUses_ThemesEverySlot()
+	{
+		ISemanticTheme theme = WithoutMeanings(
+			SemanticMeaning.Error, SemanticMeaning.Warning, SemanticMeaning.Success,
+			SemanticMeaning.Information, SemanticMeaning.Caution, SemanticMeaning.Failure,
+			SemanticMeaning.CallToAction, SemanticMeaning.Debug);
+		ImGuiPaletteMapper mapper = new();
+
+		int expectedCount = mapper.MapTheme(ThemeRegistry.AllThemes[0].CreateInstance()).Count;
+
+		Assert.HasCount(expectedCount, mapper.MapTheme(theme));
+	}
+
+	/// <summary>
 	/// Mapping a theme fills in the ImGui colors the mapper claims to cover.
 	/// </summary>
 	[TestMethod]
@@ -147,6 +220,25 @@ public class ImGuiPaletteMapperTests
 				Assert.IsTrue(palette.TryGetValue(key, out Vector4 dim), $"{info.Name}: {key} unmapped");
 				Assert.IsTrue(dim.W is > 0f and < 1f, $"{info.Name}: {key} alpha is {dim.W}");
 			}
+		}
+	}
+
+	/// <summary>
+	/// ImGui draws BorderShadow one pixel below and right of every framed widget's border once
+	/// FrameBorderSize is above zero. ImGui's stock styles make it transparent so that it shows only
+	/// when a style opts in; an opaque one reads as a doubled, misaligned border.
+	/// </summary>
+	[TestMethod]
+	public void MapTheme_BorderShadowIsTransparent()
+	{
+		ImGuiPaletteMapper mapper = new();
+
+		foreach (ThemeRegistry.ThemeInfo info in ThemeRegistry.AllThemes)
+		{
+			IReadOnlyDictionary<ImGuiCol, Vector4> palette = mapper.MapTheme(info.CreateInstance());
+
+			Assert.IsTrue(palette.TryGetValue(ImGuiCol.BorderShadow, out Vector4 shadow), $"{info.Name}: BorderShadow unmapped");
+			Assert.AreEqual(0f, shadow.W, $"{info.Name}: BorderShadow alpha is {shadow.W}");
 		}
 	}
 
@@ -274,8 +366,61 @@ public class ImGuiPaletteMapperTests
 		}
 	}
 
+	/// <summary>
+	/// ImGui draws a table's outer border and the line under its header row in TableBorderStrong, and
+	/// the inner row and column dividers in TableBorderLight. Strong must stand out from the window
+	/// more than Light does, or the header no longer separates from the body. Light must also differ
+	/// from the row and header fills it is drawn between, or the inner dividers vanish.
+	/// </summary>
+	[TestMethod]
+	public void MapTheme_TableBorderStrongStandsOutMoreThanLight()
+	{
+		ImGuiPaletteMapper mapper = new();
+
+		foreach (ThemeRegistry.ThemeInfo info in ThemeRegistry.AllThemes)
+		{
+			IReadOnlyDictionary<ImGuiCol, Vector4> palette = mapper.MapTheme(info.CreateInstance());
+
+			AssertDistinct(palette, ImGuiCol.TableBorderStrong, ImGuiCol.TableBorderLight, info.Name);
+			AssertDistinct(palette, ImGuiCol.TableBorderLight, ImGuiCol.TableRowBg, info.Name);
+			AssertDistinct(palette, ImGuiCol.TableBorderLight, ImGuiCol.TableRowBgAlt, info.Name);
+			AssertDistinct(palette, ImGuiCol.TableBorderLight, ImGuiCol.TableHeaderBg, info.Name);
+
+			Vector4 window = palette[ImGuiCol.WindowBg];
+			float strong = Vector4.Distance(palette[ImGuiCol.TableBorderStrong], window);
+			float light = Vector4.Distance(palette[ImGuiCol.TableBorderLight], window);
+			Assert.IsGreaterThan(light, strong, $"{info.Name}: TableBorderStrong stands out from WindowBg no more than TableBorderLight");
+		}
+	}
+
 	private static void AssertDistinct(IReadOnlyDictionary<ImGuiCol, Vector4> palette, ImGuiCol first, ImGuiCol second, string themeName) =>
 		Assert.IsGreaterThan(1f / 255f, Vector4.Distance(palette[first], palette[second]), $"{themeName}: {first} is drawn in the {second} color");
+
+	/// <summary>
+	/// Copies the first registered theme's mapping without the given meanings, as a hand-written
+	/// <see cref="ISemanticTheme"/> that skips <see cref="SemanticPalette"/> would.
+	/// </summary>
+	private static PartialTheme WithoutMeanings(params SemanticMeaning[] removed)
+	{
+		ISemanticTheme source = ThemeRegistry.AllThemes[0].CreateInstance();
+		PartialTheme theme = new(source.IsDarkTheme);
+		foreach (KeyValuePair<SemanticMeaning, Collection<Color>> entry in source.SemanticMapping)
+		{
+			if (Array.IndexOf(removed, entry.Key) < 0)
+			{
+				theme.SemanticMapping[entry.Key] = [.. entry.Value];
+			}
+		}
+
+		return theme;
+	}
+
+	private sealed class PartialTheme(bool isDarkTheme) : ISemanticTheme
+	{
+		public Dictionary<SemanticMeaning, Collection<Color>> SemanticMapping { get; } = [];
+
+		public bool IsDarkTheme => isDarkTheme;
+	}
 
 	private sealed class NoNeutralTheme : ISemanticTheme
 	{

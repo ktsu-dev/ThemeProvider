@@ -22,6 +22,15 @@ public sealed class ImGuiPaletteMapper : IPaletteMapper<ImGuiCol, Vector4>
 	/// <summary>
 	/// Maps a semantic theme to a complete ImGui color palette.
 	/// </summary>
+	/// <remarks>
+	/// The theme must define at least one color for each of <see cref="SemanticMeaning.Neutral"/>,
+	/// <see cref="SemanticMeaning.Primary"/> and <see cref="SemanticMeaning.Alternate"/>, because every
+	/// ImGui slot this mapper themes is drawn from one of them. Every built-in theme and every
+	/// <see cref="SemanticPalette"/> defines all three.
+	/// </remarks>
+	/// <exception cref="ArgumentException">
+	/// The theme has no colors for one or more of the meanings the mapper requests. The message names them.
+	/// </exception>
 	public IReadOnlyDictionary<ImGuiCol, Vector4> MapTheme(ISemanticTheme theme)
 	{
 		Ensure.NotNull(theme);
@@ -106,7 +115,7 @@ public sealed class ImGuiPaletteMapper : IPaletteMapper<ImGuiCol, Vector4>
 
 			{ ImGuiCol.TableHeaderBg, new(SemanticMeaning.Neutral, Priority.Low)},
 			{ ImGuiCol.TableBorderStrong, new(SemanticMeaning.Neutral, Priority.Medium)},
-			{ ImGuiCol.TableBorderLight, new(SemanticMeaning.Neutral, Priority.Medium)},
+			{ ImGuiCol.TableBorderLight, new(SemanticMeaning.Neutral, Priority.MediumLow)},
 			{ ImGuiCol.TableRowBg, new(SemanticMeaning.Neutral, Priority.VeryLow) },
 			{ ImGuiCol.TableRowBgAlt, new(SemanticMeaning.Neutral, Priority.Low) },
 
@@ -120,11 +129,35 @@ public sealed class ImGuiPaletteMapper : IPaletteMapper<ImGuiCol, Vector4>
 			{ ImGuiCol.BorderShadow, new(SemanticMeaning.Neutral, Priority.Low) },
 		};
 
+		// A meaning the theme leaves out would leave every slot drawn from it on Dear ImGui's defaults, with
+		// nothing to tell the caller, so the theme is refused, as SemanticColorMapper refuses one with no
+		// neutrals. Only this mapper knows which meanings it requests, so the check lives here.
+		List<SemanticMeaning> missingMeanings = [];
+		foreach (SemanticColorRequest request in colorMapping.Values)
+		{
+			SemanticMeaning meaning = request.Meaning;
+			if (!missingMeanings.Contains(meaning) &&
+				(!theme.SemanticMapping.TryGetValue(meaning, out System.Collections.ObjectModel.Collection<Color>? colors) || colors.Count == 0))
+			{
+				missingMeanings.Add(meaning);
+			}
+		}
+
+		if (missingMeanings.Count > 0)
+		{
+			throw new ArgumentException(
+				$"The theme has no colors for {string.Join(", ", missingMeanings)}; {FrameworkName} needs at least one color for each of them.",
+				nameof(theme));
+		}
+
 		// Overlays drawn over other content, with the opacity ImGui's stock styles give them.
 		Dictionary<ImGuiCol, float> alphaOverrides = new()
 		{
 			{ ImGuiCol.NavWindowingDimBg, 0.20f },
 			{ ImGuiCol.ModalWindowDimBg, 0.35f },
+			// ImGui draws the shadow one pixel below and right of every framed widget once FrameBorderSize > 0,
+			// so it stays invisible unless a style opts in, as in ImGui's stock styles.
+			{ ImGuiCol.BorderShadow, 0f },
 			// Striped rows hold input frames, which are drawn in FrameBg with no border by default. A
 			// translucent stripe lands between the row and frame colors, so a frame in an odd row stays visible.
 			{ ImGuiCol.TableRowBgAlt, 0.50f },
