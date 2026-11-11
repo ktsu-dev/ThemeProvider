@@ -347,6 +347,26 @@ public class ImGuiPaletteMapperTests
 	}
 
 	/// <summary>
+	/// ImGui draws TabSelectedOverline on the focused window's selected tab and TabDimmedSelectedOverline on
+	/// every unfocused one's. The overline is the cue for which window has focus, so only the focused one may
+	/// show it: the dimmed overline is transparent, as in ImGui's stock styles.
+	/// </summary>
+	[TestMethod]
+	public void MapTheme_OnlyTheFocusedSelectedTabHasAnOverline()
+	{
+		ImGuiPaletteMapper mapper = new();
+
+		foreach (ThemeRegistry.ThemeInfo info in ThemeRegistry.AllThemes)
+		{
+			IReadOnlyDictionary<ImGuiCol, Vector4> palette = mapper.MapTheme(info.CreateInstance());
+
+			Assert.AreEqual(1f, palette[ImGuiCol.TabSelectedOverline].W, $"{info.Name}: the focused tab's overline is not opaque");
+			Assert.AreEqual(0f, palette[ImGuiCol.TabDimmedSelectedOverline].W, $"{info.Name}: an unfocused window's selected tab draws an overline");
+			AssertDistinct(palette, ImGuiCol.TabDimmedSelectedOverline, ImGuiCol.TabSelectedOverline, info.Name);
+		}
+	}
+
+	/// <summary>
 	/// ImGui draws a table's outer border and the line under its header row in TableBorderStrong, and
 	/// the inner row and column dividers in TableBorderLight. Strong must stand out from the window
 	/// more than Light does, or the header no longer separates from the body. Light must also differ

@@ -161,6 +161,9 @@ public sealed class ImGuiPaletteMapper : IPaletteMapper<ImGuiCol, Vector4>
 			// Striped rows hold input frames, which are drawn in FrameBg with no border by default. A
 			// translucent stripe lands between the row and frame colors, so a frame in an odd row stays visible.
 			{ ImGuiCol.TableRowBgAlt, 0.50f },
+			// The overline marks the focused window's selected tab, so an unfocused window's selected tab
+			// draws none, as in ImGui's stock styles. Drawing it in both made every dock node look focused.
+			{ ImGuiCol.TabDimmedSelectedOverline, 0f },
 		};
 
 		// Convert the semantic colors to ImGui Vector4 format
