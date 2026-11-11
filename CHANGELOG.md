@@ -2,6 +2,8 @@
 
 Changes since v3.2.1:
 
+- Hide the selected-tab overline in unfocused windows [patch] (#165) (matt-edmondson)
+- Give Everforest and Nightfox an Alternate that isn't their Warning color [patch] (#169) (matt-edmondson)
 - Refuse a theme missing a meaning the ImGui mapper draws from [patch] (#168) (matt-edmondson)
 - Make ImGui's BorderShadow transparent, as the stock styles do [patch] (#170) (matt-edmondson)
 - Give Tokyo Night Storm and Day a purple Debug of their own [patch] (#173) (matt-edmondson)
