@@ -2,6 +2,10 @@
 
 Changes since v3.2.1:
 
+- Refuse a theme missing a meaning the ImGui mapper draws from [patch] (#168) (matt-edmondson)
+- Make ImGui's BorderShadow transparent, as the stock styles do [patch] (#170) (matt-edmondson)
+- Give Tokyo Night Storm and Day a purple Debug of their own [patch] (#173) (matt-edmondson)
+- Draw inner table lines lighter than the outer border [patch] (#174) (matt-edmondson)
 - Give the selected tab its own fill on the tab bar [patch] (#163) (matt-edmondson)
 - Keep input frames visible in striped table rows [patch] (#162) (matt-edmondson)
 - Give Kanagawa Dragon its own pink and violet for Alternate and Debug [patch] (#159) (matt-edmondson)
