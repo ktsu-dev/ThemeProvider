@@ -12,26 +12,8 @@ using ktsu.Semantics.Color;
 /// </summary>
 public class EverforestLight : ISemanticTheme
 {
-	// Colors shared by several meanings are named once, after the palette entry they come from.
-	private const string Red = "#f85552";
-	private const string Orange = "#f57d26";
-
-	// Hex values are the palette this theme mirrors; the trailing comment on each line is
-	// that palette's own name for the color.
-	private static readonly SemanticPalette Palette = new()
-	{
-		Neutrals = ["#5c6a72", "#efebd4"], // Fg, BgDim
-		Primary = "#8da101", // Green
-		Alternate = Orange,
-		Success = "#3a94c5", // Blue
-		CallToAction = "#35a77c", // Aqua
-		Information = "#df69ba", // Purple
-		Caution = "#dfa000", // Yellow
-		Warning = Orange,
-		Error = Red,
-		Failure = Red,
-		Debug = "#df69ba", // Purple
-	};
+	// Every accent is shared with the other light variants; only the dimmest background differs.
+	private static readonly SemanticPalette Palette = EverforestPalette.Light("#efebd4"); // BgDim
 
 	/// <inheritdoc />
 	public Dictionary<SemanticMeaning, Collection<Color>> SemanticMapping => Palette.ToSemanticMapping();

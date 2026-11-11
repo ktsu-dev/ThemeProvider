@@ -19,7 +19,7 @@ public class Dayfox : ISemanticTheme
 	{
 		Neutrals = ["#3d2b5a", "#e4dcd4"], // Fg1, BgAlt
 		Primary = "#2848a9", // Blue
-		Alternate = "#955f61", // Orange
+		Alternate = "#a440b5", // Pink
 		Success = "#396847", // Green
 		CallToAction = "#287980", // Cyan
 		Information = "#2848a9", // Blue

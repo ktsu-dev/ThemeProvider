@@ -19,7 +19,7 @@ public class Nightfox : ISemanticTheme
 	{
 		Neutrals = ["#cdcecf", "#131a24"], // Fg1, BgAlt
 		Primary = "#719cd6", // Blue
-		Alternate = "#f4a261", // Orange
+		Alternate = "#d67ad2", // Pink
 		Success = "#81b29a", // Green
 		CallToAction = "#63cdcf", // Cyan
 		Information = "#719cd6", // Blue
