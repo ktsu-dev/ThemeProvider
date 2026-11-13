@@ -2,6 +2,7 @@
 
 Changes since v3.2.1:
 
+- Regenerate stale package-validation suppressions [patch] (#180) (matt-edmondson)
 - Hide the selected-tab overline in unfocused windows [patch] (#165) (matt-edmondson)
 - Give Everforest and Nightfox an Alternate that isn't their Warning color [patch] (#169) (matt-edmondson)
 - Refuse a theme missing a meaning the ImGui mapper draws from [patch] (#168) (matt-edmondson)
