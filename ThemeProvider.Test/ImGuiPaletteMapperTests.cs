@@ -4,6 +4,7 @@ namespace ktsu.ThemeProvider.Test;
 
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Numerics;
 using Hexa.NET.ImGui;
 using ktsu.Semantics.Color;
@@ -393,6 +394,68 @@ public class ImGuiPaletteMapperTests
 		}
 	}
 
+	/// <summary>
+	/// MapTheme runs every frame, and a built-in theme builds a fresh dictionary on every read of
+	/// <see cref="ISemanticTheme.SemanticMapping"/>, so the mapper reads it once per call (#178).
+	/// </summary>
+	[TestMethod]
+	public void MapTheme_ReadsSemanticMappingOnce()
+	{
+		CountingTheme theme = new(ThemeRegistry.AllThemes[0].CreateInstance());
+
+		IReadOnlyDictionary<ImGuiCol, Vector4> palette = new ImGuiPaletteMapper().MapTheme(theme);
+
+		Assert.AreEqual(1, theme.Reads);
+		Assert.AreEqual(palette.Count, new ImGuiPaletteMapper().MapTheme(theme.Source).Count);
+	}
+
+	/// <summary>
+	/// The palette built from one read of the mapping is the one the theme itself produces.
+	/// </summary>
+	[TestMethod]
+	public void MapTheme_ThroughCountingTheme_GivesTheSamePalette()
+	{
+		ISemanticTheme source = ThemeRegistry.AllThemes[0].CreateInstance();
+
+		IReadOnlyDictionary<ImGuiCol, Vector4> expected = new ImGuiPaletteMapper().MapTheme(source);
+		IReadOnlyDictionary<ImGuiCol, Vector4> actual = new ImGuiPaletteMapper().MapTheme(new CountingTheme(source));
+
+		CollectionAssert.AreEquivalent(expected.ToList(), actual.ToList());
+	}
+
+	/// <summary>
+	/// <see cref="SemanticColorMapper.MakeCompletePalette"/> reads the mapping once, including the
+	/// <see cref="SemanticColorMapper.MapColors"/> call it makes.
+	/// </summary>
+	[TestMethod]
+	public void MakeCompletePalette_ReadsSemanticMappingOnce()
+	{
+		CountingTheme theme = new(ThemeRegistry.AllThemes[0].CreateInstance());
+
+		_ = SemanticColorMapper.MakeCompletePalette(theme);
+
+		Assert.AreEqual(1, theme.Reads);
+	}
+
+	/// <summary>
+	/// <see cref="SemanticColorMapper.MapColors"/> reads the mapping once, however many meanings are requested.
+	/// </summary>
+	[TestMethod]
+	public void MapColors_ReadsSemanticMappingOnce()
+	{
+		CountingTheme theme = new(ThemeRegistry.AllThemes[0].CreateInstance());
+
+		_ = SemanticColorMapper.MapColors(
+			[
+				new(SemanticMeaning.Neutral, Priority.Low),
+				new(SemanticMeaning.Primary, Priority.High),
+				new(SemanticMeaning.Alternate, Priority.Medium),
+			],
+			theme);
+
+		Assert.AreEqual(1, theme.Reads);
+	}
+
 	private static void AssertDistinct(IReadOnlyDictionary<ImGuiCol, Vector4> palette, ImGuiCol first, ImGuiCol second, string themeName) =>
 		Assert.IsGreaterThan(1f / 255f, Vector4.Distance(palette[first], palette[second]), $"{themeName}: {first} is drawn in the {second} color");
 
@@ -413,6 +476,27 @@ public class ImGuiPaletteMapperTests
 		}
 
 		return theme;
+	}
+
+	/// <summary>
+	/// Passes a theme through, counting reads of <see cref="ISemanticTheme.SemanticMapping"/>.
+	/// </summary>
+	private sealed class CountingTheme(ISemanticTheme source) : ISemanticTheme
+	{
+		public ISemanticTheme Source => source;
+
+		public int Reads { get; private set; }
+
+		public Dictionary<SemanticMeaning, Collection<Color>> SemanticMapping
+		{
+			get
+			{
+				Reads++;
+				return source.SemanticMapping;
+			}
+		}
+
+		public bool IsDarkTheme => source.IsDarkTheme;
 	}
 
 	private sealed class PartialTheme(bool isDarkTheme) : ISemanticTheme

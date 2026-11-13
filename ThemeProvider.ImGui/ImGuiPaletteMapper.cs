@@ -3,6 +3,8 @@
 namespace ktsu.ThemeProvider.ImGui;
 
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Numerics;
 using Hexa.NET.ImGui;
 using ktsu.Semantics.Color;
@@ -14,6 +16,117 @@ using ktsu.ThemeProvider;
 /// </summary>
 public sealed class ImGuiPaletteMapper : IPaletteMapper<ImGuiCol, Vector4>
 {
+	// The mapping from ImGui colors to semantic color requests. It is the same for every theme, so it is built once.
+	private static readonly Dictionary<ImGuiCol, SemanticColorRequest> ColorMapping = new()
+	{
+		{ ImGuiCol.WindowBg, new(SemanticMeaning.Neutral, Priority.VeryLow)},
+		// Base background surfaces share the window's lightness so body text keeps the same contrast on them.
+		{ ImGuiCol.ChildBg, new(SemanticMeaning.Neutral, Priority.VeryLow)},
+		{ ImGuiCol.PopupBg, new(SemanticMeaning.Neutral, Priority.VeryLow)},
+		{ ImGuiCol.MenuBarBg, new(SemanticMeaning.Neutral, Priority.VeryLow)},
+		{ ImGuiCol.FrameBg, new(SemanticMeaning.Neutral, Priority.Low)},
+		{ ImGuiCol.FrameBgHovered, new(SemanticMeaning.Neutral, Priority.MediumLow)},
+		{ ImGuiCol.FrameBgActive, new(SemanticMeaning.Neutral, Priority.Medium)},
+		{ ImGuiCol.TextDisabled, new(SemanticMeaning.Neutral, Priority.High)},
+		{ ImGuiCol.Text, new(SemanticMeaning.Neutral, Priority.VeryHigh)},
+		// The caret is drawn over input frames like text is, so it takes the text color.
+		{ ImGuiCol.InputTextCursor, new(SemanticMeaning.Neutral, Priority.VeryHigh)},
+		{ ImGuiCol.TextLink, new(SemanticMeaning.Primary, Priority.High)},
+
+		{ ImGuiCol.ScrollbarBg, new(SemanticMeaning.Neutral, Priority.Low)},
+		{ ImGuiCol.ScrollbarGrab, new(SemanticMeaning.Neutral, Priority.Medium)},
+		{ ImGuiCol.ScrollbarGrabHovered, new(SemanticMeaning.Neutral, Priority.MediumHigh)},
+		{ ImGuiCol.ScrollbarGrabActive, new(SemanticMeaning.Neutral, Priority.High)},
+
+		// Accent fills sit low (near the background end) so the brightest-neutral body text drawn on
+		// them keeps contrast; hover/active step up in small increments while staying off the text end.
+		{ ImGuiCol.Button, new(SemanticMeaning.Primary, Priority.VeryLow)},
+		{ ImGuiCol.ButtonHovered, new(SemanticMeaning.Primary, Priority.Low)},
+		{ ImGuiCol.ButtonActive, new(SemanticMeaning.Primary, Priority.MediumLow)},
+
+		{ ImGuiCol.Header, new(SemanticMeaning.Primary, Priority.VeryLow)},
+		{ ImGuiCol.HeaderHovered, new(SemanticMeaning.Primary, Priority.Low)},
+		{ ImGuiCol.HeaderActive, new(SemanticMeaning.Primary, Priority.MediumLow)},
+
+		// The checkmark is a glyph, not a text surface: it takes the most visible accent so it contrasts the frame.
+		{ ImGuiCol.CheckMark, new(SemanticMeaning.Primary, Priority.VeryHigh)},
+
+		{ ImGuiCol.ResizeGrip, new(SemanticMeaning.Neutral, Priority.MediumHigh)},
+		{ ImGuiCol.ResizeGripHovered, new(SemanticMeaning.Neutral, Priority.High)},
+		{ ImGuiCol.ResizeGripActive, new(SemanticMeaning.Neutral, Priority.VeryHigh)},
+
+		{ ImGuiCol.NavWindowingHighlight, new(SemanticMeaning.Primary, Priority.VeryHigh)},
+		{ ImGuiCol.NavCursor, new(SemanticMeaning.Primary, Priority.High)},
+		{ ImGuiCol.DragDropTarget, new(SemanticMeaning.Primary, Priority.High)},
+		{ ImGuiCol.DockingPreview, new(SemanticMeaning.Primary, Priority.High)},
+		{ ImGuiCol.DockingEmptyBg, new(SemanticMeaning.Neutral, Priority.VeryLow)},
+
+		// The dimming overlays cover the whole viewport; their alpha is set below.
+		{ ImGuiCol.NavWindowingDimBg, new(SemanticMeaning.Neutral, Priority.Medium)},
+		{ ImGuiCol.ModalWindowDimBg, new(SemanticMeaning.Neutral, Priority.Medium)},
+
+		{ ImGuiCol.SliderGrab, new(SemanticMeaning.Primary, Priority.MediumLow)},
+		{ ImGuiCol.SliderGrabActive, new(SemanticMeaning.Primary, Priority.High)},
+
+		{ ImGuiCol.Separator, new(SemanticMeaning.Neutral, Priority.MediumHigh)},
+		{ ImGuiCol.SeparatorHovered, new(SemanticMeaning.Neutral, Priority.High)},
+		{ ImGuiCol.SeparatorActive, new(SemanticMeaning.Neutral, Priority.VeryHigh)},
+		{ ImGuiCol.TreeLines, new(SemanticMeaning.Neutral, Priority.MediumHigh)},
+
+		{ ImGuiCol.Tab, new(SemanticMeaning.Neutral, Priority.Low)},
+		// The tab bar is filled with the title bar's color, so the selected tab sits one step above it
+		// to read as the open tab, and hovering steps up once more.
+		{ ImGuiCol.TabSelected, new(SemanticMeaning.Primary, Priority.Low)},
+		{ ImGuiCol.TabHovered, new(SemanticMeaning.Primary, Priority.MediumLow)},
+		{ ImGuiCol.TabSelectedOverline, new(SemanticMeaning.Primary, Priority.High)},
+		// Tabs in an unfocused window drop to neutral so the focused window's tabs stand out.
+		{ ImGuiCol.TabDimmed, new(SemanticMeaning.Neutral, Priority.VeryLow)},
+		{ ImGuiCol.TabDimmedSelected, new(SemanticMeaning.Neutral, Priority.MediumLow)},
+		{ ImGuiCol.TabDimmedSelectedOverline, new(SemanticMeaning.Primary, Priority.High)},
+
+		// Alternate elements spread across the full 20-82% non-neutral range for better contrast
+		{ ImGuiCol.PlotLines, new(SemanticMeaning.Alternate, Priority.Medium)},
+		{ ImGuiCol.PlotLinesHovered, new(SemanticMeaning.Alternate, Priority.High)},
+
+		{ ImGuiCol.PlotHistogram, new(SemanticMeaning.Alternate, Priority.Medium)},
+		{ ImGuiCol.PlotHistogramHovered, new(SemanticMeaning.Alternate, Priority.High)},
+
+		{ ImGuiCol.TableHeaderBg, new(SemanticMeaning.Neutral, Priority.Low)},
+		{ ImGuiCol.TableBorderStrong, new(SemanticMeaning.Neutral, Priority.Medium)},
+		{ ImGuiCol.TableBorderLight, new(SemanticMeaning.Neutral, Priority.MediumLow)},
+		{ ImGuiCol.TableRowBg, new(SemanticMeaning.Neutral, Priority.VeryLow) },
+		{ ImGuiCol.TableRowBgAlt, new(SemanticMeaning.Neutral, Priority.Low) },
+
+		{ ImGuiCol.TextSelectedBg, new(SemanticMeaning.Alternate, Priority.High) },
+
+		{ ImGuiCol.TitleBg, new(SemanticMeaning.Neutral, Priority.Low)},
+		{ ImGuiCol.TitleBgActive, new(SemanticMeaning.Primary, Priority.VeryLow)},
+		{ ImGuiCol.TitleBgCollapsed, new(SemanticMeaning.Neutral, Priority.Low)},
+
+		{ ImGuiCol.Border, new(SemanticMeaning.Neutral, Priority.Medium) },
+		{ ImGuiCol.BorderShadow, new(SemanticMeaning.Neutral, Priority.Low) },
+	};
+
+	// The meanings ColorMapping requests, in the order they first appear, so a missing one is found without
+	// scanning every slot.
+	private static readonly SemanticMeaning[] RequestedMeanings = [.. ColorMapping.Values.Select(request => request.Meaning).Distinct()];
+
+	// Overlays drawn over other content, with the opacity ImGui's stock styles give them.
+	private static readonly Dictionary<ImGuiCol, float> AlphaOverrides = new()
+	{
+		{ ImGuiCol.NavWindowingDimBg, 0.20f },
+		{ ImGuiCol.ModalWindowDimBg, 0.35f },
+		// ImGui draws the shadow one pixel below and right of every framed widget once FrameBorderSize > 0,
+		// so it stays invisible unless a style opts in, as in ImGui's stock styles.
+		{ ImGuiCol.BorderShadow, 0f },
+		// Striped rows hold input frames, which are drawn in FrameBg with no border by default. A
+		// translucent stripe lands between the row and frame colors, so a frame in an odd row stays visible.
+		{ ImGuiCol.TableRowBgAlt, 0.50f },
+		// The overline marks the focused window's selected tab, so an unfocused window's selected tab
+		// draws none, as in ImGui's stock styles. Drawing it in both made every dock node look focused.
+		{ ImGuiCol.TabDimmedSelectedOverline, 0f },
+	};
+
 	/// <summary>
 	/// Gets the framework name this mapper supports.
 	/// </summary>
@@ -35,109 +148,20 @@ public sealed class ImGuiPaletteMapper : IPaletteMapper<ImGuiCol, Vector4>
 	{
 		Ensure.NotNull(theme);
 
+		// A built-in theme builds a fresh SemanticMapping on every read, and this runs every frame, so the mapping
+		// is read once here and shared by the palette and the check below.
+		ThemeSnapshot snapshot = new(theme.SemanticMapping, theme.IsDarkTheme);
+
 		// Get the complete palette for the theme (more efficient than individual requests)
-		IReadOnlyDictionary<SemanticColorRequest, Color> completePalette = SemanticColorMapper.MakeCompletePalette(theme);
-
-		// Define the mapping from ImGui colors to semantic color requests
-		Dictionary<ImGuiCol, SemanticColorRequest> colorMapping = new()
-		{
-			{ ImGuiCol.WindowBg, new(SemanticMeaning.Neutral, Priority.VeryLow)},
-			// Base background surfaces share the window's lightness so body text keeps the same contrast on them.
-			{ ImGuiCol.ChildBg, new(SemanticMeaning.Neutral, Priority.VeryLow)},
-			{ ImGuiCol.PopupBg, new(SemanticMeaning.Neutral, Priority.VeryLow)},
-			{ ImGuiCol.MenuBarBg, new(SemanticMeaning.Neutral, Priority.VeryLow)},
-			{ ImGuiCol.FrameBg, new(SemanticMeaning.Neutral, Priority.Low)},
-			{ ImGuiCol.FrameBgHovered, new(SemanticMeaning.Neutral, Priority.MediumLow)},
-			{ ImGuiCol.FrameBgActive, new(SemanticMeaning.Neutral, Priority.Medium)},
-			{ ImGuiCol.TextDisabled, new(SemanticMeaning.Neutral, Priority.High)},
-			{ ImGuiCol.Text, new(SemanticMeaning.Neutral, Priority.VeryHigh)},
-			// The caret is drawn over input frames like text is, so it takes the text color.
-			{ ImGuiCol.InputTextCursor, new(SemanticMeaning.Neutral, Priority.VeryHigh)},
-			{ ImGuiCol.TextLink, new(SemanticMeaning.Primary, Priority.High)},
-
-			{ ImGuiCol.ScrollbarBg, new(SemanticMeaning.Neutral, Priority.Low)},
-			{ ImGuiCol.ScrollbarGrab, new(SemanticMeaning.Neutral, Priority.Medium)},
-			{ ImGuiCol.ScrollbarGrabHovered, new(SemanticMeaning.Neutral, Priority.MediumHigh)},
-			{ ImGuiCol.ScrollbarGrabActive, new(SemanticMeaning.Neutral, Priority.High)},
-
-			// Accent fills sit low (near the background end) so the brightest-neutral body text drawn on
-			// them keeps contrast; hover/active step up in small increments while staying off the text end.
-			{ ImGuiCol.Button, new(SemanticMeaning.Primary, Priority.VeryLow)},
-			{ ImGuiCol.ButtonHovered, new(SemanticMeaning.Primary, Priority.Low)},
-			{ ImGuiCol.ButtonActive, new(SemanticMeaning.Primary, Priority.MediumLow)},
-
-			{ ImGuiCol.Header, new(SemanticMeaning.Primary, Priority.VeryLow)},
-			{ ImGuiCol.HeaderHovered, new(SemanticMeaning.Primary, Priority.Low)},
-			{ ImGuiCol.HeaderActive, new(SemanticMeaning.Primary, Priority.MediumLow)},
-
-			// The checkmark is a glyph, not a text surface: it takes the most visible accent so it contrasts the frame.
-			{ ImGuiCol.CheckMark, new(SemanticMeaning.Primary, Priority.VeryHigh)},
-
-			{ ImGuiCol.ResizeGrip, new(SemanticMeaning.Neutral, Priority.MediumHigh)},
-			{ ImGuiCol.ResizeGripHovered, new(SemanticMeaning.Neutral, Priority.High)},
-			{ ImGuiCol.ResizeGripActive, new(SemanticMeaning.Neutral, Priority.VeryHigh)},
-
-			{ ImGuiCol.NavWindowingHighlight, new(SemanticMeaning.Primary, Priority.VeryHigh)},
-			{ ImGuiCol.NavCursor, new(SemanticMeaning.Primary, Priority.High)},
-			{ ImGuiCol.DragDropTarget, new(SemanticMeaning.Primary, Priority.High)},
-			{ ImGuiCol.DockingPreview, new(SemanticMeaning.Primary, Priority.High)},
-			{ ImGuiCol.DockingEmptyBg, new(SemanticMeaning.Neutral, Priority.VeryLow)},
-
-			// The dimming overlays cover the whole viewport; their alpha is set below.
-			{ ImGuiCol.NavWindowingDimBg, new(SemanticMeaning.Neutral, Priority.Medium)},
-			{ ImGuiCol.ModalWindowDimBg, new(SemanticMeaning.Neutral, Priority.Medium)},
-
-			{ ImGuiCol.SliderGrab, new(SemanticMeaning.Primary, Priority.MediumLow)},
-			{ ImGuiCol.SliderGrabActive, new(SemanticMeaning.Primary, Priority.High)},
-
-			{ ImGuiCol.Separator, new(SemanticMeaning.Neutral, Priority.MediumHigh)},
-			{ ImGuiCol.SeparatorHovered, new(SemanticMeaning.Neutral, Priority.High)},
-			{ ImGuiCol.SeparatorActive, new(SemanticMeaning.Neutral, Priority.VeryHigh)},
-			{ ImGuiCol.TreeLines, new(SemanticMeaning.Neutral, Priority.MediumHigh)},
-
-			{ ImGuiCol.Tab, new(SemanticMeaning.Neutral, Priority.Low)},
-			// The tab bar is filled with the title bar's color, so the selected tab sits one step above it
-			// to read as the open tab, and hovering steps up once more.
-			{ ImGuiCol.TabSelected, new(SemanticMeaning.Primary, Priority.Low)},
-			{ ImGuiCol.TabHovered, new(SemanticMeaning.Primary, Priority.MediumLow)},
-			{ ImGuiCol.TabSelectedOverline, new(SemanticMeaning.Primary, Priority.High)},
-			// Tabs in an unfocused window drop to neutral so the focused window's tabs stand out.
-			{ ImGuiCol.TabDimmed, new(SemanticMeaning.Neutral, Priority.VeryLow)},
-			{ ImGuiCol.TabDimmedSelected, new(SemanticMeaning.Neutral, Priority.MediumLow)},
-			{ ImGuiCol.TabDimmedSelectedOverline, new(SemanticMeaning.Primary, Priority.High)},
-
-			// Alternate elements spread across the full 20-82% non-neutral range for better contrast
-			{ ImGuiCol.PlotLines, new(SemanticMeaning.Alternate, Priority.Medium)},
-			{ ImGuiCol.PlotLinesHovered, new(SemanticMeaning.Alternate, Priority.High)},
-
-			{ ImGuiCol.PlotHistogram, new(SemanticMeaning.Alternate, Priority.Medium)},
-			{ ImGuiCol.PlotHistogramHovered, new(SemanticMeaning.Alternate, Priority.High)},
-
-			{ ImGuiCol.TableHeaderBg, new(SemanticMeaning.Neutral, Priority.Low)},
-			{ ImGuiCol.TableBorderStrong, new(SemanticMeaning.Neutral, Priority.Medium)},
-			{ ImGuiCol.TableBorderLight, new(SemanticMeaning.Neutral, Priority.MediumLow)},
-			{ ImGuiCol.TableRowBg, new(SemanticMeaning.Neutral, Priority.VeryLow) },
-			{ ImGuiCol.TableRowBgAlt, new(SemanticMeaning.Neutral, Priority.Low) },
-
-			{ ImGuiCol.TextSelectedBg, new(SemanticMeaning.Alternate, Priority.High) },
-
-			{ ImGuiCol.TitleBg, new(SemanticMeaning.Neutral, Priority.Low)},
-			{ ImGuiCol.TitleBgActive, new(SemanticMeaning.Primary, Priority.VeryLow)},
-			{ ImGuiCol.TitleBgCollapsed, new(SemanticMeaning.Neutral, Priority.Low)},
-
-			{ ImGuiCol.Border, new(SemanticMeaning.Neutral, Priority.Medium) },
-			{ ImGuiCol.BorderShadow, new(SemanticMeaning.Neutral, Priority.Low) },
-		};
+		IReadOnlyDictionary<SemanticColorRequest, Color> completePalette = SemanticColorMapper.MakeCompletePalette(snapshot);
 
 		// A meaning the theme leaves out would leave every slot drawn from it on Dear ImGui's defaults, with
 		// nothing to tell the caller, so the theme is refused, as SemanticColorMapper refuses one with no
 		// neutrals. Only this mapper knows which meanings it requests, so the check lives here.
 		List<SemanticMeaning> missingMeanings = [];
-		foreach (SemanticColorRequest request in colorMapping.Values)
+		foreach (SemanticMeaning meaning in RequestedMeanings)
 		{
-			SemanticMeaning meaning = request.Meaning;
-			if (!missingMeanings.Contains(meaning) &&
-				(!theme.SemanticMapping.TryGetValue(meaning, out System.Collections.ObjectModel.Collection<Color>? colors) || colors.Count == 0))
+			if (!snapshot.SemanticMapping.TryGetValue(meaning, out Collection<Color>? colors) || colors.Count == 0)
 			{
 				missingMeanings.Add(meaning);
 			}
@@ -150,32 +174,16 @@ public sealed class ImGuiPaletteMapper : IPaletteMapper<ImGuiCol, Vector4>
 				nameof(theme));
 		}
 
-		// Overlays drawn over other content, with the opacity ImGui's stock styles give them.
-		Dictionary<ImGuiCol, float> alphaOverrides = new()
-		{
-			{ ImGuiCol.NavWindowingDimBg, 0.20f },
-			{ ImGuiCol.ModalWindowDimBg, 0.35f },
-			// ImGui draws the shadow one pixel below and right of every framed widget once FrameBorderSize > 0,
-			// so it stays invisible unless a style opts in, as in ImGui's stock styles.
-			{ ImGuiCol.BorderShadow, 0f },
-			// Striped rows hold input frames, which are drawn in FrameBg with no border by default. A
-			// translucent stripe lands between the row and frame colors, so a frame in an odd row stays visible.
-			{ ImGuiCol.TableRowBgAlt, 0.50f },
-			// The overline marks the focused window's selected tab, so an unfocused window's selected tab
-			// draws none, as in ImGui's stock styles. Drawing it in both made every dock node look focused.
-			{ ImGuiCol.TabDimmedSelectedOverline, 0f },
-		};
-
 		// Convert the semantic colors to ImGui Vector4 format
 		Dictionary<ImGuiCol, Vector4> result = [];
-		foreach (KeyValuePair<ImGuiCol, SemanticColorRequest> kv in colorMapping)
+		foreach (KeyValuePair<ImGuiCol, SemanticColorRequest> kv in ColorMapping)
 		{
 			ImGuiCol imguiCol = kv.Key;
 			SemanticColorRequest request = kv.Value;
 			if (completePalette.TryGetValue(request, out Color color))
 			{
 				Vector4 value = color.ToSrgbVector4();
-				if (alphaOverrides.TryGetValue(imguiCol, out float alpha))
+				if (AlphaOverrides.TryGetValue(imguiCol, out float alpha))
 				{
 					value.W = alpha;
 				}
@@ -184,6 +192,16 @@ public sealed class ImGuiPaletteMapper : IPaletteMapper<ImGuiCol, Vector4>
 			}
 		}
 
-		return new System.Collections.ObjectModel.ReadOnlyDictionary<ImGuiCol, Vector4>(result);
+		return new ReadOnlyDictionary<ImGuiCol, Vector4>(result);
+	}
+
+	/// <summary>
+	/// Holds the <see cref="ISemanticTheme.SemanticMapping"/> of a theme as it was read once.
+	/// </summary>
+	private sealed class ThemeSnapshot(Dictionary<SemanticMeaning, Collection<Color>> semanticMapping, bool isDarkTheme) : ISemanticTheme
+	{
+		public Dictionary<SemanticMeaning, Collection<Color>> SemanticMapping { get; } = semanticMapping;
+
+		public bool IsDarkTheme { get; } = isDarkTheme;
 	}
 }
