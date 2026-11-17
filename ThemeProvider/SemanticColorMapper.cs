@@ -28,6 +28,9 @@ public static class SemanticColorMapper
 		Ensure.NotNull(requests);
 		Ensure.NotNull(theme);
 
+		// SemanticMapping is read many times below, and a built-in theme builds a fresh dictionary on every read.
+		theme = ThemeSnapshot.Of(theme);
+
 		List<SemanticColorRequest> requestsList = [.. requests];
 		if (requestsList.Count == 0)
 		{
@@ -90,6 +93,9 @@ public static class SemanticColorMapper
 	public static IReadOnlyDictionary<SemanticColorRequest, Color> MakeCompletePalette(ISemanticTheme theme)
 	{
 		Ensure.NotNull(theme);
+
+		// Read SemanticMapping once for the whole palette, including the MapColors call below.
+		theme = ThemeSnapshot.Of(theme);
 
 		// Text, window backgrounds and every other surface color come from the neutrals. Without them a
 		// palette mapper silently leaves those slots to the toolkit's defaults under an otherwise themed UI,
@@ -400,5 +406,19 @@ public static class SemanticColorMapper
 			Math.Max(0.0, Math.Min(interpolated.B, 1.0)),
 			interpolated.A
 		);
+	}
+
+	/// <summary>
+	/// Holds the <see cref="ISemanticTheme.SemanticMapping"/> of a theme as it was read once, so the mapping
+	/// methods don't rebuild it on every read.
+	/// </summary>
+	private sealed class ThemeSnapshot(Dictionary<SemanticMeaning, Collection<Color>> semanticMapping, bool isDarkTheme) : ISemanticTheme
+	{
+		public Dictionary<SemanticMeaning, Collection<Color>> SemanticMapping { get; } = semanticMapping;
+
+		public bool IsDarkTheme { get; } = isDarkTheme;
+
+		public static ISemanticTheme Of(ISemanticTheme theme) =>
+			theme as ThemeSnapshot ?? new ThemeSnapshot(theme.SemanticMapping, theme.IsDarkTheme);
 	}
 }
